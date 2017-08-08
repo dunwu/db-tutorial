@@ -1,12 +1,12 @@
 {
   "gitbook": "3.2.2",
-  "title": "SqlNotes",
-  "description": "个人的 sql 学习笔记",
+  "title": "db-notes",
+  "description": "个人的数据库学习笔记",
   "author": "Zhang Peng",
   "language": "zh-hans",
   "links": {
     "sidebar": {
-      "SqlNotes": "https://github.com/atlantis1024/SqlNotes"
+      "db-notes": "https://github.com/atlantis1024/db-notes"
     }
   },
   "plugins": [
@@ -56,10 +56,10 @@
       }
     },
     "disqus": {
-      "shortName": "SqlNotes"
+      "shortName": "db-notes"
     },
     "edit-link": {
-      "base": "https://github.com/atlantis1024/SqlNotes/blob/master",
+      "base": "https://github.com/atlantis1024/db-notes/blob/master",
       "label": "编辑此页面"
     },
     "favicon": {
@@ -67,7 +67,7 @@
       "bookmark": "assets/images/folder.ico"
     },
     "github": {
-      "url": "https://github.com/atlantis1024/SqlNotes"
+      "url": "https://github.com/atlantis1024/db-notes"
     },
     "include-codeblock": {
       "template": "ace",
@@ -82,7 +82,7 @@
       "skipFirstH1": true
     },
     "sitemap-general": {
-      "prefix": "https://github.com/atlantis1024/SqlNotes"
+      "prefix": "https://github.com/atlantis1024/db-notes"
     },
     "sharing": {
       "weibo": true,
