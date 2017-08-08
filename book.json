@@ -1,0 +1,111 @@
+{
+  "gitbook": "3.2.2",
+  "title": "SqlNotes",
+  "description": "个人的 sql 学习笔记",
+  "author": "Zhang Peng",
+  "language": "zh-hans",
+  "links": {
+    "sidebar": {
+      "SqlNotes": "https://github.com/atlantis1024/SqlNotes"
+    }
+  },
+  "plugins": [
+    "-highlight",
+    "-livereload",
+    "-lunr",
+    "-search",
+    "advanced-emoji@^0.2.2",
+    "anchor-navigation-ex@0.1.8",
+    "anchors@^0.7.1",
+    "disqus@^0.1.0",
+    "edit-link@^2.0.2",
+    "emphasize@^1.1.0",
+    "expandable-chapters-small@^0.1.7",
+    "favicon@^0.0.2",
+    "github@^2.0.0",
+    "include-codeblock@^3.0.2",
+    "ace@^0.3.2",
+    "katex@^1.1.3",
+    "local-video@^1.0.1",
+    "prism@^2.1.0",
+    "prism-themes@^0.0.2",
+    "search-plus@^0.0.11",
+    "sectionx@^3.1.0",
+    "simple-page-toc@^0.1.1",
+    "sitemap-general@^0.1.1",
+    "splitter@^0.0.8",
+    "tbfed-pagefooter@^0.0.1",
+    "todo@^0.1.3"
+  ],
+  "pluginsConfig": {
+    "anchor-navigation-ex": {
+      "showLevel": false,
+      "associatedWithSummary": true,
+      "isRewritePageTitle": false,
+      "float": {
+        "showLevelIcon": false,
+        "level1Icon": "fa fa-hand-o-right",
+        "level2Icon": "fa fa-hand-o-right",
+        "level3Icon": "fa fa-hand-o-right"
+      },
+      "pageTop": {
+        "showLevelIcon": false,
+        "level1Icon": "fa fa-hand-o-right",
+        "level2Icon": "fa fa-hand-o-right",
+        "level3Icon": "fa fa-hand-o-right"
+      }
+    },
+    "disqus": {
+      "shortName": "SqlNotes"
+    },
+    "edit-link": {
+      "base": "https://github.com/atlantis1024/SqlNotes/blob/master",
+      "label": "编辑此页面"
+    },
+    "favicon": {
+      "shortcut": "assets/images/folder.ico",
+      "bookmark": "assets/images/folder.ico"
+    },
+    "github": {
+      "url": "https://github.com/atlantis1024/SqlNotes"
+    },
+    "include-codeblock": {
+      "template": "ace",
+      "unindent": true,
+      "edit": true
+    },
+    "sectionx": {
+      "tag": "b"
+    },
+    "simple-page-toc": {
+      "maxDepth": 4,
+      "skipFirstH1": true
+    },
+    "sitemap-general": {
+      "prefix": "https://github.com/atlantis1024/SqlNotes"
+    },
+    "sharing": {
+      "weibo": true,
+      "facebook": true,
+      "twitter": true,
+      "google": false,
+      "instapaper": false,
+      "vk": false,
+      "all": [
+        "facebook",
+        "google",
+        "twitter",
+        "weibo",
+        "instapaper"
+      ]
+    },
+    "theme-default": {
+      "showLevel": true
+    },
+    "tbfed-pagefooter": {
+      "copyright": "Copyright © Zhang Peng 2017",
+      "modify_label": "该文件上次修订时间：",
+      "modify_format": "YYYY-MM-DD HH:mm:ss"
+    }
+  }
+}
