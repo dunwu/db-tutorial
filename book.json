@@ -6,7 +6,7 @@
   "language": "zh-hans",
   "links": {
     "sidebar": {
-      "db-notes": "https://github.com/atlantis1024/db-notes"
+      "db-notes": "https://github.com/dunwu/db-notes"
     }
   },
   "plugins": [
@@ -59,7 +59,7 @@
       "shortName": "db-notes"
     },
     "edit-link": {
-      "base": "https://github.com/atlantis1024/db-notes/blob/master",
+      "base": "https://github.com/dunwu/db-notes/blob/master",
       "label": "编辑此页面"
     },
     "favicon": {
@@ -67,7 +67,7 @@
       "bookmark": "assets/images/folder.ico"
     },
     "github": {
-      "url": "https://github.com/atlantis1024/db-notes"
+      "url": "https://github.com/dunwu/db-notes"
     },
     "include-codeblock": {
       "template": "ace",
@@ -82,7 +82,7 @@
       "skipFirstH1": true
     },
     "sitemap-general": {
-      "prefix": "https://github.com/atlantis1024/db-notes"
+      "prefix": "https://github.com/dunwu/db-notes"
     },
     "sharing": {
       "weibo": true,

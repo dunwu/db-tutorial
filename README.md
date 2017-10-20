@@ -2,7 +2,7 @@
 
 ​:books: 个人的数据库学习笔记。
 
-**[gitbook 线上阅读](https://atlantis1024.gitbooks.io/db-notes/content/)**
+**[gitbook 线上阅读](https://dunwu.gitbooks.io/db-notes/content/)**
 
 ## :memo: 内容
 
