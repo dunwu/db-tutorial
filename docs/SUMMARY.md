@@ -9,10 +9,10 @@
 * [Sql 快速指南](sql/sql-quickstart.md)
 * [Sql 约束](sql/sql-constraint.md)
 
-## redis
+## NoSql
 
-* [redis 简介](redis/README.md)
-* [redis 快速入门](redis/redis-quickstart.md)
+* [redis](redis/README.md)
+  * [redis 快速入门](redis/redis-quickstart.md)
 
 ------
 
