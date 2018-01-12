@@ -1,6 +1,6 @@
 # db-notes
 
-​:books: 个人的数据库学习笔记。
+​:books: 一名 Java 程序员的数据库学习笔记。
 
 **[gitbook 线上阅读](https://dunwu.gitbooks.io/db-notes/content/)**
 

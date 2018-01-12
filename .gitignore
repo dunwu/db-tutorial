@@ -1,4 +1,16 @@
-################ Javascript ################
+################ JAVA ################
+# temp folders
+classes
+target
+logs
+
+# temp files
+*.class
+*.jar
+*.war
+
+
+################ JAVASCRIPT ################
 # dependencies
 node_modules
 
