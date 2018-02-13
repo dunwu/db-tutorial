@@ -1,13 +1,13 @@
 {
   "gitbook": "3.2.2",
-  "title": "db-notes",
-  "description": "个人的数据库学习笔记",
+  "title": "database",
+  "description": "Zhang Peng 的数据库教程",
   "author": "Zhang Peng",
   "language": "zh-hans",
   "root": "./docs",
   "links": {
     "sidebar": {
-      "db-notes": "https://github.com/dunwu/db-notes"
+      "database": "https://github.com/dunwu/database"
     }
   },
   "plugins": [
@@ -45,11 +45,11 @@
       }
     },
     "edit-link": {
-      "base": "https://github.com/dunwu/db-notes/blob/master",
+      "base": "https://github.com/dunwu/database/blob/master",
       "label": "编辑此页面"
     },
     "github": {
-      "url": "https://github.com/dunwu/db-notes"
+      "url": "https://github.com/dunwu/database"
     },
     "simple-page-toc": {
       "maxDepth": 4,
