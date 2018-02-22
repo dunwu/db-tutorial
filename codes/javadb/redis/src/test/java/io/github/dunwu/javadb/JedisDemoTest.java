@@ -7,6 +7,8 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -15,11 +17,14 @@ import redis.clients.jedis.Jedis;
 public class JedisDemoTest {
     private static final String REDIS_HOST = "192.168.58.170";
     private static final int REDIS_PORT = 6379;
+    private static final String REDIS_PASSWORD = "zp";
     private static Jedis jedis = null;
+    private static Logger logger = LoggerFactory.getLogger(JedisDemoTest.class);
 
     @BeforeClass
     public static void beforeClass() {
         jedis = new Jedis(REDIS_HOST, REDIS_PORT);
+        jedis.auth(REDIS_PASSWORD);
         System.out.println("ping redis: " + jedis.ping());
     }
 
@@ -27,6 +32,7 @@ public class JedisDemoTest {
     public void testSet() {
         jedis.set("first", "hello world");
         System.out.println("first:" + jedis.get("first"));
+        logger.debug("first: {}", jedis.get("first"));
     }
 
     @Test
