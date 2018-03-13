@@ -16,6 +16,7 @@
   <!-- RELATIONSHIP SETTINGS BEGIN -->
   <modules>
     <module>redis</module>
+    <module>mysql</module>
   </modules>
   <!-- RELATIONSHIP SETTINGS END -->
 
