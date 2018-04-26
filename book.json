@@ -4,7 +4,7 @@
   "description": "Zhang Peng 的数据库教程",
   "author": "Zhang Peng",
   "language": "zh-hans",
-  "root": "./docs",
+  "root": ".",
   "links": {
     "sidebar": {
       "database": "https://github.com/dunwu/database"
