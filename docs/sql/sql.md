@@ -7,7 +7,7 @@
 - [插入数据](#插入数据)
 - [更新数据](#更新数据)
 - [删除数据](#删除数据)
-- [查询](#查询)
+- [查询数据](#查询数据)
 - [排序](#排序)
 - [过滤](#过滤)
 - [通配符](#通配符)
@@ -41,15 +41,14 @@
   * 主键列中的值不允许修改或更新；
   * 主键值不能重用（如果某行从表中删除，它的主键不能赋给以后的新行）。
 * SQL（Structured Query Language)，标准 SQL 由 ANSI 标准委员会管理，从而称为 ANSI SQL。各个 DBMS 都有自己的实现，如 PL/SQL、Transact-SQL 等。
-
   * SQL 语句不区分大小写，但是数据库表名、列名和值是否区分依赖于具体的 DBMS 以及配置。
   * SQL 支持三种注释：
-
   ```sql
   ## 注释1
   -- 注释2
   /* 注释3 */
   ```
+* 数据控制语言 (Data Control Language) 在 SQL 语言中，是一种可对数据访问权进行控制的指令，它可以控制特定用户账户对数据表、查看表、预存程序、用户自定义函数等数据库对象的控制权。由 GRANT 和 REVOKE 两个指令组成。
 
 ## 定义表
 
@@ -293,7 +292,7 @@ WHERE `username` = 'admin';
 
 使用更新和删除操作时一定要用 WHERE 子句，不然会把整张表的数据都破坏。可以先用 SELECT 语句进行测试，防止错误删除。
 
-## 查询
+## 查询数据
 
 ### DISTINCT
 
@@ -766,50 +765,133 @@ create procedure myprocedure(out ret int)
 
 ## 触发器
 
-触发器会在某个表执行以下语句时而自动执行：DELETE、INSERT、UPDATE
+### 指令
 
-触发器必须指定在语句执行之前还是之后自动执行，之前执行使用 BEFORE 关键字，之后执行使用 AFTER 关键字。BEFORE 用于数据验证和净化。
+#### 创建触发器
 
-INSERT 触发器包含一个名为 NEW 的虚拟表。
+> 提示：为了理解触发器的要点，有必要先了解一下创建触发器的指令。
+
+`CREATE TRIGGER` 指令用于创建触发器。
+
+语法：
 
 ```sql
-CREATE TRIGGER mytrigger AFTER INSERT ON mytable
-FOR EACH ROW SELECT NEW.col;
+CREATE TRIGGER trigger_name
+trigger_time
+trigger_event
+ON table_name
+FOR EACH ROW
+BEGIN
+  trigger_statements
+END;
 ```
 
-DELETE 触发器包含一个名为 OLD 的虚拟表，并且是只读的。
+说明：
 
-UPDATE 触发器包含一个名为 NEW 和一个名为 OLD 的虚拟表，其中 NEW 是可以被修改地，而 OLD 是只读的。
+* trigger_name：触发器名
+* trigger_time: 触发器的触发时机。取值为 `BEFORE` 或 `AFTER`。
+* trigger_event: 触发器的监听事件。取值为 `INSERT`、`UPDATE` 或 `DELETE`。
+* table_name: 触发器的监听目标。指定在哪张表上建立触发器。
+* FOR EACH ROW: 行级监视，Mysql 固定写法，其他 DBMS 不同。
+* trigger_statements: 触发器执行动作。是一条或多条 SQL 语句的列表，列表内的每条语句都必须用分号 `;` 来结尾。
+
+示例：
+
+```sql
+DELIMITER $
+CREATE TRIGGER `trigger_insert_user`
+AFTER INSERT ON `user`
+FOR EACH ROW
+BEGIN
+    INSERT INTO `user_history`(user_id, operate_type, operate_time)
+    VALUES (NEW.id, 'add a user',  now());
+END $
+DELIMITER ;
+```
+
+#### 查看触发器
+
+```sql
+SHOW TRIGGERS [FROM schema_name];
+```
+
+#### 删除触发器
+
+```sql
+DROP TRIGGER [IF EXISTS] [schema_name.]trigger_name
+```
+
+### 要点
+
+触发器是一种与表操作有关的数据库对象，当触发器所在表上出现指定事件时，将调用该对象，即表的操作事件触发表上的触发器的执行。
 
 可以使用触发器来进行审计跟踪，把修改记录到另外一张表中。
 
 MySQL 不允许在触发器中使用 CALL 语句 ，也就是不能调用存储过程。
 
+#### `BEGIN` 和 `END`
+
+当触发器的触发条件满足时，将会执行 BEGIN 和 END 之间的触发器执行动作。
+
+> 注意：在 MySQL 中，分号 `;` 是语句结束的标识符，遇到分号表示该段语句已经结束，MySQL 可以开始执行了。因此，解释器遇到触发器执行动作中的分号后就开始执行，然后会报错，因为没有找到和 BEGIN 匹配的 END。
+>
+> 这时就会用到 `DELIMITER` 命令（DELIMITER 是定界符，分隔符的意思）。它是一条命令，不需要语句结束标识，语法为：`DELIMITER new_delemiter`。`new_delemiter` 可以设为 1 个或多个长度的符号，默认的是分号 `;`，我们可以把它修改为其他符号，如 `$`：`DELIMITER $` 。在这之后的语句，以分号结束，解释器不会有什么反应，只有遇到了 `$`，才认为是语句结束。注意，使用完之后，我们还应该记得把它给修改回来。
+
+#### `NEW` 和 `OLD`
+
+在指令一节的示例中，使用了 `NEW` 关键字。
+
+MySQL 中定义了 `NEW` 和 `OLD` 关键字，用来表示触发器的所在表中，触发了触发器的那一行数据。
+
+具体地：
+
+* 在 `INSERT` 型触发器中，`NEW` 用来表示将要（`BEFORE`）或已经（`AFTER`）插入的新数据；
+* 在 `UPDATE` 型触发器中，`OLD` 用来表示将要或已经被修改的原数据，`NEW` 用来表示将要或已经修改为的新数据；
+* 在 `DELETE` 型触发器中，`OLD` 用来表示将要或已经被删除的原数据；
+
+使用方法： `NEW.columnName` （columnName 为相应数据表某一列名）
+
 ## 事务处理
 
-基本术语：
-
-1.  事务（transaction）指一组 SQL 语句；
-2.  回退（rollback）指撤销指定 SQL 语句的过程；
-3.  提交（commit）指将未存储的 SQL 语句结果写入数据库表；
-4.  保留点（savepoint）指事务处理中设置的临时占位符（placeholder），你可以对它发布回退（与回退整个事务处理不同）。
+### 要点
 
 不能回退 SELECT 语句，回退 SELECT 语句也没意义；也不能回退 CREATE 和 DROP 语句。
 
-MySQL 的事务提交默认是隐式提交，每执行一条语句就把这条语句当成一个事务然后进行提交。当出现 START TRANSACTION 语句时，会关闭隐式提交；当 COMMIT 或 ROLLBACK 语句执行后，事务会自动关闭，重新恢复隐式提交。
+**MySQL 默认是隐式提交**，每执行一条语句就把这条语句当成一个事务然后进行提交。当出现 `START TRANSACTION` 语句时，会关闭隐式提交；当 `COMMIT` 或 `ROLLBACK` 语句执行后，事务会自动关闭，重新恢复隐式提交。
 
-通过设置 autocommit 为 0 可以取消自动提交，直到 autocommit 被设置为 1 才会提交；autocommit 标记是针对每个连接而不是针对服务器的。
+通过 `set autocommit=0` 可以取消自动提交，直到 `set autocommit=1` 才会提交；autocommit 标记是针对每个连接而不是针对服务器的。
 
-如果没有设置保留点，ROLLBACK 会回退到 START TRANSACTION 语句处；如果设置了保留点，并且在 ROLLBACK 中指定该保留点，则会回退到该保留点。
+### 指令
+
+* `START TRANSACTION`：指令用于标记事务的起始点。
+* `SAVEPOINT`：指令用于创建保留点。
+* `ROLLBACK TO`：指令用于回滚到指定的保留点；如果没有设置保留点，则回退到 `START TRANSACTION` 语句处。
+* `COMMIT`：提交事务。
+
+完整示例：
+
+在下面的示例中，只有第一条 `INSERT INTO` 语句生效。
 
 ```sql
-START TRANSACTION
-// ...
-SAVEPOINT delete1
-// ...
-ROLLBACK TO delete1
-// ...
-COMMIT
+-- 开始事务
+START TRANSACTION;
+
+-- 插入操作 A
+INSERT INTO `user`
+VALUES (1, 'root1', 'root1', 'xxxx@163.com');
+
+-- 创建保留点 updateA
+SAVEPOINT updateA;
+
+-- 插入操作 B
+INSERT INTO `user`
+VALUES (2, 'root2', 'root2', 'xxxx@163.com');
+
+-- 回滚到保留点 updateA
+ROLLBACK TO updateA;
+
+-- 提交事务，只有操作 A 生效
+COMMIT;
 ```
 
 ## 字符集
@@ -904,3 +986,5 @@ SET PASSWROD FOR myuser = Password('newpassword');
 ## 参考资料
 
 * BenForta. SQL 必知必会 [M]. 人民邮电出版社, 2013.
+* [『浅入深出』MySQL 中事务的实现](https://draveness.me/mysql-transaction)
+* [MySQL 的学习--触发器](https://www.cnblogs.com/CraryPrimitiveMan/p/4206942.html)
