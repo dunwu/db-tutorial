@@ -21,7 +21,10 @@ VALUES ('admin', 'admin', 'xxxx@163.com');
 
 -- 删除符合条件的记录
 DELETE FROM `user`
-WHERE `username` = 'admin';
+WHERE `username` = 'robot';
+
+-- 清空数据表
+TRUNCATE TABLE `user`;
 
 #############################################################
 # 更新表中的记录
