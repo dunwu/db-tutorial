@@ -16,51 +16,76 @@ CREATE TABLE user (
   password varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
   email varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱',
   PRIMARY KEY (id)
-) COMMENT='用户表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+
+-- 添加测试数据
+INSERT INTO user(username, password, email) VALUES ('张三', '123456', 'xxxx@163.com');
+INSERT INTO user(username, password, email) VALUES ('李四', '123456', 'xxxx@163.com');
+INSERT INTO user(username, password, email) VALUES ('王五', '123456', 'xxxx@163.com');
+INSERT INTO user(username, password, email) VALUES ('赵六', '123456', 'xxxx@163.com');
+INSERT INTO user(username, password, email) VALUES ('柳七', '123456', 'xxxx@163.com');
+INSERT INTO user(username, password, email) VALUES ('英八', '123456', 'xxxx@163.com');
+INSERT INTO user(username, password, email) VALUES ('雷九', '123456', 'xxxx@163.com');
 
 #############################################################
-# 向表中插入新记录
+# 插入数据
 #############################################################
 
 -- 不指定列名方式插入记录
-INSERT INTO `user`
-VALUES (1, 'root', 'root', 'xxxx@163.com');
+INSERT INTO user
+VALUES (10, 'root', 'root', 'xxxx@163.com');
 
 -- 指定列名方式插入记录
-INSERT INTO `user`(`username`, `password`, `email`)
+-- 注意自增ID数值，由于当前最大的ID值为10，所以插入本条记录时自增ID为11
+INSERT INTO user(username, password, email)
 VALUES ('admin', 'admin', 'xxxx@163.com');
 
 #############################################################
-# 更新表中的记录
+# 更新数据
 #############################################################
 
 -- 更新记录
-UPDATE `user`
-SET `username`='robot', `password`='robot'
-WHERE `username` = 'root';
+UPDATE user
+SET username='robot', password='robot'
+WHERE username = 'root';
 
 #############################################################
-# 查询表中的记录
+# 查询数据
 #############################################################
 
--- 查询表中的记录
-SELECT `username`, `password` FROM `user`
-WHERE `id` = 1;
+-- 查询单列
+SELECT username FROM user;
 
--- 查询表中的所有记录
-SELECT * FROM `user`;
+-- 查询多列
+SELECT username, password FROM user;
 
--- 查询表中的不重复记录
-SELECT DISTINCT `username`
-FROM `user`;
+-- 查询所有列
+SELECT * FROM user;
+
+-- 查询不同的值
+SELECT DISTINCT password FROM user;
+SELECT DISTINCT username, password FROM user;
+
+-- 限制结果
+-- 返回前 5 行
+SELECT * FROM user LIMIT 5;
+-- 返回前 5 行
+SELECT * FROM user LIMIT 0, 5;
+-- 返回第 3 ~ 5 行
+SELECT * FROM user LIMIT 2, 3;
+
+-- 简单的过滤查询
+SELECT username, password FROM user
+WHERE id = 1;
 
 #############################################################
-# 删除表中的记录
+# 删除数据
 #############################################################
 
 -- 删除符合条件的记录
-DELETE FROM `user`
-WHERE `username` = 'robot';
+DELETE FROM user
+WHERE username = 'robot';
 
 -- 清空数据表
-TRUNCATE TABLE `user`;
+TRUNCATE TABLE user;
