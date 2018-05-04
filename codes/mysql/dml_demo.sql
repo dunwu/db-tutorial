@@ -32,11 +32,11 @@ INSERT INTO user(username, password, email) VALUES ('雷九', '123456', 'xxxx@16
 # 插入数据
 #############################################################
 
--- 不指定列名方式插入记录
+-- 插入完整的行
 INSERT INTO user
 VALUES (10, 'root', 'root', 'xxxx@163.com');
 
--- 指定列名方式插入记录
+-- 插入行的一部分
 -- 注意自增ID数值，由于当前最大的ID值为10，所以插入本条记录时自增ID为11
 INSERT INTO user(username, password, email)
 VALUES ('admin', 'admin', 'xxxx@163.com');
