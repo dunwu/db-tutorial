@@ -3,13 +3,9 @@
 <!-- TOC depthFrom:2 depthTo:2 -->
 
 - [概念](#概念)
-- [定义表](#定义表)
-- [插入数据](#插入数据)
-- [更新数据](#更新数据)
-- [删除数据](#删除数据)
-- [查询数据](#查询数据)
-- [排序](#排序)
+- [增删改查（CRUD）](#增删改查crud)
 - [过滤](#过滤)
+- [排序](#排序)
 - [通配符](#通配符)
 - [计算字段](#计算字段)
 - [函数](#函数)
@@ -17,6 +13,7 @@
 - [子查询](#子查询)
 - [连接](#连接)
 - [组合查询](#组合查询)
+- [定义表](#定义表)
 - [视图](#视图)
 - [存储过程](#存储过程)
 - [游标](#游标)
@@ -50,156 +47,11 @@
   ```
 * 数据控制语言 (Data Control Language) 在 SQL 语言中，是一种可对数据访问权进行控制的指令，它可以控制特定用户账户对数据表、查看表、预存程序、用户自定义函数等数据库对象的控制权。由 GRANT 和 REVOKE 两个指令组成。
 
-## 定义表
+## 增删改查（CRUD）
 
-### 创建数据表
+### 插入数据
 
-#### 普通创建
-
-语法：
-
-```sql
-CREATE TABLE 数据表名 (
-  列名1 数据类型,
-  列名2 数据类型,
-  ...
-);
-```
-
-示例：
-
-```sql
--- 创建表 user
-CREATE TABLE `user` (
-  `id` int(10) unsigned NOT NULL COMMENT 'Id',
-  `username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
-  `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
-  `email` varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱'
-) COMMENT='用户表';
-```
-
-#### 根据已有的表创建新表
-
-语法：
-
-```sql
-CREATE TABLE 数据表名 AS
-SELECT * FROM 数据表名;
-```
-
-示例：
-
-```sql
--- 创建新表 vip_user 并复制表 user 的内容
-CREATE TABLE `vip_user` AS
-SELECT * FROM `user`;
-```
-
-### 撤销数据表
-
-语法：
-
-```sql
-DROP TABLE 数据表名;
-```
-
-示例：
-
-```sql
--- 删除表 user
-DROP TABLE `user`;
-```
-
-### 修改数据表
-
-#### 添加列
-
-语法：
-
-```sql
-ALTER TABLE 数据表名
-ADD 列名 数据类型;
-```
-
-示例：
-
-```sql
--- 添加列 age
-ALTER TABLE `user`
-ADD age int(3);
-```
-
-#### 删除列
-
-语法：
-
-```sql
-ALTER TABLE 数据表名
-DROP COLUMN 列名;
-```
-
-示例：
-
-```sql
--- 删除列 age
-ALTER TABLE `user`
-DROP COLUMN age;
-```
-
-#### 修改列
-
-语法：
-
-```sql
-ALTER TABLE 数据表名
-ADD 列名 数据类型;
-```
-
-示例：
-
-```sql
--- 修改列 age 的类型为 tinyint
-ALTER TABLE `user`
-MODIFY COLUMN age tinyint;
-```
-
-#### 添加主键
-
-语法：
-
-```sql
-ALTER TABLE 数据表名
-ADD PRIMARY KEY (列名);
-```
-
-示例：
-
-```sql
--- 给表 user 添加主键 id
-ALTER TABLE `user`
-ADD PRIMARY KEY (id);
-```
-
-#### 删除主键
-
-语法：
-
-```sql
-ALTER TABLE 数据表名
-DROP PRIMARY KEY;
-```
-
-示例：
-
-```sql
--- 表 user 删除主键
-ALTER TABLE `user`
-DROP PRIMARY KEY;
-```
-
-## 插入数据
-
-### 插入完整的行
+#### 插入完整的行
 
 语法：
 
@@ -216,7 +68,7 @@ INSERT INTO `user`
 VALUES (1, 'root', 'root', 'xxxx@163.com');
 ```
 
-### 插入行的一部分
+#### 插入行的一部分
 
 语法：
 
@@ -233,7 +85,7 @@ INSERT INTO `user`(`username`, `password`, `email`)
 VALUES ('admin', 'admin', 'xxxx@163.com');
 ```
 
-### 插入检索出来的数据
+#### 插入检索出来的数据
 
 语法：
 
@@ -252,7 +104,7 @@ SELECT `name`
 FROM `account`;
 ```
 
-## 更新数据
+### 更新数据
 
 语法：
 
@@ -271,7 +123,7 @@ SET `username`='robot', `password`='robot'
 WHERE `username` = 'root';
 ```
 
-## 删除数据
+### 删除数据
 
 语法：
 
@@ -292,9 +144,9 @@ WHERE `username` = 'admin';
 
 使用更新和删除操作时一定要用 WHERE 子句，不然会把整张表的数据都破坏。可以先用 SELECT 语句进行测试，防止错误删除。
 
-## 查询数据
+### 查询数据
 
-### DISTINCT
+#### DISTINCT
 
 相同值只会出现一次。它作用于所有列，也就是说所有列的值都相同才算相同。
 
@@ -303,7 +155,7 @@ SELECT DISTINCT col1, col2
 FROM mytable;
 ```
 
-### LIMIT
+#### LIMIT
 
 限制返回的行数。可以有两个参数，第一个参数为起始行，从 0 开始；第二个参数为返回的总行数。
 
@@ -329,28 +181,50 @@ FROM mytable
 LIMIT 2, 3;
 ```
 
-## 排序
-
-* **ASC** ：升序（默认）
-* **DESC** ：降序
-
-可以按多个列进行排序，并且为每个列指定不同的排序方式：
-
-```sql
-SELECT *
-FROM mytable
-ORDER BY col1 DESC, col2 ASC;
-```
-
 ## 过滤
 
-不进行过滤的数据非常大，导致通过网络传输了多余的数据，从而浪费了网络带宽。因此尽量使用 SQL 语句来过滤不必要的数据，而不是传输所有的数据到客户端中然后由客户端进行过滤。
+### WHERE 子句
+
+#### 要点
+
+* WHERE 子句筛选符合特定条件的行。
+* WHERE 后跟一个返回 true 或 false 的条件。
+* WHERE 与 SELECT，UPDATE 和 DELETE 一起使用。
+
+#### 语法
+
+SELECT 语句中的 WHERE 子句：
+
+```sql
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+```
+
+UPDATE 语句中的 WHERE 子句：
+
+```sql
+UPDATE table_name
+SET column_name = value
+WHERE condition
+```
+
+DELETE 语句中的 WHERE 子句：
+
+```sql
+DELETE table_name
+WHERE condition
+```
+
+#### 示例
 
 ```sql
 SELECT *
 FROM mytable
 WHERE col IS NULL;
 ```
+
+### AND、OR、NOT
 
 下表显示了 WHERE 子句可用的操作符
 
@@ -370,6 +244,19 @@ WHERE col IS NULL;
 **IN** 操作符用于匹配一组值，其后也可以接一个 SELECT 子句，从而匹配子查询得到的一组值。
 
 **NOT** 操作符用于否定一个条件。
+
+## 排序
+
+* **ASC** ：升序（默认）
+* **DESC** ：降序
+
+可以按多个列进行排序，并且为每个列指定不同的排序方式：
+
+```sql
+SELECT *
+FROM mytable
+ORDER BY col1 DESC, col2 ASC;
+```
 
 ## 通配符
 
@@ -668,6 +555,153 @@ UNION
 SELECT col
 FROM mytable
 WHERE col =2;
+```
+
+## 定义表
+
+### 创建数据表
+
+#### 普通创建
+
+语法：
+
+```sql
+CREATE TABLE 数据表名 (
+  列名1 数据类型,
+  列名2 数据类型,
+  ...
+);
+```
+
+示例：
+
+```sql
+-- 创建表 user
+CREATE TABLE `user` (
+  `id` int(10) unsigned NOT NULL COMMENT 'Id',
+  `username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
+  `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
+  `email` varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱'
+) COMMENT='用户表';
+```
+
+#### 根据已有的表创建新表
+
+语法：
+
+```sql
+CREATE TABLE 数据表名 AS
+SELECT * FROM 数据表名;
+```
+
+示例：
+
+```sql
+-- 创建新表 vip_user 并复制表 user 的内容
+CREATE TABLE `vip_user` AS
+SELECT * FROM `user`;
+```
+
+### 撤销数据表
+
+语法：
+
+```sql
+DROP TABLE 数据表名;
+```
+
+示例：
+
+```sql
+-- 删除表 user
+DROP TABLE `user`;
+```
+
+### 修改数据表
+
+#### 添加列
+
+语法：
+
+```sql
+ALTER TABLE 数据表名
+ADD 列名 数据类型;
+```
+
+示例：
+
+```sql
+-- 添加列 age
+ALTER TABLE `user`
+ADD age int(3);
+```
+
+#### 删除列
+
+语法：
+
+```sql
+ALTER TABLE 数据表名
+DROP COLUMN 列名;
+```
+
+示例：
+
+```sql
+-- 删除列 age
+ALTER TABLE `user`
+DROP COLUMN age;
+```
+
+#### 修改列
+
+语法：
+
+```sql
+ALTER TABLE 数据表名
+ADD 列名 数据类型;
+```
+
+示例：
+
+```sql
+-- 修改列 age 的类型为 tinyint
+ALTER TABLE `user`
+MODIFY COLUMN age tinyint;
+```
+
+#### 添加主键
+
+语法：
+
+```sql
+ALTER TABLE 数据表名
+ADD PRIMARY KEY (列名);
+```
+
+示例：
+
+```sql
+-- 给表 user 添加主键 id
+ALTER TABLE `user`
+ADD PRIMARY KEY (id);
+```
+
+#### 删除主键
+
+语法：
+
+```sql
+ALTER TABLE 数据表名
+DROP PRIMARY KEY;
+```
+
+示例：
+
+```sql
+-- 表 user 删除主键
+ALTER TABLE `user`
+DROP PRIMARY KEY;
 ```
 
 ## 视图
