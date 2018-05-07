@@ -1,27 +1,33 @@
-# sql
+# Mysql
+
+> 本文的示例在 Mysql 5.7 下都可以测试通过。
 
 <!-- TOC depthFrom:2 depthTo:2 -->
 
 - [概念](#概念)
 - [SQL 基础](#sql-基础)
-- [增删改查（CRUD）](#增删改查crud)
+- [增删改查](#增删改查)
 - [过滤](#过滤)
 - [函数](#函数)
 - [排序和分组](#排序和分组)
 - [子查询](#子查询)
 - [连接和组合](#连接和组合)
-- [组合查询](#组合查询)
-- [定义表](#定义表)
-- [视图](#视图)
+- [数据定义](#数据定义)
+- [约束](#约束)
+- [事务处理](#事务处理)
+- [权限控制](#权限控制)
 - [存储过程](#存储过程)
 - [游标](#游标)
 - [触发器](#触发器)
-- [事务处理](#事务处理)
-- [字符集](#字符集)
-- [权限管理](#权限管理)
 - [参考资料](#参考资料)
 
 <!-- /TOC -->
+
+## 知识点
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/mysql.png" alt="mysql" width="1024">
+</p>
 
 ## 概念
 
@@ -120,7 +126,7 @@ DCL 以控制用户的访问权限为主，因此其指令作法并不复杂，�
 
 TCL 的核心指令是 `COMMIT`、`ROLLBACK`。
 
-## 增删改查（CRUD）
+## 增删改查
 
 ### 插入数据
 
@@ -646,7 +652,7 @@ ON customers.cust_id = orders.cust_id;
 
 #### 示例
 
-## 组合查询
+**组合查询**
 
 ```sql
 SELECT cust_name, cust_contact, cust_email
@@ -666,249 +672,395 @@ WHERE cust_name = 'Fun4All';
   * `JOIN` 中连接表的列可能不同，但在 `UNION` 中，所有查询的列数和列顺序必须相同。
   * `UNION` 将查询之后的行放在一起（垂直放置），但 `JOIN` 将查询之后的列放在一起（水平放置），即它构成一个笛卡尔积。
 
-## 定义表
+## 数据定义
 
-### 创建数据表
+> DDL 的主要功能是定义数据库对象（如：数据库、数据表、视图、索引等）。
 
-#### 普通创建
+### 数据库（DATABASE）
 
-语法：
+#### 示例
+
+**创建数据库**
 
 ```sql
-CREATE TABLE 数据表名 (
-  列名1 数据类型,
-  列名2 数据类型,
-  ...
-);
+CREATE DATABASE test;
 ```
 
-示例：
+**删除数据库**
 
 ```sql
--- 创建表 user
-CREATE TABLE `user` (
-  `id` int(10) unsigned NOT NULL COMMENT 'Id',
-  `username` varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
-  `password` varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
-  `email` varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱'
+DROP DATABASE test;
+```
+
+**选择数据库**
+
+```sql
+use test;
+```
+
+### 数据表（TABLE）
+
+#### 示例
+
+##### 创建数据表
+
+**普通创建**
+
+```sql
+CREATE TABLE user (
+  id int(10) unsigned NOT NULL COMMENT 'Id',
+  username varchar(64) NOT NULL DEFAULT 'default' COMMENT '用户名',
+  password varchar(64) NOT NULL DEFAULT 'default' COMMENT '密码',
+  email varchar(64) NOT NULL DEFAULT 'default' COMMENT '邮箱'
 ) COMMENT='用户表';
 ```
 
-#### 根据已有的表创建新表
-
-语法：
+**根据已有的表创建新表**
 
 ```sql
-CREATE TABLE 数据表名 AS
-SELECT * FROM 数据表名;
+CREATE TABLE vip_user AS
+SELECT * FROM user;
 ```
 
-示例：
+##### 撤销数据表
 
 ```sql
--- 创建新表 vip_user 并复制表 user 的内容
-CREATE TABLE `vip_user` AS
-SELECT * FROM `user`;
+DROP TABLE user;
 ```
 
-### 撤销数据表
+##### 修改数据表
 
-语法：
-
-```sql
-DROP TABLE 数据表名;
-```
-
-示例：
+**添加列**
 
 ```sql
--- 删除表 user
-DROP TABLE `user`;
-```
-
-### 修改数据表
-
-#### 添加列
-
-语法：
-
-```sql
-ALTER TABLE 数据表名
-ADD 列名 数据类型;
-```
-
-示例：
-
-```sql
--- 添加列 age
-ALTER TABLE `user`
+ALTER TABLE user
 ADD age int(3);
 ```
 
-#### 删除列
-
-语法：
+**删除列**
 
 ```sql
-ALTER TABLE 数据表名
-DROP COLUMN 列名;
-```
-
-示例：
-
-```sql
--- 删除列 age
-ALTER TABLE `user`
+ALTER TABLE user
 DROP COLUMN age;
 ```
 
-#### 修改列
-
-语法：
+**修改列**
 
 ```sql
-ALTER TABLE 数据表名
-ADD 列名 数据类型;
-```
-
-示例：
-
-```sql
--- 修改列 age 的类型为 tinyint
 ALTER TABLE `user`
 MODIFY COLUMN age tinyint;
 ```
 
-#### 添加主键
-
-语法：
+**添加主键**
 
 ```sql
-ALTER TABLE 数据表名
-ADD PRIMARY KEY (列名);
-```
-
-示例：
-
-```sql
--- 给表 user 添加主键 id
-ALTER TABLE `user`
+ALTER TABLE user
 ADD PRIMARY KEY (id);
 ```
 
-#### 删除主键
-
-语法：
+**删除主键**
 
 ```sql
-ALTER TABLE 数据表名
+ALTER TABLE user
 DROP PRIMARY KEY;
 ```
 
-示例：
+### 视图（VIEW）
+
+#### 要点
+
+* 定义
+  * 视图是基于 SQL 语句的结果集的可视化的表。
+  * 视图是虚拟的表，本身不包含数据，也就不能对其进行索引操作。对视图的操作和对普通表的操作一样。
+* 作用
+  * 简化复杂的 SQL 操作，比如复杂的联结；
+  * 只使用实际表的一部分数据；
+  * 通过只给用户访问视图的权限，保证数据的安全性；
+  * 更改数据格式和表示。
+
+#### 示例
+
+**创建视图**
 
 ```sql
--- 表 user 删除主键
-ALTER TABLE `user`
-DROP PRIMARY KEY;
+CREATE VIEW top_10_user_view AS
+SELECT id, username
+FROM user
+WHERE id < 10;
 ```
 
-## 视图
-
-视图是虚拟的表，本身不包含数据，也就不能对其进行索引操作。对视图的操作和对普通表的操作一样。
-
-视图具有如下好处：
-
-1.  简化复杂的 SQL 操作，比如复杂的联结；
-2.  只使用实际表的一部分数据；
-3.  通过只给用户访问视图的权限，保证数据的安全性；
-4.  更改数据格式和表示。
+**撤销视图**
 
 ```sql
-CREATE VIEW myview AS
-SELECT Concat(col1, col2) AS concat_col, col3*col4 AS count_col
-FROM mytable
-WHERE col5 = val;
+DROP VIEW top_10_user_view;
+```
+
+### 索引（INDEX）
+
+#### 要点
+
+* 作用
+  * 通过索引可以更加快速高效地查询数据。
+  * 用户无法看到索引，它们只能被用来加速查询。
+* 注意
+  * 更新一个包含索引的表需要比更新一个没有索引的表花费更多的时间，这是由于索引本身也需要更新。因此，理想的做法是仅仅在常常被搜索的列（以及表）上面创建索引。
+* 唯一索引
+  * 唯一索引表明此索引的每一个索引值只对应唯一的数据记录。
+
+#### 示例
+
+**创建普通索引**
+
+```sql
+CREATE INDEX user_index
+ON user (id);
+```
+
+**撤销索引**
+
+```sql
+ALTER TABLE user
+DROP INDEX user_index;
+```
+
+**创建唯一索引**
+
+```sql
+CREATE UNIQUE INDEX user_index
+ON user (id);
+```
+
+## 约束
+
+### 要点
+
+* SQL 约束用于规定表中的数据规则。
+* 如果存在违反约束的数据行为，行为会被约束终止。
+* 约束可以在创建表时规定（通过 CREATE TABLE 语句），或者在表创建之后规定（通过 ALTER TABLE 语句）。
+* 约束类型
+  * `NOT NULL` - 指示某列不能存储 NULL 值。
+  * `UNIQUE` - 保证某列的每行必须有唯一的值。
+  * `PRIMARY KEY` - NOT NULL 和 UNIQUE 的结合。确保某列（或两个列多个列的结合）有唯一标识，有助于更容易更快速地找到表中的一个特定的记录。
+  * `FOREIGN KEY` - 保证一个表中的数据匹配另一个表中的值的参照完整性。
+  * `CHECK` - 保证列中的值符合指定的条件。
+  * `DEFAULT` - 规定没有给列赋值时的默认值。
+
+### 示例
+
+**创建表时使用约束条件**
+
+```sql
+CREATE TABLE Users (
+  Id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增Id',
+  Username VARCHAR(64) NOT NULL UNIQUE DEFAULT 'default' COMMENT '用户名',
+  Password VARCHAR(64) NOT NULL DEFAULT 'default' COMMENT '密码',
+  Email VARCHAR(64) NOT NULL DEFAULT 'default' COMMENT '邮箱地址',
+  Enabled TINYINT(4) DEFAULT NULL COMMENT '是否有效',
+  PRIMARY KEY (Id)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
+```
+
+## 事务处理
+
+### 要点
+
+* 不能回退 SELECT 语句，回退 SELECT 语句也没意义；也不能回退 CREATE 和 DROP 语句。
+* **MySQL 默认是隐式提交**，每执行一条语句就把这条语句当成一个事务然后进行提交。当出现 `START TRANSACTION` 语句时，会关闭隐式提交；当 `COMMIT` 或 `ROLLBACK` 语句执行后，事务会自动关闭，重新恢复隐式提交。
+* 通过 `set autocommit=0` 可以取消自动提交，直到 `set autocommit=1` 才会提交；autocommit 标记是针对每个连接而不是针对服务器的。
+* 指令
+  * `START TRANSACTION`：指令用于标记事务的起始点。
+  * `SAVEPOINT`：指令用于创建保留点。
+  * `ROLLBACK TO`：指令用于回滚到指定的保留点；如果没有设置保留点，则回退到 `START TRANSACTION` 语句处。
+  * `COMMIT`：提交事务。
+
+### 示例
+
+**事务处理示例**
+
+```sql
+-- 开始事务
+START TRANSACTION;
+
+-- 插入操作 A
+INSERT INTO `user`
+VALUES (1, 'root1', 'root1', 'xxxx@163.com');
+
+-- 创建保留点 updateA
+SAVEPOINT updateA;
+
+-- 插入操作 B
+INSERT INTO `user`
+VALUES (2, 'root2', 'root2', 'xxxx@163.com');
+
+-- 回滚到保留点 updateA
+ROLLBACK TO updateA;
+
+-- 提交事务，只有操作 A 生效
+COMMIT;
+```
+
+## 权限控制
+
+### 要点
+
+* GRANT 和 REVOKE 可在几个层次上控制访问权限：
+  * 整个服务器，使用 GRANT ALL 和 REVOKE ALL；
+  * 整个数据库，使用 ON database.\*；
+  * 特定的表，使用 ON database.table；
+  * 特定的列；
+  * 特定的存储过程。
+* 新创建的账户没有任何权限。
+* 账户用 username@host 的形式定义，username@% 使用的是默认主机名。
+* MySQL 的账户信息保存在 mysql 这个数据库中。
+  ```sql
+  USE mysql;
+  SELECT user FROM user;
+  ```
+
+### 示例
+
+**创建账户**
+
+```sql
+CREATE USER myuser IDENTIFIED BY 'mypassword';
+```
+
+**修改账户名**
+
+```sql
+UPDATE user SET user='newuser' WHERE user='myuser';
+FLUSH PRIVILEGES;
+```
+
+**删除账户**
+
+```sql
+DROP USER myuser;
+```
+
+**查看权限**
+
+```sql
+SHOW GRANTS FOR myuser;
+```
+
+**授予权限**
+
+```sql
+GRANT SELECT, INSERT ON *.* TO myuser;
+```
+
+**删除权限**
+
+```sql
+REVOKE SELECT, INSERT ON *.* FROM myuser;
+```
+
+**更改密码**
+
+```sql
+SET PASSWORD FOR myuser = 'mypass';
 ```
 
 ## 存储过程
 
-存储过程可以看成是对一系列 SQL 操作的批处理；
+### 要点
 
-### 使用存储过程的好处
+* 存储过程可以看成是对一系列 SQL 操作的批处理；
+* 使用存储过程的好处
+  * 代码封装，保证了一定的安全性；
+  * 代码复用；
+  * 由于是预先编译，因此具有很高的性能。
+* 创建存储过程
+  * 命令行中创建存储过程需要自定义分隔符，因为命令行是以 `;` 为结束符，而存储过程中也包含了分号，因此会错误把这部分分号当成是结束符，造成语法错误。
+  * 包含 in、out 和 inout 三种参数。
+  * 给变量赋值都需要用 select into 语句。
+  * 每次只能给一个变量赋值，不支持集合的操作。
 
-1.  代码封装，保证了一定的安全性；
-2.  代码复用；
-3.  由于是预先编译，因此具有很高的性能。
+### 示例
 
-### 创建存储过程
-
-命令行中创建存储过程需要自定义分隔符，因为命令行是以 ; 为结束符，而存储过程中也包含了分号，因此会错误把这部分分号当成是结束符，造成语法错误。
-
-包含 in、out 和 inout 三种参数。
-
-给变量赋值都需要用 select into 语句。
-
-每次只能给一个变量赋值，不支持集合的操作。
+**创建存储过程**
 
 ```sql
-delimiter //
+DROP PROCEDURE IF EXISTS `proc_adder`;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_adder`(IN a int, IN b int, OUT sum int)
+BEGIN
+    DECLARE c int;
+    if a is null then set a = 0; 
+    end if;
+  
+    if b is null then set b = 0;
+    end if;
 
-create procedure myprocedure( out ret int )
-    begin
-        declare y int;
-        select sum(col1)
-        from mytable
-        into y;
-        select y*y into ret;
-    end //
-delimiter ;
+    set sum  = a + b;
+END
+;;
+DELIMITER ;
 ```
 
+**使用存储过程**
+
 ```sql
-call myprocedure(@ret);
-select @ret;
+set @b=5;
+call proc_adder(2,@b,@s);
+select @s as sum;
 ```
 
 ## 游标
 
-在存储过程中使用游标可以对一个结果集进行移动遍历。
+### 要点
 
-游标主要用于交互式应用，其中用户需要对数据集中的任意行进行浏览和修改。
+* 游标（cursor）是一个存储在 DBMS 服务器上的数据库查询，它不是一条 SELECT 语句，而是被该语句检索出来的结果集。
+* 在存储过程中使用游标可以对一个结果集进行移动遍历。
+* 游标主要用于交互式应用，其中用户需要对数据集中的任意行进行浏览和修改。
+* 使用游标的四个步骤：
+  * 声明游标，这个过程没有实际检索出数据；
+  * 打开游标；
+  * 取出数据；
+  * 关闭游标；
 
-使用游标的四个步骤：
+### 示例
 
-1.  声明游标，这个过程没有实际检索出数据；
-2.  打开游标；
-3.  取出数据；
-4.  关闭游标；
+**游标示例**
 
 ```sql
-delimiter //
-create procedure myprocedure(out ret int)
-    begin
-        declare done boolean default 0;
+DELIMITER $
+CREATE  PROCEDURE getTotal()
+BEGIN  
+    DECLARE total INT; 
+    -- 创建接收游标数据的变量  
+    DECLARE sid INT;  
+    DECLARE sname VARCHAR(10);  
+    -- 创建总数变量  
+    DECLARE sage INT;  
+    -- 创建结束标志变量  
+    DECLARE done INT DEFAULT false;  
+    -- 创建游标  
+    DECLARE cur CURSOR FOR SELECT id,name,age from cursor_table where age>30;  
+    -- 指定游标循环结束时的返回值  
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = true;   
+    SET total = 0;  
+    OPEN cur;  
+    FETCH cur INTO sid, sname, sage;  
+    WHILE(NOT done) 
+    DO  
+        SET total = total + 1;  
+        FETCH cur INTO sid, sname, sage;  
+    END WHILE;  
 
-        declare mycursor cursor for
-        select col1 from mytable;
-        ## 定义了一个continue handler，当 sqlstate '02000' 这个条件出现时，会执行 set done = 1
-        declare continue handler for sqlstate '02000' set done = 1;
+    CLOSE cur;  
+    SELECT total;   
+END $
+DELIMITER ;
 
-        open mycursor;
-
-        repeat
-            fetch mycursor into ret;
-            select ret;
-        until done end repeat;
-
-        close mycursor;
-    end //
- delimiter ;
+-- 调用存储过程  
+call getTotal();
 ```
 
 ## 触发器
 
-### 指令
+### 示例
 
 #### 创建触发器
 
@@ -955,176 +1107,31 @@ DELIMITER ;
 #### 查看触发器
 
 ```sql
-SHOW TRIGGERS [FROM schema_name];
+SHOW TRIGGERS;
 ```
 
 #### 删除触发器
 
 ```sql
-DROP TRIGGER [IF EXISTS] [schema_name.]trigger_name
+DROP TRIGGER IF EXISTS trigger_insert_user;
 ```
 
 ### 要点
 
-触发器是一种与表操作有关的数据库对象，当触发器所在表上出现指定事件时，将调用该对象，即表的操作事件触发表上的触发器的执行。
-
-可以使用触发器来进行审计跟踪，把修改记录到另外一张表中。
-
-MySQL 不允许在触发器中使用 CALL 语句 ，也就是不能调用存储过程。
-
-#### `BEGIN` 和 `END`
-
-当触发器的触发条件满足时，将会执行 BEGIN 和 END 之间的触发器执行动作。
-
-> 注意：在 MySQL 中，分号 `;` 是语句结束的标识符，遇到分号表示该段语句已经结束，MySQL 可以开始执行了。因此，解释器遇到触发器执行动作中的分号后就开始执行，然后会报错，因为没有找到和 BEGIN 匹配的 END。
->
-> 这时就会用到 `DELIMITER` 命令（DELIMITER 是定界符，分隔符的意思）。它是一条命令，不需要语句结束标识，语法为：`DELIMITER new_delemiter`。`new_delemiter` 可以设为 1 个或多个长度的符号，默认的是分号 `;`，我们可以把它修改为其他符号，如 `$`：`DELIMITER $` 。在这之后的语句，以分号结束，解释器不会有什么反应，只有遇到了 `$`，才认为是语句结束。注意，使用完之后，我们还应该记得把它给修改回来。
-
-#### `NEW` 和 `OLD`
-
-在指令一节的示例中，使用了 `NEW` 关键字。
-
-MySQL 中定义了 `NEW` 和 `OLD` 关键字，用来表示触发器的所在表中，触发了触发器的那一行数据。
-
-具体地：
-
-* 在 `INSERT` 型触发器中，`NEW` 用来表示将要（`BEFORE`）或已经（`AFTER`）插入的新数据；
-* 在 `UPDATE` 型触发器中，`OLD` 用来表示将要或已经被修改的原数据，`NEW` 用来表示将要或已经修改为的新数据；
-* 在 `DELETE` 型触发器中，`OLD` 用来表示将要或已经被删除的原数据；
-
-使用方法： `NEW.columnName` （columnName 为相应数据表某一列名）
-
-## 事务处理
-
-### 要点
-
-不能回退 SELECT 语句，回退 SELECT 语句也没意义；也不能回退 CREATE 和 DROP 语句。
-
-**MySQL 默认是隐式提交**，每执行一条语句就把这条语句当成一个事务然后进行提交。当出现 `START TRANSACTION` 语句时，会关闭隐式提交；当 `COMMIT` 或 `ROLLBACK` 语句执行后，事务会自动关闭，重新恢复隐式提交。
-
-通过 `set autocommit=0` 可以取消自动提交，直到 `set autocommit=1` 才会提交；autocommit 标记是针对每个连接而不是针对服务器的。
-
-### 指令
-
-* `START TRANSACTION`：指令用于标记事务的起始点。
-* `SAVEPOINT`：指令用于创建保留点。
-* `ROLLBACK TO`：指令用于回滚到指定的保留点；如果没有设置保留点，则回退到 `START TRANSACTION` 语句处。
-* `COMMIT`：提交事务。
-
-完整示例：
-
-在下面的示例中，只有第一条 `INSERT INTO` 语句生效。
-
-```sql
--- 开始事务
-START TRANSACTION;
-
--- 插入操作 A
-INSERT INTO `user`
-VALUES (1, 'root1', 'root1', 'xxxx@163.com');
-
--- 创建保留点 updateA
-SAVEPOINT updateA;
-
--- 插入操作 B
-INSERT INTO `user`
-VALUES (2, 'root2', 'root2', 'xxxx@163.com');
-
--- 回滚到保留点 updateA
-ROLLBACK TO updateA;
-
--- 提交事务，只有操作 A 生效
-COMMIT;
-```
-
-## 字符集
-
-基本术语：
-
-1.  字符集为字母和符号的集合；
-2.  编码为某个字符集成员的内部表示；
-3.  校对字符指定如何比较，主要用于排序和分组。
-
-除了给表指定字符集和校对外，也可以给列指定：
-
-```sql
-CREATE TABLE mytable
-(col VARCHAR(10) CHARACTER SET latin COLLATE latin1_general_ci )
-DEFAULT CHARACTER SET hebrew COLLATE hebrew_general_ci;
-```
-
-可以在排序、分组时指定校对：
-
-```sql
-SELECT *
-FROM mytable
-ORDER BY col COLLATE latin1_general_ci;
-```
-
-## 权限管理
-
-MySQL 的账户信息保存在 mysql 这个数据库中。
-
-```sql
-USE mysql;
-SELECT user FROM user;
-```
-
-### 创建账户
-
-```sql
-CREATE USER myuser IDENTIFIED BY 'mypassword';
-```
-
-新创建的账户没有任何权限。
-
-### 修改账户名
-
-```sql
-RENAME myuser TO newuser;
-```
-
-### 删除账户
-
-```sql
-DROP USER myuser;
-```
-
-### 查看权限
-
-```sql
-SHOW GRANTS FOR myuser;
-```
-
-### 授予权限
-
-```sql
-GRANT SELECT, INSERT ON mydatabase.* TO myuser;
-```
-
-账户用 username@host 的形式定义，username@% 使用的是默认主机名。
-
-### 删除权限
-
-```sql
-REVOKE SELECT, INSERT ON mydatabase.* FROM myuser;
-```
-
-GRANT 和 REVOKE 可在几个层次上控制访问权限：
-
-* 整个服务器，使用 GRANT ALL 和 REVOKE ALL；
-* 整个数据库，使用 ON database.\*；
-* 特定的表，使用 ON database.table；
-* 特定的列；
-* 特定的存储过程。
-
-### 更改密码
-
-必须使用 Password() 函数
-
-```sql
-SET PASSWROD FOR myuser = Password('newpassword');
-```
+* 触发器是一种与表操作有关的数据库对象，当触发器所在表上出现指定事件时，将调用该对象，即表的操作事件触发表上的触发器的执行。
+* 可以使用触发器来进行审计跟踪，把修改记录到另外一张表中。
+* MySQL 不允许在触发器中使用 CALL 语句 ，也就是不能调用存储过程。
+* `BEGIN` 和 `END`
+  * 当触发器的触发条件满足时，将会执行 BEGIN 和 END 之间的触发器执行动作。
+    > 注意：在 MySQL 中，分号 `;` 是语句结束的标识符，遇到分号表示该段语句已经结束，MySQL 可以开始执行了。因此，解释器遇到触发器执行动作中的分号后就开始执行，然后会报错，因为没有找到和 BEGIN 匹配的 END。
+    >
+    > 这时就会用到 `DELIMITER` 命令（DELIMITER 是定界符，分隔符的意思）。它是一条命令，不需要语句结束标识，语法为：`DELIMITER new_delemiter`。`new_delemiter` 可以设为 1 个或多个长度的符号，默认的是分号 `;`，我们可以把它修改为其他符号，如 `$`：`DELIMITER $` 。在这之后的语句，以分号结束，解释器不会有什么反应，只有遇到了 `$`，才认为是语句结束。注意，使用完之后，我们还应该记得把它给修改回来。
+* `NEW` 和 `OLD`
+  * MySQL 中定义了 `NEW` 和 `OLD` 关键字，用来表示触发器的所在表中，触发了触发器的那一行数据。
+  * 在 `INSERT` 型触发器中，`NEW` 用来表示将要（`BEFORE`）或已经（`AFTER`）插入的新数据；
+  * 在 `UPDATE` 型触发器中，`OLD` 用来表示将要或已经被修改的原数据，`NEW` 用来表示将要或已经修改为的新数据；
+  * 在 `DELETE` 型触发器中，`OLD` 用来表示将要或已经被删除的原数据；
+  * 使用方法： `NEW.columnName` （columnName 为相应数据表某一列名）
 
 ## 参考资料
 
@@ -1136,3 +1143,5 @@ SET PASSWROD FOR myuser = Password('newpassword');
 * [SQL Subqueries](https://www.w3resource.com/sql/subqueries/understanding-sql-subqueries.php)
 * [Quick breakdown of the types of joins](https://stackoverflow.com/questions/6294778/mysql-quick-breakdown-of-the-types-of-joins)
 * [SQL UNION](https://www.w3resource.com/sql/sql-union.php)
+* [SQL database security](https://www.w3resource.com/sql/database-security/create-users.php)
+* [Mysql中的存储过程](https://www.cnblogs.com/chenpi/p/5136483.html)
