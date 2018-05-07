@@ -127,134 +127,118 @@ TCL 的核心指令是 `COMMIT`、`ROLLBACK`。
 
 ### 插入数据
 
-#### 插入完整的行
+#### 要点
 
-语法：
+* `INSERT INTO` 语句用于向表中插入新记录。
+
+#### 示例
+
+**插入完整的行**
 
 ```sql
-INSERT INTO 数据表名
-VALUES (value1, value2, value3, ...);
+INSERT INTO user
+VALUES (10, 'root', 'root', 'xxxx@163.com');
 ```
 
-示例：
+**插入行的一部分**
 
 ```sql
--- 插入完整的行
-INSERT INTO `user`
-VALUES (1, 'root', 'root', 'xxxx@163.com');
-```
-
-#### 插入行的一部分
-
-语法：
-
-```sql
-INSERT INTO 数据表名 (列名1, 列名2, 列名3, ...)
-VALUES (value1,value2,value3,...);
-```
-
-示例：
-
-```sql
--- 插入行的一部分
-INSERT INTO `user`(`username`, `password`, `email`)
+INSERT INTO user(username, password, email)
 VALUES ('admin', 'admin', 'xxxx@163.com');
 ```
 
-#### 插入检索出来的数据
-
-语法：
+**插入查询出来的数据**
 
 ```sql
-INSERT INTO 数据表名 (列名1, 列名2, 列名3, ...)
-SELECT 列名a, 列名b, 列名c, ...
-FROM 数据表名2;
-```
-
-示例：
-
-```sql
--- 插入检索出来的数据
-INSERT INTO `user`(`username`)
-SELECT `name`
-FROM `account`;
+INSERT INTO user(username)
+SELECT name
+FROM account;
 ```
 
 ### 更新数据
 
-语法：
+#### 要点
+
+* `UPDATE` 语句用于更新表中的记录。
+
+#### 示例
 
 ```sql
-UPDATE 表名
-SET 列名=值, 列名=值, ...
-WHERE 条件;
-```
-
-示例：
-
-```sql
--- 更新记录
-UPDATE `user`
-SET `username`='robot', `password`='robot'
-WHERE `username` = 'root';
+UPDATE user
+SET username='robot', password='robot'
+WHERE username = 'root';
 ```
 
 ### 删除数据
 
-语法：
+#### 要点
+
+* `DELETE` 语句用于删除表中的记录。
+* `TRUNCATE TABLE` 可以清空表，也就是删除所有行。
+
+#### 示例
+
+**删除表中的指定数据**
 
 ```sql
-DELETE FROM 数据表名
-WHERE 条件;
+DELETE FROM user
+WHERE username = 'robot';
 ```
 
-示例：
+**清空表中的数据**
 
 ```sql
--- 删除符合条件的记录
-DELETE FROM `user`
-WHERE `username` = 'admin';
+TRUNCATE TABLE user;
 ```
-
-**TRUNCATE TABLE** 可以清空表，也就是删除所有行。
-
-使用更新和删除操作时一定要用 WHERE 子句，不然会把整张表的数据都破坏。可以先用 SELECT 语句进行测试，防止错误删除。
 
 ### 查询数据
 
-#### DISTINCT
+#### 要点
 
-相同值只会出现一次。它作用于所有列，也就是说所有列的值都相同才算相同。
+* `SELECT` 语句用于从数据库中查询数据。
+* `DISTINCT` 用于返回唯一不同的值。它作用于所有列，也就是说所有列的值都相同才算相同。
+* `LIMIT` 限制返回的行数。可以有两个参数，第一个参数为起始行，从 0 开始；第二个参数为返回的总行数。
+    * `ASC` ：升序（默认）
+    * `DESC` ：降序
+
+#### 示例
+
+**查询单列**
 
 ```sql
-SELECT DISTINCT col1, col2
-FROM mytable;
+SELECT prod_name
+FROM products;
 ```
 
-#### LIMIT
-
-限制返回的行数。可以有两个参数，第一个参数为起始行，从 0 开始；第二个参数为返回的总行数。
-
-返回前 5 行：
+**查询多列**
 
 ```sql
-SELECT *
-FROM mytable
-LIMIT 5;
+SELECT prod_id, prod_name, prod_price
+FROM products;
 ```
 
+**查询所有列**
+
 ```sql
-SELECT *
-FROM mytable
-LIMIT 0, 5;
+ELECT *
+FROM products;
 ```
 
-返回第 3 \~ 5 行：
+**查询不同的值**
 
 ```sql
-SELECT *
-FROM mytable
-LIMIT 2, 3;
+SELECT DISTINCT
+vend_id FROM products;
+```
+
+**限制查询结果**
+
+```sql
+-- 返回前 5 行
+SELECT * FROM mytable LIMIT 5;
+SELECT * FROM mytable LIMIT 0, 5;
+-- 返回第 3 ~ 5 行
+SELECT * FROM mytable LIMIT 2, 3;
 ```
 
 ## 过滤
