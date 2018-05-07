@@ -6,9 +6,6 @@
 - [SQL 基础](#sql-基础)
 - [增删改查（CRUD）](#增删改查crud)
 - [过滤](#过滤)
-- [排序](#排序)
-- [通配符](#通配符)
-- [计算字段](#计算字段)
 - [函数](#函数)
 - [分组](#分组)
 - [子查询](#子查询)
@@ -198,8 +195,8 @@ TRUNCATE TABLE user;
 * `SELECT` 语句用于从数据库中查询数据。
 * `DISTINCT` 用于返回唯一不同的值。它作用于所有列，也就是说所有列的值都相同才算相同。
 * `LIMIT` 限制返回的行数。可以有两个参数，第一个参数为起始行，从 0 开始；第二个参数为返回的总行数。
-    * `ASC` ：升序（默认）
-    * `DESC` ：降序
+  * `ASC` ：升序（默认）
+  * `DESC` ：降序
 
 #### 示例
 
@@ -243,117 +240,138 @@ SELECT * FROM mytable LIMIT 2, 3;
 
 ## 过滤
 
-### WHERE 子句
+### WHERE
 
 #### 要点
 
-* WHERE 子句筛选符合特定条件的行。
-* WHERE 后跟一个返回 true 或 false 的条件。
-* WHERE 与 SELECT，UPDATE 和 DELETE 一起使用。
-
-#### 语法
-
-SELECT 语句中的 WHERE 子句：
-
-```sql
-SELECT column_name(s)
-FROM table_name
-WHERE condition
-```
-
-UPDATE 语句中的 WHERE 子句：
-
-```sql
-UPDATE table_name
-SET column_name = value
-WHERE condition
-```
-
-DELETE 语句中的 WHERE 子句：
-
-```sql
-DELETE table_name
-WHERE condition
-```
+* `WHERE` 子句用于过滤记录，即缩小访问数据的范围。
+* `WHERE` 后跟一个返回 `true` 或 `false` 的条件。
+* `WHERE` 可以与 `SELECT`，`UPDATE` 和 `DELETE` 一起使用。
+* 可以在 `WHERE` 子句中使用的操作符
+  | 运算符 | 描述 |
+  | ------- | ------------------------------------------------------ |
+  | = | 等于 |
+  | <> | 不等于。注释：在 SQL 的一些版本中，该操作符可被写成 != |
+  | > | 大于 |
+  | < | 小于 |
+  | >= | 大于等于 |
+  | <= | 小于等于 |
+  | BETWEEN | 在某个范围内 |
+  | IN | 指定针对某个列的多个可能值 |
+  | LIKE | 搜索某种模式 |
 
 #### 示例
 
+**`SELECT` 语句中的 `WHERE` 子句**
+
+```sql
+SELECT * FROM Customers
+WHERE cust_name = 'Kids Place';
+```
+
+**`UPDATE` 语句中的 `WHERE` 子句**
+
+```sql
+UPDATE Customers
+SET cust_name = 'Jack Jones'
+WHERE cust_name = 'Kids Place';
+```
+
+**`DELETE` 语句中的 `WHERE` 子句**
+
+```sql
+DELETE FROM Customers
+WHERE cust_name = 'Kids Place';
+```
+
+### IN 和 BETWEEN
+
+#### 要点
+
+* `IN` 操作符在 `WHERE` 子句中使用，作用是在指定的几个特定值中任选一个值。
+* `BETWEEN` 操作符在 `WHERE` 子句中使用，作用是选取介于某个范围内的值。
+
+#### 示例
+
+**IN 示例**
+
 ```sql
 SELECT *
-FROM mytable
-WHERE col IS NULL;
+FROM products
+WHERE vend_id IN ('DLL01', 'BRS01');
+```
+
+**BETWEEN 示例**
+
+```sql
+SELECT *
+FROM products
+WHERE prod_price BETWEEN 3 AND 5;
 ```
 
 ### AND、OR、NOT
 
-下表显示了 WHERE 子句可用的操作符
+#### 要点
 
-| 操作符   | 说明           |
-| -------- | -------------- |
-| = < >    | 等于 小于 大于 |
-| <> !=    | 不等于         |
-| <= !>    | 小于等于       |
-| &gt;= !< | 大于等于       |
-| BETWEEN  | 在两个值之间   |
-| IS NULL  | 为 NULL 值     |
+* `AND`、`OR`、`NOT` 是用于对过滤条件的逻辑处理指令。
+* `AND` 优先级高于 `OR`，为了明确处理顺序，可以使用 `()`。
+* `AND` 操作符表示左右条件都要满足。
+* `OR` 操作符表示左右条件满足任意一个即可。
+* `NOT` 操作符用于否定一个条件。
 
-应该注意到，NULL 与 0 、空字符串都不同。
+#### 示例
 
-**AND OR** 用于连接多个过滤条件，优先处理 AND，当一个过滤表达式涉及到多个 AND 和 OR 时，可以使用 () 来决定优先级，使得优先级关系更清晰。
+**AND 示例**
 
-**IN** 操作符用于匹配一组值，其后也可以接一个 SELECT 子句，从而匹配子查询得到的一组值。
+```sql
+SELECT prod_id, prod_name, prod_price
+FROM products
+WHERE vend_id = 'DLL01' AND prod_price <= 4;
+```
 
-**NOT** 操作符用于否定一个条件。
+**OR 示例**
 
-## 排序
+```sql
+SELECT prod_id, prod_name, prod_price
+FROM products
+WHERE vend_id = 'DLL01' OR vend_id = 'BRS01';
+```
 
-* **ASC** ：升序（默认）
-* **DESC** ：降序
-
-可以按多个列进行排序，并且为每个列指定不同的排序方式：
+**NOT 示例**
 
 ```sql
 SELECT *
-FROM mytable
-ORDER BY col1 DESC, col2 ASC;
+FROM products
+WHERE prod_price NOT BETWEEN 3 AND 5;
 ```
 
-## 通配符
+### LIKE
 
-通配符也是用在过滤语句中，但它只能用于文本字段。
+#### 要点
 
-* **%** 匹配 >=0 个任意字符；
+* `LIKE` 操作符在 `WHERE` 子句中使用，作用是确定字符串是否匹配模式。
+* 只有字段是文本值时才使用 `LIKE`。
+* `LIKE` 支持两个通配符匹配选项：`%` 和 `_`。
+* 不要滥用通配符，通配符位于开头处匹配会非常慢。
+* `%` 表示任何字符出现任意次数。
+* `_` 表示任何字符出现一次。
 
-* **\_** 匹配 ==1 个任意字符；
+#### 示例
 
-* **[ ]** 可以匹配集合内的字符，例如 [ab] 将匹配字符 a 或者 b。用脱字符 ^ 可以对其进行否定，也就是不匹配集合内的字符。
-
-使用 Like 来进行通配符匹配。
+**% 示例**
 
 ```sql
-SELECT *
-FROM mytable
-WHERE col LIKE '[^AB]%' -- 不以 A 和 B 开头的任意文本
+SELECT prod_id, prod_name, prod_price
+FROM products
+WHERE prod_name LIKE '%bean bag%';
 ```
 
-不要滥用通配符，通配符位于开头处匹配会非常慢。
-
-## 计算字段
-
-在数据库服务器上完成数据的转换和格式化的工作往往比客户端上快得多，并且转换和格式化后的数据量更少的话可以减少网络通信量。
-
-计算字段通常需要使用 **AS** 来取别名，否则输出的时候字段名为计算表达式。
+**_ 示例**
 
 ```sql
-SELECT col1*col2 AS alias
-FROM mytable
-```
-
-**CONCAT()** 用于连接两个字段。许多数据库会使用空格把一个值填充为列宽，因此连接的结果会出现一些不必要的空格，使用 **TRIM()** 可以去除首尾空格。
-
-```sql
-SELECT CONCAT(TRIM(col1), ' (', TRIM(col2), ')')
-FROM mytable
+SELECT prod_id, prod_name, prod_price
+FROM products
+WHERE prod_name LIKE '__ inch teddy bear';
 ```
 
 ## 函数
@@ -1083,3 +1101,4 @@ SET PASSWROD FOR myuser = Password('newpassword');
 * [『浅入深出』MySQL 中事务的实现](https://draveness.me/mysql-transaction)
 * [MySQL 的学习--触发器](https://www.cnblogs.com/CraryPrimitiveMan/p/4206942.html)
 * [维基百科词条 - SQL](https://zh.wikipedia.org/wiki/SQL)
+* [https://www.sitesbay.com/sql/index](https://www.sitesbay.com/sql/index)
