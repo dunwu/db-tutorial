@@ -3,6 +3,7 @@
 <!-- TOC depthFrom:2 depthTo:2 -->
 
 - [概念](#概念)
+- [SQL 基础](#sql-基础)
 - [增删改查（CRUD）](#增删改查crud)
 - [过滤](#过滤)
 - [排序](#排序)
@@ -32,20 +33,95 @@
 * 模式（schema）：关于数据库和表的布局及特性的信息。模式定义了数据在表中如何存储，包含存储什么样的数据，数据如何分解，各部分信息如何命名等信息。数据库和表都有模式。
 * 列（column）：表中的一个字段。所有表都是由一个或多个列组成的。
 * 行（row）：表中的一个记录。
-* 主键（primary key）：一列（或一组列），其值能够唯一识别表中每一行。
-  * 任意两行都不具有相同的主键值；
-  * 每一行都必须具有一个主键值（主键列不允许 NULL 值）；
-  * 主键列中的值不允许修改或更新；
-  * 主键值不能重用（如果某行从表中删除，它的主键不能赋给以后的新行）。
-* SQL（Structured Query Language)，标准 SQL 由 ANSI 标准委员会管理，从而称为 ANSI SQL。各个 DBMS 都有自己的实现，如 PL/SQL、Transact-SQL 等。
-  * SQL 语句不区分大小写，但是数据库表名、列名和值是否区分依赖于具体的 DBMS 以及配置。
-  * SQL 支持三种注释：
-  ```sql
-  ## 注释1
-  -- 注释2
-  /* 注释3 */
-  ```
-* 数据控制语言 (Data Control Language) 在 SQL 语言中，是一种可对数据访问权进行控制的指令，它可以控制特定用户账户对数据表、查看表、预存程序、用户自定义函数等数据库对象的控制权。由 GRANT 和 REVOKE 两个指令组成。
+
+## SQL 基础
+
+> SQL（Structured Query Language)，标准 SQL 由 ANSI 标准委员会管理，从而称为 ANSI SQL。各个 DBMS 都有自己的实现，如 PL/SQL、Transact-SQL 等。
+
+### SQL 语法结构
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/sql-syntax.png" alt="sql-syntax">
+</p>
+
+SQL 语法结构包括：
+
+* 子句，是语句和查询的组成成分。（在某些情况下，这些都是可选的。）
+* 表达式，可以产生任何标量值，或由列和行的数据库表
+* 谓词，给需要评估的 SQL 三值逻辑（3VL）（true/false/unknown）或布尔真值指定条件，并限制语句和查询的效果，或改变程序流程。
+* 查询，基于特定条件检索数据。这是 SQL 的一个重要组成部分。
+* 语句，可以持久地影响纲要和数据，也可以控制数据库事务、程序流程、连接、会话或诊断。
+
+### SQL 语法要点
+
+* SQL 语句不区分大小写，但是数据库表名、列名和值是否区分，依赖于具体的 DBMS 以及配置。
+
+例如：SELECT 与 select 、Select 是相同的。
+
+* 多条 SQL 语句必须以分号（;）分隔。
+
+* 处理 SQL 语句时，所有空格都被忽略。SQL 语句可以写成一行，也可以分写为多行。
+
+```sql
+-- 一行 SQL 语句
+UPDATE user SET username='robot', password='robot' WHERE username = 'root';
+
+-- 多行 SQL 语句
+UPDATE user
+SET username='robot', password='robot'
+WHERE username = 'root';
+```
+
+* SQL 支持三种注释
+
+```sql
+## 注释1
+-- 注释2
+/* 注释3 */
+```
+
+### SQL 分类
+
+### 数据定义语言（DDL）
+
+数据定义语言（Data Definition Language，DDL）是 SQL 语言集中负责数据结构定义与数据库对象定义的语言。
+
+DDL 的主要功能是定义数据库对象。
+
+DDL 的核心指令是 `CREATE`、`ALTER`、`DROP`。
+
+#### 数据操纵语言（DML）
+
+数据操纵语言（Data Manipulation Language, DML）是用于数据库操作，对数据库其中的对象和数据运行访问工作的编程语句。
+
+DML 的主要功能是访问数据，因此其语法都是以读写数据库为主。
+
+DML 的核心指令是 `INSERT`、`UPDATE`、`DELETE`、`SELECT`。这四个指令合称 CRUD(Create, Read, Update, Delete)，即增删改查。
+
+#### 数据控制语言（DCL）
+
+数据控制语言 (Data Control Language, DCL) 是一种可对数据访问权进行控制的指令，它可以控制特定用户账户对数据表、查看表、预存程序、用户自定义函数等数据库对象的控制权。
+
+DCL 的核心指令是 `GRANT`、`REVOKE`。
+
+DCL 以控制用户的访问权限为主，因此其指令作法并不复杂，可利用 DCL 控制的权限有：
+
+* CONNECT
+* SELECT
+* INSERT
+* UPDATE
+* DELETE
+* EXECUTE
+* USAGE
+* REFERENCES
+
+根据不同的 DBMS 以及不同的安全性实体，其支持的权限控制也有所不同。
+
+#### 事务控制语言（TCL）
+
+事务控制语言 (Transaction Control Language, TCL) 用于管理数据库中的事务。这些用于管理由 DML 语句所做的更改。它还允许将语句分组为逻辑事务。
+
+TCL 的核心指令是 `COMMIT`、`ROLLBACK`。
 
 ## 增删改查（CRUD）
 
@@ -1022,3 +1098,4 @@ SET PASSWROD FOR myuser = Password('newpassword');
 * BenForta. SQL 必知必会 [M]. 人民邮电出版社, 2013.
 * [『浅入深出』MySQL 中事务的实现](https://draveness.me/mysql-transaction)
 * [MySQL 的学习--触发器](https://www.cnblogs.com/CraryPrimitiveMan/p/4206942.html)
+* [维基百科词条 - SQL](https://zh.wikipedia.org/wiki/SQL)
