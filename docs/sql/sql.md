@@ -7,9 +7,9 @@
 - [增删改查（CRUD）](#增删改查crud)
 - [过滤](#过滤)
 - [函数](#函数)
-- [分组](#分组)
+- [排序和分组](#排序和分组)
 - [子查询](#子查询)
-- [连接](#连接)
+- [连接和组合](#连接和组合)
 - [组合查询](#组合查询)
 - [定义表](#定义表)
 - [视图](#视图)
@@ -366,7 +366,7 @@ FROM products
 WHERE prod_name LIKE '%bean bag%';
 ```
 
-**_ 示例**
+**\_ 示例**
 
 ```sql
 SELECT prod_id, prod_name, prod_price
@@ -462,178 +462,209 @@ SELECT AVG(DISTINCT col1) AS avg_col
 FROM mytable
 ```
 
-## 分组
+## 排序和分组
 
-分组就是把具有相同的数据值的行放在同一组中。
+### ORDER BY
 
-可以对同一分组数据使用汇总函数进行处理，例如求分组数据的平均值等。
+#### 要点
 
-指定的分组字段除了能按该字段进行分组，也会自动按按该字段进行排序。
+* `ORDER BY` 用于对结果集进行排序。
+  * `ASC` ：升序（默认）
+  * `DESC` ：降序
+* 可以按多个列进行排序，并且为每个列指定不同的排序方式
 
-```sql
-SELECT col, COUNT(*) AS num
-FROM mytable
-GROUP BY col;
-```
+#### 示例
 
-GROUP BY 按分组字段进行排序，ORDER BY 也可以以汇总字段来进行排序。
-
-```sql
-SELECT col, COUNT(*) AS num
-FROM mytable
-GROUP BY col
-ORDER BY num;
-```
-
-WHERE 过滤行，HAVING 过滤分组，行过滤应当先于分组过滤。
+**指定多个列的排序方向**
 
 ```sql
-SELECT col, COUNT(*) AS num
-FROM mytable
-WHERE col > 2
-GROUP BY col
-HAVING num >= 2;
+SELECT * FROM products
+ORDER BY prod_price DESC, prod_name ASC;
 ```
 
-分组规定：
+### GROUP BY
 
-1.  GROUP BY 子句出现在 WHERE 子句之后，ORDER BY 子句之前；
-2.  除了汇总字段外，SELECT 语句中的每一字段都必须在 GROUP BY 子句中给出；
-3.  NULL 的行会单独分为一组；
-4.  大多数 SQL 实现不支持 GROUP BY 列具有可变长度的数据类型。
+#### 要点
+
+* `GROUP BY` 子句将记录分组到汇总行中。
+* `GROUP BY` 为每个组返回一个记录。
+* `GROUP BY` 通常还涉及聚合：COUNT，MAX，SUM，AVG 等。
+* `GROUP BY` 可以按一列或多列进行分组。
+* `GROUP BY` 按分组字段进行排序后，`ORDER BY` 可以以汇总字段来进行排序。
+
+#### 示例
+
+**分组**
+
+```sql
+SELECT cust_name, COUNT(cust_address) AS addr_num
+FROM Customers GROUP BY cust_name;
+```
+
+**分组后排序**
+
+```sql
+SELECT cust_name, COUNT(cust_address) AS addr_num
+FROM Customers GROUP BY cust_name
+ORDER BY cust_name DESC;
+```
+
+### HAVING
+
+#### 要点
+
+* `HAVING` 用于对汇总的 `GROUP BY` 结果进行过滤。
+* `HAVING` 要求存在一个 `GROUP BY` 子句。
+* `WHERE` 和 `HAVING` 可以在相同的查询中。
+* `HAVING` vs `WHERE`
+  * `WHERE` 和 `HAVING` 都是用于过滤。
+  * `HAVING` 适用于汇总的组记录；而 WHERE 适用于单个记录。
+
+#### 示例
+
+**使用 WHERE 和 HAVING 过滤数据**
+
+```sql
+SELECT cust_name, COUNT(*) AS num
+FROM Customers
+WHERE cust_email IS NOT NULL
+GROUP BY cust_name
+HAVING COUNT(*) >= 1;
+```
 
 ## 子查询
 
-子查询中只能返回一个字段的数据。
+### 要点
 
-可以将子查询的结果作为 WHRER 语句的过滤条件：
+* 子查询是嵌套在较大查询中的 SQL 查询。
+* 子查询也称为**内部查询**或**内部选择**，而包含子查询的语句也称为**外部查询**或**外部选择**。
+* 子查询可以嵌套在 `SELECT`，`INSERT`，`UPDATE` 或 `DELETE` 语句内或另一个子查询中。
+* 子查询通常会在另一个 `SELECT` 语句的 `WHERE` 子句中添加。
+* 您可以使用比较运算符，如 `>`，`<`，或 `=`。比较运算符也可以是多行运算符，如 `IN`，`ANY` 或 `ALL`。
+* 子查询必须被圆括号 `()` 括起来。
+* 内部查询首先在其父查询之前执行，以便可以将内部查询的结果传递给外部查询。执行过程可以参考下图：
+  <p align="center">
+    <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/sql-subqueries.gif" alt="sql-subqueries">
+  </p>
+
+#### 示例
+
+**子查询的子查询**
+
+```sql
+SELECT cust_name, cust_contact
+FROM customers
+WHERE cust_id IN (SELECT cust_id
+                  FROM orders
+                  WHERE order_num IN (SELECT order_num
+                                      FROM orderitems
+                                      WHERE prod_id = 'RGAN01'));
+```
+
+## 连接和组合
+
+### 连接（JOIN）
+
+#### 要点
+
+* 如果一个 `JOIN` 至少有一个公共字段并且它们之间存在关系，则该 `JOIN` 可以在两个或多个表上工作。
+* 连接用于连接多个表，使用 `JOIN` 关键字，并且条件语句使用 `ON` 而不是 `WHERE`。
+* `JOIN` 保持基表（结构和数据）不变。
+* `JOIN` 有两种连接类型：内连接和外连接。
+* 内连接又称等值连接，使用 INNER `JOIN` 关键字。在没有条件语句的情况下返回笛卡尔积。
+  * 自连接可以看成内连接的一种，只是连接的表是自身而已。
+* 自然连接是把同名列通过 = 测试连接起来的，同名列可以有多个。
+* 内连接 vs 自然连接
+  * 内连接提供连接的列，而自然连接自动连接所有同名列。
+* 外连接返回一个表中的所有行，并且仅返回来自次表中满足连接条件的那些行，即两个表中的列是相等的。外连接分为左外连接、右外连接、全外连接（Mysql 不支持）。
+  * 左外连接就是保留左表没有关联的行。
+  * 右外连接就是保留右表没有关联的行。
+* 连接 vs 子查询
+  * 连接可以替换子查询，并且比子查询的效率一般会更快。
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/sql-join.png" alt="sql-join">
+</p>
+
+#### 示例
+
+**内连接（INNER JOIN）**
+
+```sql
+SELECT vend_name, prod_name, prod_price
+FROM vendors INNER JOIN products
+ON vendors.vend_id = products.vend_id;
+```
+
+**自连接**
+
+```sql
+SELECT c1.cust_id, c1.cust_name, c1.cust_contact
+FROM customers c1, customers c2
+WHERE c1.cust_name = c2.cust_name
+AND c2.cust_contact = 'Jim Jones';
+```
+
+**自然连接（NATURAL JOIN）**
 
 ```sql
 SELECT *
-FROM mytable1
-WHERE col1 IN (SELECT col2
-               FROM mytable2);
+FROM Products
+NATURAL JOIN Customers;
 ```
 
-下面的语句可以检索出客户的订单数量，子查询语句会对第一个查询检索出的每个客户执行一次：
+**左连接（LEFT JOIN）**
 
 ```sql
-SELECT cust_name, (SELECT COUNT(*)
-                   FROM Orders
-                   WHERE Orders.cust_id = Customers.cust_id)
-                   AS orders_num
-FROM Customers
-ORDER BY cust_name;
+SELECT customers.cust_id, orders.order_num
+FROM customers LEFT JOIN orders
+ON customers.cust_id = orders.cust_id;
 ```
 
-## 连接
-
-连接用于连接多个表，使用 JOIN 关键字，并且条件语句使用 ON 而不是 WHERE。
-
-连接可以替换子查询，并且比子查询的效率一般会更快。
-
-可以用 AS 给列名、计算字段和表名取别名，给表名取别名是为了简化 SQL 语句以及连接相同表。
-
-### 内连接
-
-内连接又称等值连接，使用 INNER JOIN 关键字。
+**右连接（RIGHT JOIN）**
 
 ```sql
-select a, b, c
-from A inner join B
-on A.key = B.key
+SELECT customers.cust_id, orders.order_num
+FROM customers RIGHT JOIN orders
+ON customers.cust_id = orders.cust_id;
 ```
 
-可以不明确使用 INNER JOIN，而使用普通查询并在 WHERE 中将两个表中要连接的列用等值方法连接起来。
+### 组合（UNION）
 
-```sql
-select a, b, c
-from A, B
-where A.key = B.key
-```
+#### 要点
 
-在没有条件语句的情况下返回笛卡尔积。
+* `UNION` 运算符将两个或更多查询的结果组合起来，并生成一个结果集，其中包含来自 `UNION` 中参与查询的提取行。
+* `UNION` 基本规则
+  * 所有查询的列数和列顺序必须相同。
+  * 每个查询中涉及表的列的数据类型必须相同或兼容。
+  * 通常返回的列名取自第一个查询。
+* 默认会去除相同行，如果需要保留相同行，使用 `UNION ALL`。
+* 只能包含一个 `ORDER BY` 子句，并且必须位于语句的最后。
+* 应用场景
+  * 在一个查询中从不同的表返回结构数据。
+  * 对一个表执行多个查询，按一个查询返回数据。
 
-### 自连接
-
-自连接可以看成内连接的一种，只是连接的表是自身而已。
-
-一张员工表，包含员工姓名和员工所属部门，要找出与 Jim 处在同一部门的所有员工姓名。
-
-子查询版本
-
-```sql
-select name
-from employee
-where department = (
-      select department
-      from employee
-      where name = "Jim");
-```
-
-自连接版本
-
-```sql
-select e1.name
-from employee as e1, employee as e2
-where e1.department = e2.department
-      and e2.name = "Jim";
-```
-
-连接一般比子查询的效率高。
-
-### 自然连接
-
-自然连接是把同名列通过等值测试连接起来的，同名列可以有多个。
-
-内连接和自然连接的区别：内连接提供连接的列，而自然连接自动连接所有同名列。
-
-```sql
-select *
-from employee natural join department;
-```
-
-### 外连接
-
-外连接保留了没有关联的那些行。分为左外连接，右外连接以及全外连接，左外连接就是保留左表没有关联的行。
-
-检索所有顾客的订单信息，包括还没有订单信息的顾客。
-
-```sql
-select Customers.cust_id, Orders.order_num
-from Customers left outer join Orders
-on Customers.cust_id = Orders.cust_id;
-```
-
-如果需要统计顾客的订单数，使用聚集函数。
-
-```sql
-select Customers.cust_id,
-       COUNT(Orders.order_num) as num_ord
-from Customers left outer join Orders
-on Customers.cust_id = Orders.cust_id
-group by Customers.cust_id;
-```
+#### 示例
 
 ## 组合查询
 
-使用 **UNION** 来组合两个查询，如果第一个查询返回 M 行，第二个查询返回 N 行，那么组合查询的结果一般为 M+N 行。
-
-每个查询必须包含相同的列、表达式和聚集函数。
-
-默认会去除相同行，如果需要保留相同行，使用 UNION ALL。
-
-只能包含一个 ORDER BY 子句，并且必须位于语句的最后。
-
 ```sql
-SELECT col
-FROM mytable
-WHERE col = 1
+SELECT cust_name, cust_contact, cust_email
+FROM customers
+WHERE cust_state IN ('IL', 'IN', 'MI')
 UNION
-SELECT col
-FROM mytable
-WHERE col =2;
+SELECT cust_name, cust_contact, cust_email
+FROM customers
+WHERE cust_name = 'Fun4All';
 ```
+
+### JOIN vs UNION
+
+#### 要点
+
+* JOIN vs UNION
+  * `JOIN` 中连接表的列可能不同，但在 `UNION` 中，所有查询的列数和列顺序必须相同。
+  * `UNION` 将查询之后的行放在一起（垂直放置），但 `JOIN` 将查询之后的列放在一起（水平放置），即它构成一个笛卡尔积。
 
 ## 定义表
 
@@ -1102,3 +1133,6 @@ SET PASSWROD FOR myuser = Password('newpassword');
 * [MySQL 的学习--触发器](https://www.cnblogs.com/CraryPrimitiveMan/p/4206942.html)
 * [维基百科词条 - SQL](https://zh.wikipedia.org/wiki/SQL)
 * [https://www.sitesbay.com/sql/index](https://www.sitesbay.com/sql/index)
+* [SQL Subqueries](https://www.w3resource.com/sql/subqueries/understanding-sql-subqueries.php)
+* [Quick breakdown of the types of joins](https://stackoverflow.com/questions/6294778/mysql-quick-breakdown-of-the-types-of-joins)
+* [SQL UNION](https://www.w3resource.com/sql/sql-union.php)
