@@ -1,3 +1,13 @@
+---
+title: Mysql 数据库
+date: 2015/05/01
+categories:
+- database
+tags:
+- database
+- sql
+---
+
 # Mysql
 
 > 本文的示例在 Mysql 5.7 下都可以测试通过。
