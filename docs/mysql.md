@@ -4,7 +4,6 @@
 
 <!-- TOC depthFrom:2 depthTo:2 -->
 
-- [知识点](#知识点)
 - [概念](#概念)
 - [SQL 基础](#sql-基础)
 - [增删改查](#增删改查)
@@ -20,15 +19,10 @@
 - [存储过程](#存储过程)
 - [游标](#游标)
 - [触发器](#触发器)
+- [知识点小结](#知识点小结)
 - [参考资料](#参考资料)
 
 <!-- /TOC -->
-
-## 知识点
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/mysql.png" alt="mysql" width="1024">
-</p>
 
 ## 概念
 
@@ -1133,6 +1127,12 @@ DROP TRIGGER IF EXISTS trigger_insert_user;
   * 在 `UPDATE` 型触发器中，`OLD` 用来表示将要或已经被修改的原数据，`NEW` 用来表示将要或已经修改为的新数据；
   * 在 `DELETE` 型触发器中，`OLD` 用来表示将要或已经被删除的原数据；
   * 使用方法： `NEW.columnName` （columnName 为相应数据表某一列名）
+
+## 知识点小结
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/mysql.png" alt="mysql" width="1024">
+</p>
 
 ## 参考资料
 
