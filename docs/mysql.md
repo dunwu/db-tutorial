@@ -49,7 +49,7 @@ tags:
 ### SQL 语法结构
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/sql-syntax.png" alt="sql-syntax">
+  <img src="https://raw.githubusercontent.com/dunwu/database/master/images/mysql/sql-syntax.png" alt="sql-syntax">
 </p>
 
 SQL 语法结构包括：
@@ -556,7 +556,7 @@ HAVING COUNT(*) >= 1;
 * 子查询必须被圆括号 `()` 括起来。
 * 内部查询首先在其父查询之前执行，以便可以将内部查询的结果传递给外部查询。执行过程可以参考下图：
   <p align="center">
-    <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/sql-subqueries.gif" alt="sql-subqueries">
+    <img src="https://raw.githubusercontent.com/dunwu/database/master/images/mysql/sql-subqueries.gif" alt="sql-subqueries">
   </p>
 
 #### 示例
@@ -595,7 +595,7 @@ WHERE cust_id IN (SELECT cust_id
   * 连接可以替换子查询，并且比子查询的效率一般会更快。
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/sql-join.png" alt="sql-join">
+  <img src="https://raw.githubusercontent.com/dunwu/database/master/images/mysql/sql-join.png" alt="sql-join">
 </p>
 
 #### 示例
@@ -1142,7 +1142,7 @@ DROP TRIGGER IF EXISTS trigger_insert_user;
 ## 知识点小结
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/dunwu/database/master/docs/images/mysql.png" alt="mysql" width="1024">
+  <img src="https://raw.githubusercontent.com/dunwu/database/master/images/mysql/mysql.png" alt="mysql" width="1024">
 </p>
 
 ## 参考资料
