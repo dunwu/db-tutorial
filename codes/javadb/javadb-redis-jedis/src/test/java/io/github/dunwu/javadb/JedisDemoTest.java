@@ -3,24 +3,22 @@ package io.github.dunwu.javadb;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  * Jedis 测试例
- * @see https://github.com/xetorthio/jedis
  * @author Zhang Peng
+ * @see https://github.com/xetorthio/jedis
  */
 public class JedisDemoTest {
-    private static final String REDIS_HOST = "192.168.58.170";
+    private static final String REDIS_HOST = "192.168.28.32";
     private static final int REDIS_PORT = 6379;
     private static Jedis jedis = null;
     private static Logger logger = LoggerFactory.getLogger(JedisDemoTest.class);

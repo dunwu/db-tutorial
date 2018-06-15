@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Mysql 测试例
- *
  * @author Zhang Peng
  * @see https://dev.mysql.com/doc/connector-j/5.1/en/
  */
@@ -35,7 +34,8 @@ public class MysqlDemoTest {
         try {
             final String DB_URL = String.format("jdbc:mysql://%s:%s/%s", DB_HOST, DB_PORT, DB_SCHEMA);
             connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-            // connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sakila?" + "user=root&password=root");
+            // connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sakila?" +
+            // "user=root&password=root");
             statement = connection.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
