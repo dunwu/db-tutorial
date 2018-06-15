@@ -1,15 +1,18 @@
 ---
-title: Mysql 数据库
+title: Mysql
 date: 2015/05/01
 categories:
 - database
 tags:
 - database
 - sql
+- mysql
 ---
 
 # Mysql
 
+> MySQL 是最流行的关系型数据库管理系统。
+>
 > 本文的示例在 Mysql 5.7 下都可以测试通过。
 
 <!-- TOC depthFrom:2 depthTo:2 -->
@@ -36,11 +39,11 @@ tags:
 
 ## 概念
 
-* 数据库（database）：保存有组织的数据的容器（通常是一个文件或一组文件）。
-* 数据表（table）：某种特定类型数据的结构化清单。
-* 模式（schema）：关于数据库和表的布局及特性的信息。模式定义了数据在表中如何存储，包含存储什么样的数据，数据如何分解，各部分信息如何命名等信息。数据库和表都有模式。
-* 列（column）：表中的一个字段。所有表都是由一个或多个列组成的。
-* 行（row）：表中的一个记录。
+- 数据库（database）：保存有组织的数据的容器（通常是一个文件或一组文件）。
+- 数据表（table）：某种特定类型数据的结构化清单。
+- 模式（schema）：关于数据库和表的布局及特性的信息。模式定义了数据在表中如何存储，包含存储什么样的数据，数据如何分解，各部分信息如何命名等信息。数据库和表都有模式。
+- 列（column）：表中的一个字段。所有表都是由一个或多个列组成的。
+- 行（row）：表中的一个记录。
 
 ## SQL 基础
 
@@ -54,21 +57,21 @@ tags:
 
 SQL 语法结构包括：
 
-* 子句，是语句和查询的组成成分。（在某些情况下，这些都是可选的。）
-* 表达式，可以产生任何标量值，或由列和行的数据库表
-* 谓词，给需要评估的 SQL 三值逻辑（3VL）（true/false/unknown）或布尔真值指定条件，并限制语句和查询的效果，或改变程序流程。
-* 查询，基于特定条件检索数据。这是 SQL 的一个重要组成部分。
-* 语句，可以持久地影响纲要和数据，也可以控制数据库事务、程序流程、连接、会话或诊断。
+- 子句，是语句和查询的组成成分。（在某些情况下，这些都是可选的。）
+- 表达式，可以产生任何标量值，或由列和行的数据库表
+- 谓词，给需要评估的 SQL 三值逻辑（3VL）（true/false/unknown）或布尔真值指定条件，并限制语句和查询的效果，或改变程序流程。
+- 查询，基于特定条件检索数据。这是 SQL 的一个重要组成部分。
+- 语句，可以持久地影响纲要和数据，也可以控制数据库事务、程序流程、连接、会话或诊断。
 
 ### SQL 语法要点
 
-* SQL 语句不区分大小写，但是数据库表名、列名和值是否区分，依赖于具体的 DBMS 以及配置。
+- SQL 语句不区分大小写，但是数据库表名、列名和值是否区分，依赖于具体的 DBMS 以及配置。
 
 例如：SELECT 与 select 、Select 是相同的。
 
-* 多条 SQL 语句必须以分号（;）分隔。
+- 多条 SQL 语句必须以分号（;）分隔。
 
-* 处理 SQL 语句时，所有空格都被忽略。SQL 语句可以写成一行，也可以分写为多行。
+- 处理 SQL 语句时，所有空格都被忽略。SQL 语句可以写成一行，也可以分写为多行。
 
 ```sql
 -- 一行 SQL 语句
@@ -80,7 +83,7 @@ SET username='robot', password='robot'
 WHERE username = 'root';
 ```
 
-* SQL 支持三种注释
+- SQL 支持三种注释
 
 ```sql
 ## 注释1
@@ -114,14 +117,14 @@ DCL 的核心指令是 `GRANT`、`REVOKE`。
 
 DCL 以控制用户的访问权限为主，因此其指令作法并不复杂，可利用 DCL 控制的权限有：
 
-* CONNECT
-* SELECT
-* INSERT
-* UPDATE
-* DELETE
-* EXECUTE
-* USAGE
-* REFERENCES
+- CONNECT
+- SELECT
+- INSERT
+- UPDATE
+- DELETE
+- EXECUTE
+- USAGE
+- REFERENCES
 
 根据不同的 DBMS 以及不同的安全性实体，其支持的权限控制也有所不同。
 
@@ -137,7 +140,7 @@ TCL 的核心指令是 `COMMIT`、`ROLLBACK`。
 
 #### 要点
 
-* `INSERT INTO` 语句用于向表中插入新记录。
+- `INSERT INTO` 语句用于向表中插入新记录。
 
 #### 示例
 
@@ -167,7 +170,7 @@ FROM account;
 
 #### 要点
 
-* `UPDATE` 语句用于更新表中的记录。
+- `UPDATE` 语句用于更新表中的记录。
 
 #### 示例
 
@@ -181,8 +184,8 @@ WHERE username = 'root';
 
 #### 要点
 
-* `DELETE` 语句用于删除表中的记录。
-* `TRUNCATE TABLE` 可以清空表，也就是删除所有行。
+- `DELETE` 语句用于删除表中的记录。
+- `TRUNCATE TABLE` 可以清空表，也就是删除所有行。
 
 #### 示例
 
@@ -203,11 +206,11 @@ TRUNCATE TABLE user;
 
 #### 要点
 
-* `SELECT` 语句用于从数据库中查询数据。
-* `DISTINCT` 用于返回唯一不同的值。它作用于所有列，也就是说所有列的值都相同才算相同。
-* `LIMIT` 限制返回的行数。可以有两个参数，第一个参数为起始行，从 0 开始；第二个参数为返回的总行数。
-  * `ASC` ：升序（默认）
-  * `DESC` ：降序
+- `SELECT` 语句用于从数据库中查询数据。
+- `DISTINCT` 用于返回唯一不同的值。它作用于所有列，也就是说所有列的值都相同才算相同。
+- `LIMIT` 限制返回的行数。可以有两个参数，第一个参数为起始行，从 0 开始；第二个参数为返回的总行数。
+  - `ASC` ：升序（默认）
+  - `DESC` ：降序
 
 #### 示例
 
@@ -255,22 +258,22 @@ SELECT * FROM mytable LIMIT 2, 3;
 
 #### 要点
 
-* `WHERE` 子句用于过滤记录，即缩小访问数据的范围。
-* `WHERE` 后跟一个返回 `true` 或 `false` 的条件。
-* `WHERE` 可以与 `SELECT`，`UPDATE` 和 `DELETE` 一起使用。
-* 可以在 `WHERE` 子句中使用的操作符
+- `WHERE` 子句用于过滤记录，即缩小访问数据的范围。
+- `WHERE` 后跟一个返回 `true` 或 `false` 的条件。
+- `WHERE` 可以与 `SELECT`，`UPDATE` 和 `DELETE` 一起使用。
+- 可以在 `WHERE` 子句中使用的操作符
 
-| 运算符     | 描述                              |
-| ------- | ------------------------------- |
-| =       | 等于                              |
+| 运算符  | 描述                                                   |
+| ------- | ------------------------------------------------------ |
+| =       | 等于                                                   |
 | <>      | 不等于。注释：在 SQL 的一些版本中，该操作符可被写成 != |
-| >       | 大于                              |
-| <       | 小于                              |
-| >=      | 大于等于                            |
-| <=      | 小于等于                            |
-| BETWEEN | 在某个范围内                          |
-| LIKE    | 搜索某种模式                          |
-| IN      | 指定针对某个列的多个可能值                   |
+| >       | 大于                                                   |
+| <       | 小于                                                   |
+| >=      | 大于等于                                               |
+| <=      | 小于等于                                               |
+| BETWEEN | 在某个范围内                                           |
+| LIKE    | 搜索某种模式                                           |
+| IN      | 指定针对某个列的多个可能值                             |
 
 #### 示例
 
@@ -300,8 +303,8 @@ WHERE cust_name = 'Kids Place';
 
 #### 要点
 
-* `IN` 操作符在 `WHERE` 子句中使用，作用是在指定的几个特定值中任选一个值。
-* `BETWEEN` 操作符在 `WHERE` 子句中使用，作用是选取介于某个范围内的值。
+- `IN` 操作符在 `WHERE` 子句中使用，作用是在指定的几个特定值中任选一个值。
+- `BETWEEN` 操作符在 `WHERE` 子句中使用，作用是选取介于某个范围内的值。
 
 #### 示例
 
@@ -325,11 +328,11 @@ WHERE prod_price BETWEEN 3 AND 5;
 
 #### 要点
 
-* `AND`、`OR`、`NOT` 是用于对过滤条件的逻辑处理指令。
-* `AND` 优先级高于 `OR`，为了明确处理顺序，可以使用 `()`。
-* `AND` 操作符表示左右条件都要满足。
-* `OR` 操作符表示左右条件满足任意一个即可。
-* `NOT` 操作符用于否定一个条件。
+- `AND`、`OR`、`NOT` 是用于对过滤条件的逻辑处理指令。
+- `AND` 优先级高于 `OR`，为了明确处理顺序，可以使用 `()`。
+- `AND` 操作符表示左右条件都要满足。
+- `OR` 操作符表示左右条件满足任意一个即可。
+- `NOT` 操作符用于否定一个条件。
 
 #### 示例
 
@@ -361,12 +364,12 @@ WHERE prod_price NOT BETWEEN 3 AND 5;
 
 #### 要点
 
-* `LIKE` 操作符在 `WHERE` 子句中使用，作用是确定字符串是否匹配模式。
-* 只有字段是文本值时才使用 `LIKE`。
-* `LIKE` 支持两个通配符匹配选项：`%` 和 `_`。
-* 不要滥用通配符，通配符位于开头处匹配会非常慢。
-* `%` 表示任何字符出现任意次数。
-* `_` 表示任何字符出现一次。
+- `LIKE` 操作符在 `WHERE` 子句中使用，作用是确定字符串是否匹配模式。
+- 只有字段是文本值时才使用 `LIKE`。
+- `LIKE` 支持两个通配符匹配选项：`%` 和 `_`。
+- 不要滥用通配符，通配符位于开头处匹配会非常慢。
+- `%` 表示任何字符出现任意次数。
+- `_` 表示任何字符出现一次。
 
 #### 示例
 
@@ -410,8 +413,8 @@ WHERE SOUNDEX(col1) = SOUNDEX('apple')
 
 ### 日期和时间处理
 
-* 日期格式：YYYY-MM-DD
-* 时间格式：HH:MM:SS
+- 日期格式：YYYY-MM-DD
+- 时间格式：HH:MM:SS
 
 |     函 数     |             说 明              |
 | :-----------: | :----------------------------: |
@@ -480,10 +483,10 @@ FROM mytable
 
 #### 要点
 
-* `ORDER BY` 用于对结果集进行排序。
-  * `ASC` ：升序（默认）
-  * `DESC` ：降序
-* 可以按多个列进行排序，并且为每个列指定不同的排序方式
+- `ORDER BY` 用于对结果集进行排序。
+  - `ASC` ：升序（默认）
+  - `DESC` ：降序
+- 可以按多个列进行排序，并且为每个列指定不同的排序方式
 
 #### 示例
 
@@ -498,11 +501,11 @@ ORDER BY prod_price DESC, prod_name ASC;
 
 #### 要点
 
-* `GROUP BY` 子句将记录分组到汇总行中。
-* `GROUP BY` 为每个组返回一个记录。
-* `GROUP BY` 通常还涉及聚合：COUNT，MAX，SUM，AVG 等。
-* `GROUP BY` 可以按一列或多列进行分组。
-* `GROUP BY` 按分组字段进行排序后，`ORDER BY` 可以以汇总字段来进行排序。
+- `GROUP BY` 子句将记录分组到汇总行中。
+- `GROUP BY` 为每个组返回一个记录。
+- `GROUP BY` 通常还涉及聚合：COUNT，MAX，SUM，AVG 等。
+- `GROUP BY` 可以按一列或多列进行分组。
+- `GROUP BY` 按分组字段进行排序后，`ORDER BY` 可以以汇总字段来进行排序。
 
 #### 示例
 
@@ -525,12 +528,12 @@ ORDER BY cust_name DESC;
 
 #### 要点
 
-* `HAVING` 用于对汇总的 `GROUP BY` 结果进行过滤。
-* `HAVING` 要求存在一个 `GROUP BY` 子句。
-* `WHERE` 和 `HAVING` 可以在相同的查询中。
-* `HAVING` vs `WHERE`
-  * `WHERE` 和 `HAVING` 都是用于过滤。
-  * `HAVING` 适用于汇总的组记录；而 WHERE 适用于单个记录。
+- `HAVING` 用于对汇总的 `GROUP BY` 结果进行过滤。
+- `HAVING` 要求存在一个 `GROUP BY` 子句。
+- `WHERE` 和 `HAVING` 可以在相同的查询中。
+- `HAVING` vs `WHERE`
+  - `WHERE` 和 `HAVING` 都是用于过滤。
+  - `HAVING` 适用于汇总的组记录；而 WHERE 适用于单个记录。
 
 #### 示例
 
@@ -548,13 +551,13 @@ HAVING COUNT(*) >= 1;
 
 ### 要点
 
-* 子查询是嵌套在较大查询中的 SQL 查询。
-* 子查询也称为**内部查询**或**内部选择**，而包含子查询的语句也称为**外部查询**或**外部选择**。
-* 子查询可以嵌套在 `SELECT`，`INSERT`，`UPDATE` 或 `DELETE` 语句内或另一个子查询中。
-* 子查询通常会在另一个 `SELECT` 语句的 `WHERE` 子句中添加。
-* 您可以使用比较运算符，如 `>`，`<`，或 `=`。比较运算符也可以是多行运算符，如 `IN`，`ANY` 或 `ALL`。
-* 子查询必须被圆括号 `()` 括起来。
-* 内部查询首先在其父查询之前执行，以便可以将内部查询的结果传递给外部查询。执行过程可以参考下图：
+- 子查询是嵌套在较大查询中的 SQL 查询。
+- 子查询也称为**内部查询**或**内部选择**，而包含子查询的语句也称为**外部查询**或**外部选择**。
+- 子查询可以嵌套在 `SELECT`，`INSERT`，`UPDATE` 或 `DELETE` 语句内或另一个子查询中。
+- 子查询通常会在另一个 `SELECT` 语句的 `WHERE` 子句中添加。
+- 您可以使用比较运算符，如 `>`，`<`，或 `=`。比较运算符也可以是多行运算符，如 `IN`，`ANY` 或 `ALL`。
+- 子查询必须被圆括号 `()` 括起来。
+- 内部查询首先在其父查询之前执行，以便可以将内部查询的结果传递给外部查询。执行过程可以参考下图：
   <p align="center">
     <img src="https://raw.githubusercontent.com/dunwu/database/master/images/mysql/sql-subqueries.gif" alt="sql-subqueries">
   </p>
@@ -579,20 +582,20 @@ WHERE cust_id IN (SELECT cust_id
 
 #### 要点
 
-* 如果一个 `JOIN` 至少有一个公共字段并且它们之间存在关系，则该 `JOIN` 可以在两个或多个表上工作。
-* 连接用于连接多个表，使用 `JOIN` 关键字，并且条件语句使用 `ON` 而不是 `WHERE`。
-* `JOIN` 保持基表（结构和数据）不变。
-* `JOIN` 有两种连接类型：内连接和外连接。
-* 内连接又称等值连接，使用 INNER `JOIN` 关键字。在没有条件语句的情况下返回笛卡尔积。
-  * 自连接可以看成内连接的一种，只是连接的表是自身而已。
-* 自然连接是把同名列通过 = 测试连接起来的，同名列可以有多个。
-* 内连接 vs 自然连接
-  * 内连接提供连接的列，而自然连接自动连接所有同名列。
-* 外连接返回一个表中的所有行，并且仅返回来自次表中满足连接条件的那些行，即两个表中的列是相等的。外连接分为左外连接、右外连接、全外连接（Mysql 不支持）。
-  * 左外连接就是保留左表没有关联的行。
-  * 右外连接就是保留右表没有关联的行。
-* 连接 vs 子查询
-  * 连接可以替换子查询，并且比子查询的效率一般会更快。
+- 如果一个 `JOIN` 至少有一个公共字段并且它们之间存在关系，则该 `JOIN` 可以在两个或多个表上工作。
+- 连接用于连接多个表，使用 `JOIN` 关键字，并且条件语句使用 `ON` 而不是 `WHERE`。
+- `JOIN` 保持基表（结构和数据）不变。
+- `JOIN` 有两种连接类型：内连接和外连接。
+- 内连接又称等值连接，使用 INNER `JOIN` 关键字。在没有条件语句的情况下返回笛卡尔积。
+  - 自连接可以看成内连接的一种，只是连接的表是自身而已。
+- 自然连接是把同名列通过 = 测试连接起来的，同名列可以有多个。
+- 内连接 vs 自然连接
+  - 内连接提供连接的列，而自然连接自动连接所有同名列。
+- 外连接返回一个表中的所有行，并且仅返回来自次表中满足连接条件的那些行，即两个表中的列是相等的。外连接分为左外连接、右外连接、全外连接（Mysql 不支持）。
+  - 左外连接就是保留左表没有关联的行。
+  - 右外连接就是保留右表没有关联的行。
+- 连接 vs 子查询
+  - 连接可以替换子查询，并且比子查询的效率一般会更快。
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/dunwu/database/master/images/mysql/sql-join.png" alt="sql-join">
@@ -645,16 +648,16 @@ ON customers.cust_id = orders.cust_id;
 
 #### 要点
 
-* `UNION` 运算符将两个或更多查询的结果组合起来，并生成一个结果集，其中包含来自 `UNION` 中参与查询的提取行。
-* `UNION` 基本规则
-  * 所有查询的列数和列顺序必须相同。
-  * 每个查询中涉及表的列的数据类型必须相同或兼容。
-  * 通常返回的列名取自第一个查询。
-* 默认会去除相同行，如果需要保留相同行，使用 `UNION ALL`。
-* 只能包含一个 `ORDER BY` 子句，并且必须位于语句的最后。
-* 应用场景
-  * 在一个查询中从不同的表返回结构数据。
-  * 对一个表执行多个查询，按一个查询返回数据。
+- `UNION` 运算符将两个或更多查询的结果组合起来，并生成一个结果集，其中包含来自 `UNION` 中参与查询的提取行。
+- `UNION` 基本规则
+  - 所有查询的列数和列顺序必须相同。
+  - 每个查询中涉及表的列的数据类型必须相同或兼容。
+  - 通常返回的列名取自第一个查询。
+- 默认会去除相同行，如果需要保留相同行，使用 `UNION ALL`。
+- 只能包含一个 `ORDER BY` 子句，并且必须位于语句的最后。
+- 应用场景
+  - 在一个查询中从不同的表返回结构数据。
+  - 对一个表执行多个查询，按一个查询返回数据。
 
 #### 示例
 
@@ -674,9 +677,9 @@ WHERE cust_name = 'Fun4All';
 
 #### 要点
 
-* JOIN vs UNION
-  * `JOIN` 中连接表的列可能不同，但在 `UNION` 中，所有查询的列数和列顺序必须相同。
-  * `UNION` 将查询之后的行放在一起（垂直放置），但 `JOIN` 将查询之后的列放在一起（水平放置），即它构成一个笛卡尔积。
+- JOIN vs UNION
+  - `JOIN` 中连接表的列可能不同，但在 `UNION` 中，所有查询的列数和列顺序必须相同。
+  - `UNION` 将查询之后的行放在一起（垂直放置），但 `JOIN` 将查询之后的列放在一起（水平放置），即它构成一个笛卡尔积。
 
 ## 数据定义
 
@@ -775,14 +778,14 @@ DROP PRIMARY KEY;
 
 #### 要点
 
-* 定义
-  * 视图是基于 SQL 语句的结果集的可视化的表。
-  * 视图是虚拟的表，本身不包含数据，也就不能对其进行索引操作。对视图的操作和对普通表的操作一样。
-* 作用
-  * 简化复杂的 SQL 操作，比如复杂的联结；
-  * 只使用实际表的一部分数据；
-  * 通过只给用户访问视图的权限，保证数据的安全性；
-  * 更改数据格式和表示。
+- 定义
+  - 视图是基于 SQL 语句的结果集的可视化的表。
+  - 视图是虚拟的表，本身不包含数据，也就不能对其进行索引操作。对视图的操作和对普通表的操作一样。
+- 作用
+  - 简化复杂的 SQL 操作，比如复杂的联结；
+  - 只使用实际表的一部分数据；
+  - 通过只给用户访问视图的权限，保证数据的安全性；
+  - 更改数据格式和表示。
 
 #### 示例
 
@@ -805,13 +808,13 @@ DROP VIEW top_10_user_view;
 
 #### 要点
 
-* 作用
-  * 通过索引可以更加快速高效地查询数据。
-  * 用户无法看到索引，它们只能被用来加速查询。
-* 注意
-  * 更新一个包含索引的表需要比更新一个没有索引的表花费更多的时间，这是由于索引本身也需要更新。因此，理想的做法是仅仅在常常被搜索的列（以及表）上面创建索引。
-* 唯一索引
-  * 唯一索引表明此索引的每一个索引值只对应唯一的数据记录。
+- 作用
+  - 通过索引可以更加快速高效地查询数据。
+  - 用户无法看到索引，它们只能被用来加速查询。
+- 注意
+  - 更新一个包含索引的表需要比更新一个没有索引的表花费更多的时间，这是由于索引本身也需要更新。因此，理想的做法是仅仅在常常被搜索的列（以及表）上面创建索引。
+- 唯一索引
+  - 唯一索引表明此索引的每一个索引值只对应唯一的数据记录。
 
 #### 示例
 
@@ -840,16 +843,16 @@ ON user (id);
 
 ### 要点
 
-* SQL 约束用于规定表中的数据规则。
-* 如果存在违反约束的数据行为，行为会被约束终止。
-* 约束可以在创建表时规定（通过 CREATE TABLE 语句），或者在表创建之后规定（通过 ALTER TABLE 语句）。
-* 约束类型
-  * `NOT NULL` - 指示某列不能存储 NULL 值。
-  * `UNIQUE` - 保证某列的每行必须有唯一的值。
-  * `PRIMARY KEY` - NOT NULL 和 UNIQUE 的结合。确保某列（或两个列多个列的结合）有唯一标识，有助于更容易更快速地找到表中的一个特定的记录。
-  * `FOREIGN KEY` - 保证一个表中的数据匹配另一个表中的值的参照完整性。
-  * `CHECK` - 保证列中的值符合指定的条件。
-  * `DEFAULT` - 规定没有给列赋值时的默认值。
+- SQL 约束用于规定表中的数据规则。
+- 如果存在违反约束的数据行为，行为会被约束终止。
+- 约束可以在创建表时规定（通过 CREATE TABLE 语句），或者在表创建之后规定（通过 ALTER TABLE 语句）。
+- 约束类型
+  - `NOT NULL` - 指示某列不能存储 NULL 值。
+  - `UNIQUE` - 保证某列的每行必须有唯一的值。
+  - `PRIMARY KEY` - NOT NULL 和 UNIQUE 的结合。确保某列（或两个列多个列的结合）有唯一标识，有助于更容易更快速地找到表中的一个特定的记录。
+  - `FOREIGN KEY` - 保证一个表中的数据匹配另一个表中的值的参照完整性。
+  - `CHECK` - 保证列中的值符合指定的条件。
+  - `DEFAULT` - 规定没有给列赋值时的默认值。
 
 ### 示例
 
@@ -870,14 +873,14 @@ CREATE TABLE Users (
 
 ### 要点
 
-* 不能回退 SELECT 语句，回退 SELECT 语句也没意义；也不能回退 CREATE 和 DROP 语句。
-* **MySQL 默认是隐式提交**，每执行一条语句就把这条语句当成一个事务然后进行提交。当出现 `START TRANSACTION` 语句时，会关闭隐式提交；当 `COMMIT` 或 `ROLLBACK` 语句执行后，事务会自动关闭，重新恢复隐式提交。
-* 通过 `set autocommit=0` 可以取消自动提交，直到 `set autocommit=1` 才会提交；autocommit 标记是针对每个连接而不是针对服务器的。
-* 指令
-  * `START TRANSACTION`：指令用于标记事务的起始点。
-  * `SAVEPOINT`：指令用于创建保留点。
-  * `ROLLBACK TO`：指令用于回滚到指定的保留点；如果没有设置保留点，则回退到 `START TRANSACTION` 语句处。
-  * `COMMIT`：提交事务。
+- 不能回退 SELECT 语句，回退 SELECT 语句也没意义；也不能回退 CREATE 和 DROP 语句。
+- **MySQL 默认是隐式提交**，每执行一条语句就把这条语句当成一个事务然后进行提交。当出现 `START TRANSACTION` 语句时，会关闭隐式提交；当 `COMMIT` 或 `ROLLBACK` 语句执行后，事务会自动关闭，重新恢复隐式提交。
+- 通过 `set autocommit=0` 可以取消自动提交，直到 `set autocommit=1` 才会提交；autocommit 标记是针对每个连接而不是针对服务器的。
+- 指令
+  - `START TRANSACTION`：指令用于标记事务的起始点。
+  - `SAVEPOINT`：指令用于创建保留点。
+  - `ROLLBACK TO`：指令用于回滚到指定的保留点；如果没有设置保留点，则回退到 `START TRANSACTION` 语句处。
+  - `COMMIT`：提交事务。
 
 ### 示例
 
@@ -909,15 +912,15 @@ COMMIT;
 
 ### 要点
 
-* GRANT 和 REVOKE 可在几个层次上控制访问权限：
-  * 整个服务器，使用 GRANT ALL 和 REVOKE ALL；
-  * 整个数据库，使用 ON database.\*；
-  * 特定的表，使用 ON database.table；
-  * 特定的列；
-  * 特定的存储过程。
-* 新创建的账户没有任何权限。
-* 账户用 username@host 的形式定义，username@% 使用的是默认主机名。
-* MySQL 的账户信息保存在 mysql 这个数据库中。
+- GRANT 和 REVOKE 可在几个层次上控制访问权限：
+  - 整个服务器，使用 GRANT ALL 和 REVOKE ALL；
+  - 整个数据库，使用 ON database.\*；
+  - 特定的表，使用 ON database.table；
+  - 特定的列；
+  - 特定的存储过程。
+- 新创建的账户没有任何权限。
+- 账户用 username@host 的形式定义，username@% 使用的是默认主机名。
+- MySQL 的账户信息保存在 mysql 这个数据库中。
   ```sql
   USE mysql;
   SELECT user FROM user;
@@ -972,16 +975,16 @@ SET PASSWORD FOR myuser = 'mypass';
 
 ### 要点
 
-* 存储过程可以看成是对一系列 SQL 操作的批处理；
-* 使用存储过程的好处
-  * 代码封装，保证了一定的安全性；
-  * 代码复用；
-  * 由于是预先编译，因此具有很高的性能。
-* 创建存储过程
-  * 命令行中创建存储过程需要自定义分隔符，因为命令行是以 `;` 为结束符，而存储过程中也包含了分号，因此会错误把这部分分号当成是结束符，造成语法错误。
-  * 包含 in、out 和 inout 三种参数。
-  * 给变量赋值都需要用 select into 语句。
-  * 每次只能给一个变量赋值，不支持集合的操作。
+- 存储过程可以看成是对一系列 SQL 操作的批处理；
+- 使用存储过程的好处
+  - 代码封装，保证了一定的安全性；
+  - 代码复用；
+  - 由于是预先编译，因此具有很高的性能。
+- 创建存储过程
+  - 命令行中创建存储过程需要自定义分隔符，因为命令行是以 `;` 为结束符，而存储过程中也包含了分号，因此会错误把这部分分号当成是结束符，造成语法错误。
+  - 包含 in、out 和 inout 三种参数。
+  - 给变量赋值都需要用 select into 语句。
+  - 每次只能给一个变量赋值，不支持集合的操作。
 
 ### 示例
 
@@ -993,9 +996,9 @@ DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `proc_adder`(IN a int, IN b int, OUT sum int)
 BEGIN
     DECLARE c int;
-    if a is null then set a = 0; 
+    if a is null then set a = 0;
     end if;
-  
+
     if b is null then set b = 0;
     end if;
 
@@ -1017,14 +1020,14 @@ select @s as sum;
 
 ### 要点
 
-* 游标（cursor）是一个存储在 DBMS 服务器上的数据库查询，它不是一条 SELECT 语句，而是被该语句检索出来的结果集。
-* 在存储过程中使用游标可以对一个结果集进行移动遍历。
-* 游标主要用于交互式应用，其中用户需要对数据集中的任意行进行浏览和修改。
-* 使用游标的四个步骤：
-  * 声明游标，这个过程没有实际检索出数据；
-  * 打开游标；
-  * 取出数据；
-  * 关闭游标；
+- 游标（cursor）是一个存储在 DBMS 服务器上的数据库查询，它不是一条 SELECT 语句，而是被该语句检索出来的结果集。
+- 在存储过程中使用游标可以对一个结果集进行移动遍历。
+- 游标主要用于交互式应用，其中用户需要对数据集中的任意行进行浏览和修改。
+- 使用游标的四个步骤：
+  - 声明游标，这个过程没有实际检索出数据；
+  - 打开游标；
+  - 取出数据；
+  - 关闭游标；
 
 ### 示例
 
@@ -1034,7 +1037,7 @@ select @s as sum;
 DELIMITER $
 CREATE  PROCEDURE getTotal()
 BEGIN  
-    DECLARE total INT; 
+    DECLARE total INT;
     -- 创建接收游标数据的变量  
     DECLARE sid INT;  
     DECLARE sname VARCHAR(10);  
@@ -1045,18 +1048,18 @@ BEGIN
     -- 创建游标  
     DECLARE cur CURSOR FOR SELECT id,name,age from cursor_table where age>30;  
     -- 指定游标循环结束时的返回值  
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = true;   
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = true;
     SET total = 0;  
     OPEN cur;  
     FETCH cur INTO sid, sname, sage;  
-    WHILE(NOT done) 
+    WHILE(NOT done)
     DO  
         SET total = total + 1;  
         FETCH cur INTO sid, sname, sage;  
     END WHILE;  
 
     CLOSE cur;  
-    SELECT total;   
+    SELECT total;
 END $
 DELIMITER ;
 
@@ -1089,12 +1092,12 @@ END;
 
 说明：
 
-* trigger_name：触发器名
-* trigger_time: 触发器的触发时机。取值为 `BEFORE` 或 `AFTER`。
-* trigger_event: 触发器的监听事件。取值为 `INSERT`、`UPDATE` 或 `DELETE`。
-* table_name: 触发器的监听目标。指定在哪张表上建立触发器。
-* FOR EACH ROW: 行级监视，Mysql 固定写法，其他 DBMS 不同。
-* trigger_statements: 触发器执行动作。是一条或多条 SQL 语句的列表，列表内的每条语句都必须用分号 `;` 来结尾。
+- trigger_name：触发器名
+- trigger_time: 触发器的触发时机。取值为 `BEFORE` 或 `AFTER`。
+- trigger_event: 触发器的监听事件。取值为 `INSERT`、`UPDATE` 或 `DELETE`。
+- table_name: 触发器的监听目标。指定在哪张表上建立触发器。
+- FOR EACH ROW: 行级监视，Mysql 固定写法，其他 DBMS 不同。
+- trigger_statements: 触发器执行动作。是一条或多条 SQL 语句的列表，列表内的每条语句都必须用分号 `;` 来结尾。
 
 示例：
 
@@ -1124,20 +1127,20 @@ DROP TRIGGER IF EXISTS trigger_insert_user;
 
 ### 要点
 
-* 触发器是一种与表操作有关的数据库对象，当触发器所在表上出现指定事件时，将调用该对象，即表的操作事件触发表上的触发器的执行。
-* 可以使用触发器来进行审计跟踪，把修改记录到另外一张表中。
-* MySQL 不允许在触发器中使用 CALL 语句 ，也就是不能调用存储过程。
-* `BEGIN` 和 `END`
-  * 当触发器的触发条件满足时，将会执行 BEGIN 和 END 之间的触发器执行动作。
+- 触发器是一种与表操作有关的数据库对象，当触发器所在表上出现指定事件时，将调用该对象，即表的操作事件触发表上的触发器的执行。
+- 可以使用触发器来进行审计跟踪，把修改记录到另外一张表中。
+- MySQL 不允许在触发器中使用 CALL 语句 ，也就是不能调用存储过程。
+- `BEGIN` 和 `END`
+  - 当触发器的触发条件满足时，将会执行 BEGIN 和 END 之间的触发器执行动作。
     > 注意：在 MySQL 中，分号 `;` 是语句结束的标识符，遇到分号表示该段语句已经结束，MySQL 可以开始执行了。因此，解释器遇到触发器执行动作中的分号后就开始执行，然后会报错，因为没有找到和 BEGIN 匹配的 END。
     >
     > 这时就会用到 `DELIMITER` 命令（DELIMITER 是定界符，分隔符的意思）。它是一条命令，不需要语句结束标识，语法为：`DELIMITER new_delemiter`。`new_delemiter` 可以设为 1 个或多个长度的符号，默认的是分号 `;`，我们可以把它修改为其他符号，如 `$`：`DELIMITER $` 。在这之后的语句，以分号结束，解释器不会有什么反应，只有遇到了 `$`，才认为是语句结束。注意，使用完之后，我们还应该记得把它给修改回来。
-* `NEW` 和 `OLD`
-  * MySQL 中定义了 `NEW` 和 `OLD` 关键字，用来表示触发器的所在表中，触发了触发器的那一行数据。
-  * 在 `INSERT` 型触发器中，`NEW` 用来表示将要（`BEFORE`）或已经（`AFTER`）插入的新数据；
-  * 在 `UPDATE` 型触发器中，`OLD` 用来表示将要或已经被修改的原数据，`NEW` 用来表示将要或已经修改为的新数据；
-  * 在 `DELETE` 型触发器中，`OLD` 用来表示将要或已经被删除的原数据；
-  * 使用方法： `NEW.columnName` （columnName 为相应数据表某一列名）
+- `NEW` 和 `OLD`
+  - MySQL 中定义了 `NEW` 和 `OLD` 关键字，用来表示触发器的所在表中，触发了触发器的那一行数据。
+  - 在 `INSERT` 型触发器中，`NEW` 用来表示将要（`BEFORE`）或已经（`AFTER`）插入的新数据；
+  - 在 `UPDATE` 型触发器中，`OLD` 用来表示将要或已经被修改的原数据，`NEW` 用来表示将要或已经修改为的新数据；
+  - 在 `DELETE` 型触发器中，`OLD` 用来表示将要或已经被删除的原数据；
+  - 使用方法： `NEW.columnName` （columnName 为相应数据表某一列名）
 
 ## 知识点小结
 
@@ -1147,13 +1150,13 @@ DROP TRIGGER IF EXISTS trigger_insert_user;
 
 ## 参考资料
 
-* BenForta. SQL 必知必会 [M]. 人民邮电出版社, 2013.
-* [『浅入深出』MySQL 中事务的实现](https://draveness.me/mysql-transaction)
-* [MySQL 的学习--触发器](https://www.cnblogs.com/CraryPrimitiveMan/p/4206942.html)
-* [维基百科词条 - SQL](https://zh.wikipedia.org/wiki/SQL)
-* [https://www.sitesbay.com/sql/index](https://www.sitesbay.com/sql/index)
-* [SQL Subqueries](https://www.w3resource.com/sql/subqueries/understanding-sql-subqueries.php)
-* [Quick breakdown of the types of joins](https://stackoverflow.com/questions/6294778/mysql-quick-breakdown-of-the-types-of-joins)
-* [SQL UNION](https://www.w3resource.com/sql/sql-union.php)
-* [SQL database security](https://www.w3resource.com/sql/database-security/create-users.php)
-* [Mysql中的存储过程](https://www.cnblogs.com/chenpi/p/5136483.html)
+- BenForta. SQL 必知必会 [M]. 人民邮电出版社, 2013.
+- [『浅入深出』MySQL 中事务的实现](https://draveness.me/mysql-transaction)
+- [MySQL 的学习--触发器](https://www.cnblogs.com/CraryPrimitiveMan/p/4206942.html)
+- [维基百科词条 - SQL](https://zh.wikipedia.org/wiki/SQL)
+- [https://www.sitesbay.com/sql/index](https://www.sitesbay.com/sql/index)
+- [SQL Subqueries](https://www.w3resource.com/sql/subqueries/understanding-sql-subqueries.php)
+- [Quick breakdown of the types of joins](https://stackoverflow.com/questions/6294778/mysql-quick-breakdown-of-the-types-of-joins)
+- [SQL UNION](https://www.w3resource.com/sql/sql-union.php)
+- [SQL database security](https://www.w3resource.com/sql/database-security/create-users.php)
+- [Mysql 中的存储过程](https://www.cnblogs.com/chenpi/p/5136483.html)
