@@ -1,0 +1,21 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:redisson="http://redisson.org/schema/redisson"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://redisson.org/schema/redisson
+       http://redisson.org/schema/redisson/redisson.xsd">
+  <bean id="stringCodec" class="org.redisson.client.codec.StringCodec"/>
+  <redisson:client id="standalone"
+    name="aliasName1,aliasName2"
+    codec-ref="stringCodec">
+    <redisson:single-server address="redis://127.0.0.1:6379"
+      connection-pool-size="500"
+      idle-connection-timeout="10000"
+      connect-timeout="10000"
+      timeout="3000"
+      ping-timeout="30000"
+      reconnection-timeout="30000"
+      database="0"/>
+  </redisson:client>
+</beans>

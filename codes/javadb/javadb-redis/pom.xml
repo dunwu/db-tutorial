@@ -16,6 +16,7 @@
     <spring.version>4.3.13.RELEASE</spring.version>
     <logback.version>1.2.3</logback.version>
     <jedis.version>2.9.0</jedis.version>
+    <redisson.version>3.7.2</redisson.version>
     <junit.version>4.12</junit.version>
   </properties>
 
@@ -24,6 +25,10 @@
     <dependency>
       <groupId>redis.clients</groupId>
       <artifactId>jedis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.redisson</groupId>
+      <artifactId>redisson</artifactId>
     </dependency>
     <!-- database end -->
 
@@ -37,7 +42,15 @@
     <!-- spring begin -->
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -69,6 +82,11 @@
         <groupId>redis.clients</groupId>
         <artifactId>jedis</artifactId>
         <version>${jedis.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.redisson</groupId>
+        <artifactId>redisson</artifactId>
+        <version>${redisson.version}</version>
       </dependency>
       <!-- database end -->
 
