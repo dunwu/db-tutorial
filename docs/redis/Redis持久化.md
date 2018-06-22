@@ -11,6 +11,16 @@ tags:
 
 # Redis 持久化
 
+> Redis 支持持久化，即把数据存储到硬盘中。
+>
+> Redis 提供了两种持久化方式：
+>
+> **RDB 快照（snapshot）** - 将存在于某一时刻的所有数据都写入到硬盘中。
+>
+> **只追加文件（append-only file，AOF）** - 它会在执行写命令时，将 被执行的写命令复制到硬盘中。
+>
+> 这两种持久化方式既可以同时使用，也可以单独使用。
+
 <!-- TOC depthFrom:2 depthTo:3 -->
 
 - [RDB](#rdb)
@@ -37,6 +47,15 @@ Redis 提供了两种持久方式：RDB 和 AOF。你可以同时开启两种持
 ## RDB
 
 RDB 持久化方式能够在指定的时间间隔能对整个数据进行快照存储。
+
+RDB 配置：
+
+```
+save 60 1000
+stop-writes-on-bgsave-error no
+rdbcompression yes
+dbfilename dump.rdb
+```
 
 ### RDB 的原理
 
@@ -75,6 +94,14 @@ save 60 10000
 AOF 持久化方式记录每次对服务器执行的写操作。当服务器重启的时候会重新执行这些命令来恢复原始的数据。
 
 AOF 命令以 redis 协议追加保存每次写的操作到文件末尾。Redis 还能对 AOF 文件进行后台重写。使得 AOF 文件的体积不至于过大。
+
+```
+appendonly no
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+```
 
 ### AOF 的原理
 
