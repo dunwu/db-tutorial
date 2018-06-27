@@ -4,3 +4,4 @@
 - [x] [数据库优化](docs/数据库优化.md)
 - [x] [Mysql](docs/mysql.md)
 - [x] [H2](docs/h2.md)
+- [x] [Redis](docs/redis/redis.md)
