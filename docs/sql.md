@@ -1,17 +1,16 @@
 ---
-title: Mysql
+title: Sql
 date: 2015/05/01
 categories:
 - database
 tags:
 - database
 - sql
-- mysql
 ---
 
-# Mysql
+# Sql
 
-> MySQL 是最流行的关系型数据库管理系统。
+> 关系型数据库 SQL 语句大同小异。本文以 Mysql 为例。
 >
 > 本文的示例在 Mysql 5.7 下都可以测试通过。
 
