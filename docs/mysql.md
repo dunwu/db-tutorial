@@ -22,23 +22,18 @@ tags:
     - [2.3. 字符串](#23-字符串)
     - [2.4. 时间和日期](#24-时间和日期)
 - [3. 索引](#3-索引)
-    - [3.1. B Tree 原理](#31-b-tree-原理)
-    - [3.2. 索引分类](#32-索引分类)
-    - [3.3. 索引的优点](#33-索引的优点)
-    - [3.4. 索引优化](#34-索引优化)
+    - [3.1. 索引的优点和缺点](#31-索引的优点和缺点)
+    - [3.2. 索引类型](#32-索引类型)
+    - [3.3. 索引数据结构](#33-索引数据结构)
+    - [3.4. 索引原则](#34-索引原则)
 - [4. 查询性能优化](#4-查询性能优化)
     - [4.1. 使用 Explain 进行分析](#41-使用-explain-进行分析)
     - [4.2. 优化数据访问](#42-优化数据访问)
     - [4.3. 重构查询方式](#43-重构查询方式)
-- [5. 切分](#5-切分)
-    - [5.1. 水平切分](#51-水平切分)
-    - [5.2. 垂直切分](#52-垂直切分)
-    - [5.3. Sharding 策略](#53-sharding-策略)
-    - [5.4. Sharding 存在的问题及解决方案](#54-sharding-存在的问题及解决方案)
-- [6. 复制](#6-复制)
-    - [6.1. 主从复制](#61-主从复制)
-    - [6.2. 读写分离](#62-读写分离)
-- [7. 参考资料](#7-参考资料)
+- [5. 复制](#5-复制)
+    - [5.1. 主从复制](#51-主从复制)
+    - [5.2. 读写分离](#52-读写分离)
+- [6. 参考资料](#6-参考资料)
 
 <!-- /TOC -->
 
@@ -133,11 +128,116 @@ MySQL 提供了 FROM_UNIXTIME() 函数把 UNIX 时间戳转换为日期，并提
 
 索引是在存储引擎层实现的，而不是在服务器层实现的，所以不同存储引擎具有不同的索引类型和实现。
 
-### 3.1. B Tree 原理
+### 3.1. 索引的优点和缺点
 
-#### B-Tree
+优点：
 
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/06976908-98ab-46e9-a632-f0c2760ec46c.png)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/06976908-98ab-46e9-a632-f0c2760ec46c.png)
+- 大大减少了服务器需要扫描的数据行数。
+- 帮助服务器避免进行排序和创建临时表（B+Tree 索引是有序的，可以用来做 ORDER BY 和 GROUP BY 操作）；
+- 将随机 I/O 变为顺序 I/O（B+Tree 索引是有序的，也就将相邻的数据都存储在一起）。
+
+缺点：
+
+1.  创建索引和维护索引要耗费时间，这种时间随着数据量的增加而增加。
+2.  索引需要占物理空间，除了数据表占数据空间之外，每一个索引还要占一定的物理空间，如果要建立组合索引那么需要的空间就会更大。
+3.  当对表中的数据进行增加、删除和修改的时候，索引也要动态的维护，这样就降低了数据的维护速度。
+
+### 3.2. 索引类型
+
+MySQL 目前主要有以下几种索引类型：
+
+#### 普通索引
+
+普通索引：最基本的索引，没有任何限制。
+
+```sql
+CREATE TABLE `table` (
+    ...
+    INDEX index_name (title(length))
+)
+```
+
+#### 唯一索引
+
+唯一索引：索引列的值必须唯一，但允许有空值。如果是组合索引，则列值的组合必须唯一。
+
+```sql
+CREATE TABLE `table` (
+    ...
+    UNIQUE indexName (title(length))
+)
+```
+
+#### 主键索引
+
+主键索引：一种特殊的唯一索引，一个表只能有一个主键，不允许有空值。一般是在建表的时候同时创建主键索引。
+
+```sql
+CREATE TABLE `table` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    ...
+    PRIMARY KEY (`id`)
+)
+```
+
+#### 组合索引
+
+组合索引：多个字段上创建的索引，只有在查询条件中使用了创建索引时的第一个字段，索引才会被使用。使用组合索引时遵循最左前缀集合。
+
+```sql
+CREATE TABLE `table` (
+    ...
+    INDEX index_name (title(length), title(length), ...)
+)
+```
+
+#### 全文索引
+
+全文索引：主要用来查找文本中的关键字，而不是直接与索引中的值相比较。fulltext 索引跟其它索引大不相同，它更像是一个搜索引擎，而不是简单的 WHERE 语句的参数匹配。fulltext 索引配合 match against 操作使用，而不是一般的 WHERE 语句加 LIKE。它可以在 CREATE TABLE，ALTER TABLE ，CREATE INDEX 使用，不过目前只有 char、varchar，text 列上可以创建全文索引。值得一提的是，在数据量较大时候，现将数据放入一个没有全局索引的表中，然后再用 CREATE INDEX 创建 fulltext 索引，要比先为一张表建立 fulltext 然后再将数据写入的速度快很多。
+
+```sql
+CREATE TABLE `table` (
+    `content` text CHARACTER NULL,
+    ...
+    FULLTEXT (content)
+)
+```
+
+### 3.3. 索引数据结构
+
+#### B+Tree 索引
+
+B+Tree 索引是大多数 MySQL 存储引擎的默认索引类型。
+
+因为不再需要进行全表扫描，只需要对树进行搜索即可，因此查找速度快很多。除了用于查找，还可以用于排序和分组。
+
+可以指定多个列作为索引列，多个索引列共同组成键。
+
+B+Tree 索引适用于全键值、键值范围和键前缀查找，其中键前缀查找只适用于最左前缀查找。
+
+如果不是按照索引列的顺序进行查找，则无法使用索引。
+
+InnoDB 的 B+Tree 索引分为主索引和辅助索引。
+
+主索引的叶子节点 data 域记录着完整的数据记录，这种索引方式被称为聚簇索引。因为无法把数据行存放在两个不同的地方，所以一个表只能有一个聚簇索引。
+
+<div align="center">
+<img src="http://upload-images.jianshu.io/upload_images/3101171-28ea7c1487bd12bb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+</div>
+
+辅助索引的叶子节点的 data 域记录着主键的值，因此在使用辅助索引进行查找时，需要先查找到主键值，然后再到主索引中进行查找。
+
+<div align="center">
+<img src="http://upload-images.jianshu.io/upload_images/3101171-96c6c85468df0f89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+</div>
+
+##### B Tree 原理
+
+###### B-Tree
+
+<div align="center">
+<img src="http://upload-images.jianshu.io/upload_images/3101171-5594de9a48e524e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+</div>
 
 定义一条数据记录为一个二元组 [key, data]，B-Tree 是满足下列条件的数据结构：
 
@@ -149,9 +249,11 @@ MySQL 提供了 FROM_UNIXTIME() 函数把 UNIX 时间戳转换为日期，并提
 
 由于插入删除新的数据记录会破坏 B-Tree 的性质，因此在插入删除时，需要对树进行一个分裂、合并、旋转等操作以保持 B-Tree 性质。
 
-#### B+Tree
+###### B+Tree
 
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/7299afd2-9114-44e6-9d5e-4025d0b2a541.png)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/7299afd2-9114-44e6-9d5e-4025d0b2a541.png)
+<div align="center">
+<img src="http://upload-images.jianshu.io/upload_images/3101171-b5a68f67743141a1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+</div>
 
 与 B-Tree 相比，B+Tree 有以下不同点：
 
@@ -159,13 +261,15 @@ MySQL 提供了 FROM_UNIXTIME() 函数把 UNIX 时间戳转换为日期，并提
 - 内节点不存储 data，只存储 key；
 - 叶子节点不存储指针。
 
-#### 顺序访问指针
+###### 顺序访问指针的 B+Tree
 
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/061c88c1-572f-424f-b580-9cbce903a3fe.png)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/061c88c1-572f-424f-b580-9cbce903a3fe.png)
+<div align="center">
+<img src="http://upload-images.jianshu.io/upload_images/3101171-d97c1144093e2841.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+</div>
 
 一般在数据库系统或文件系统中使用的 B+Tree 结构都在经典 B+Tree 基础上进行了优化，在叶子节点增加了顺序访问指针，做这个优化的目的是为了提高区间访问的性能。
 
-#### 优势
+###### 优势
 
 红黑树等平衡树也可以用来实现索引，但是文件系统及数据库系统普遍采用 B Tree 作为索引结构，主要有以下两个原因：
 
@@ -184,30 +288,6 @@ B+Tree 相比于 B-Tree 更适合外存索引，因为 B+Tree 内节点去掉了
 操作系统一般将内存和磁盘分割成固态大小的块，每一块称为一页，内存与磁盘以页为单位交换数据。数据库系统将索引的一个节点的大小设置为页的大小，使得一次 I/O 就能完全载入一个节点，并且可以利用预读特性，相邻的节点也能够被预先载入。
 
 更多内容请参考：[MySQL 索引背后的数据结构及算法原理](http://blog.codinglabs.org/articles/theory-of-mysql-index.html)
-
-### 3.2. 索引分类
-
-#### B+Tree 索引
-
-B+Tree 索引是大多数 MySQL 存储引擎的默认索引类型。
-
-因为不再需要进行全表扫描，只需要对树进行搜索即可，因此查找速度快很多。除了用于查找，还可以用于排序和分组。
-
-可以指定多个列作为索引列，多个索引列共同组成键。
-
-B+Tree 索引适用于全键值、键值范围和键前缀查找，其中键前缀查找只适用于最左前缀查找。
-
-如果不是按照索引列的顺序进行查找，则无法使用索引。
-
-InnoDB 的 B+Tree 索引分为主索引和辅助索引。
-
-主索引的叶子节点 data 域记录着完整的数据记录，这种索引方式被称为聚簇索引。因为无法把数据行存放在两个不同的地方，所以一个表只能有一个聚簇索引。
-
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/c28c6fbc-2bc1-47d9-9b2e-cf3d4034f877.jpg)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/c28c6fbc-2bc1-47d9-9b2e-cf3d4034f877.jpg)
-
-辅助索引的叶子节点的 data 域记录着主键的值，因此在使用辅助索引进行查找时，需要先查找到主键值，然后再到主索引中进行查找。
-
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/7ab8ca28-2a41-4adf-9502-cc0a21e63b51.jpg)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/7ab8ca28-2a41-4adf-9502-cc0a21e63b51.jpg)
 
 #### 哈希索引
 
@@ -232,40 +312,19 @@ MyISAM 存储引擎支持空间数据索引，可以用于地理数据存储。�
 
 必须使用 GIS 相关的函数来维护数据。
 
-### 3.3. 索引的优点
+### 3.4. 索引原则
 
-- 大大减少了服务器需要扫描的数据行数。
-- 帮助服务器避免进行排序和创建临时表（B+Tree 索引是有序的，可以用来做 ORDER BY 和 GROUP BY 操作）；
-- 将随机 I/O 变为顺序 I/O（B+Tree 索引是有序的，也就将相邻的数据都存储在一起）。
+#### 最左前缀匹配原则
 
-### 3.4. 索引优化
+mysql 会一直向右匹配直到遇到范围查询(>、<、between、like)就停止匹配。
 
-#### 独立的列
-
-在进行查询时，索引列不能是表达式的一部分，也不能是函数的参数，否则无法使用索引。
-
-例如下面的查询不能使用 actor_id 列的索引：
-
-```
-SELECT actor_id FROM sakila.actor WHERE actor_id + 1 = 5;
-```
-
-#### 多列索引
-
-在需要使用多个列作为条件进行查询时，使用多列索引比使用多个单列索引性能更好。例如下面的语句中，最好把 actor_id 和 film_id 设置为多列索引。
-
-```
-SELECT film_id, actor_ id FROM sakila.film_actor
-WhERE actor_id = 1 AND film_id = 1;
-```
-
-#### 索引列的顺序
+例如：`a = 1 and b = 2 and c > 3 and d = 4`，如果建立（a,b,c,d）顺序的索引，d 是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d 的顺序可以任意调整。
 
 让选择性最强的索引列放在前面，索引的选择性是指：不重复的索引值和记录总数的比值。最大值为 1，此时每个记录都有唯一的索引与其对应。选择性越高，查询效率也越高。
 
 例如下面显示的结果中 customer_id 的选择性比 staff_id 更高，因此最好把 customer_id 列放在多列索引的前面。
 
-```
+```sql
 SELECT COUNT(DISTINCT staff_id)/COUNT(*) AS staff_id_selectivity,
 COUNT(DISTINCT customer_id)/COUNT(*) AS customer_id_selectivity,
 COUNT(*)
@@ -276,6 +335,33 @@ FROM payment;
    staff_id_selectivity: 0.0001
 customer_id_selectivity: 0.0373
                COUNT(*): 16049
+```
+
+#### = 和 in 可以乱序
+
+比如 a = 1 and b = 2 and c = 3 建立（a,b,c）索引可以任意顺序，mysql 的查询优化器会帮你优化成索引可以识别的形式。
+
+#### 索引列不能参与计算
+
+在进行查询时，索引列不能是表达式的一部分，也不能是函数的参数，否则无法使用索引。
+
+例如下面的查询不能使用 actor_id 列的索引：
+
+```
+SELECT actor_id FROM sakila.actor WHERE actor_id + 1 = 5;
+```
+
+#### 尽量的扩展索引，不要新建索引
+
+比如表中已经有 a 的索引，现在要加(a,b)的索引，那么只需要修改原来的索引即可。
+
+#### 多列索引
+
+在需要使用多个列作为条件进行查询时，使用多列索引比使用多个单列索引性能更好。例如下面的语句中，最好把 actor_id 和 film_id 设置为多列索引。
+
+```
+SELECT film_id, actor_ id FROM sakila.film_actor
+WhERE actor_id = 1 AND film_id = 1;
 ```
 
 #### 前缀索引
@@ -369,54 +455,9 @@ SELECT * FROM tag_post WHERE tag_id=1234;
 SELECT * FROM post WHERE post.id IN (123,456,567,9098,8904);
 ```
 
-## 5. 切分
+## 5. 复制
 
-### 5.1. 水平切分
-
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/63c2909f-0c5f-496f-9fe5-ee9176b31aba.jpg)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/63c2909f-0c5f-496f-9fe5-ee9176b31aba.jpg)
-
-水平切分又称为 Sharding，它是将同一个表中的记录拆分到多个结构相同的表中。
-
-当一个表的数据不断增多时，Sharding 是必然的选择，它可以将数据分布到集群的不同节点上，从而缓存单个数据库的压力。
-
-### 5.2. 垂直切分
-
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/e130e5b8-b19a-4f1e-b860-223040525cf6.jpg)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/e130e5b8-b19a-4f1e-b860-223040525cf6.jpg)
-
-垂直切分是将一张表按列切分成多个表，通常是按照列的关系密集程度进行切分，也可以利用垂直切分将经常被使用的列和不经常被使用的列切分到不同的表中。
-
-在数据库的层面使用垂直切分将按数据库中表的密集程度部署到不同的库中，例如将原来的电商数据库垂直切分成商品数据库 payDB、用户数据库 userBD 等。
-
-### 5.3. Sharding 策略
-
-- 哈希取模：hash(key) % NUM_DB
-- 范围：可以是 ID 范围也可以是时间范围
-- 映射表：使用单独的一个数据库来存储映射关系
-
-### 5.4. Sharding 存在的问题及解决方案
-
-#### 事务问题
-
-使用分布式事务来解决，比如 XA 接口。
-
-#### JOIN
-
-可以将原来的 JOIN 查询分解成多个单表查询，然后在用户程序中进行 JOIN。
-
-#### ID 唯一性
-
-- 使用全局唯一 ID：GUID。
-- 为每个分片指定一个 ID 范围。
-- 分布式 ID 生成器 (如 Twitter 的 Snowflake 算法)。
-
-更多内容请参考：
-
-- [How Sharding Works](https://medium.com/@jeeyoungk/how-sharding-works-b4dec46b3f6)
-- [大众点评订单系统分库分表实践](https://tech.meituan.com/dianping_order_db_sharding.html)
-
-## 6. 复制
-
-### 6.1. 主从复制
+### 5.1. 主从复制
 
 主要涉及三个线程：binlog 线程、I/O 线程和 SQL 线程。
 
@@ -424,9 +465,11 @@ SELECT * FROM post WHERE post.id IN (123,456,567,9098,8904);
 - **I/O 线程** ：负责从主服务器上读取二进制日志文件，并写入从服务器的中继日志中。
 - **SQL 线程** ：负责读取中继日志并重放其中的 SQL 语句。
 
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/master-slave.png)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/master-slave.png)
+<div align="center">
+<img src="https://raw.githubusercontent.com/dunwu/Database/master/images/mysql/master-slave.png" />
+</div>
 
-### 6.2. 读写分离
+### 5.2. 读写分离
 
 主服务器用来处理写操作以及实时性要求比较高的读操作，而从服务器用来处理读操作。
 
@@ -438,9 +481,11 @@ MySQL 读写分离能提高性能的原因在于：
 - 从服务器可以配置 MyISAM 引擎，提升查询性能以及节约系统开销；
 - 增加冗余，提高可用性。
 
-[![img](https://github.com/CyC2018/Interview-Notebook/raw/master/pics/master-slave-proxy.png)](https://github.com/CyC2018/Interview-Notebook/blob/master/pics/master-slave-proxy.png)
+<div align="center">
+<img src="https://raw.githubusercontent.com/dunwu/Database/master/images/mysql/master-slave-proxy.png" />
+</div>
 
-## 7. 参考资料
+## 6. 参考资料
 
 - BaronScbwartz, PeterZaitsev, VadimTkacbenko, 等. 高性能 MySQL[M]. 电子工业出版社, 2013.
 - 姜承尧. MySQL 技术内幕: InnoDB 存储引擎 [M]. 机械工业出版社, 2011.
@@ -448,3 +493,4 @@ MySQL 读写分离能提高性能的原因在于：
 - [服务端指南 数据存储篇 | MySQL（09） 分库与分表带来的分布式困境与应对之策](http://blog.720ui.com/2017/mysql_core_09_multi_db_table2/)
 - [How to create unique row ID in sharded databases?](https://stackoverflow.com/questions/788829/how-to-create-unique-row-id-in-sharded-databases)
 - [SQL Azure Federation – Introduction](http://geekswithblogs.net/shaunxu/archive/2012/01/07/sql-azure-federation-ndash-introduction.aspx)
+- [分库分表需要考虑的问题及方案](https://www.jianshu.com/p/32b3e91aa22c)
