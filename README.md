@@ -1,4 +1,4 @@
-# database
+# 数据库（Database）
 
 - [x] [数据库系统概论](docs/数据库系统概论.md)
 - [x] [数据库优化](docs/数据库优化.md)
