@@ -99,7 +99,7 @@ MyISAM 提供了大量的特性，包括压缩表、空间数据索引等。
 下面的语句可以将 mytable 表的引擎修改为 InnoDB
 
 ```sql
-ALTER TABLE mytable ENGINE = InnoDB;
+ALTER TABLE mytable ENGINE = InnoDB
 ```
 
 ## 2. 数据类型
