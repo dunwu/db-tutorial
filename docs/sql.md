@@ -16,27 +16,27 @@ tags:
 
 <!-- TOC depthFrom:2 depthTo:2 -->
 
-- [概念](#概念)
-- [SQL 基础](#sql-基础)
-- [增删改查](#增删改查)
-- [过滤](#过滤)
-- [函数](#函数)
-- [排序和分组](#排序和分组)
-- [子查询](#子查询)
-- [连接和组合](#连接和组合)
-- [数据定义](#数据定义)
-- [约束](#约束)
-- [事务处理](#事务处理)
-- [权限控制](#权限控制)
-- [存储过程](#存储过程)
-- [游标](#游标)
-- [触发器](#触发器)
-- [知识点小结](#知识点小结)
-- [参考资料](#参考资料)
+- [1. 概念](#1-概念)
+- [2. SQL 基础](#2-sql-基础)
+- [3. 增删改查](#3-增删改查)
+- [4. 过滤](#4-过滤)
+- [5. 函数](#5-函数)
+- [6. 排序和分组](#6-排序和分组)
+- [7. 子查询](#7-子查询)
+- [8. 连接和组合](#8-连接和组合)
+- [9. 数据定义](#9-数据定义)
+- [10. 约束](#10-约束)
+- [11. 事务处理](#11-事务处理)
+- [12. 权限控制](#12-权限控制)
+- [13. 存储过程](#13-存储过程)
+- [14. 游标](#14-游标)
+- [15. 触发器](#15-触发器)
+- [16. 知识点小结](#16-知识点小结)
+- [17. 参考资料](#17-参考资料)
 
 <!-- /TOC -->
 
-## 概念
+## 1. 概念
 
 - 数据库（database）：保存有组织的数据的容器（通常是一个文件或一组文件）。
 - 数据表（table）：某种特定类型数据的结构化清单。
@@ -44,7 +44,7 @@ tags:
 - 列（column）：表中的一个字段。所有表都是由一个或多个列组成的。
 - 行（row）：表中的一个记录。
 
-## SQL 基础
+## 2. SQL 基础
 
 > SQL（Structured Query Language)，标准 SQL 由 ANSI 标准委员会管理，从而称为 ANSI SQL。各个 DBMS 都有自己的实现，如 PL/SQL、Transact-SQL 等。
 
@@ -133,7 +133,7 @@ DCL 以控制用户的访问权限为主，因此其指令作法并不复杂，�
 
 TCL 的核心指令是 `COMMIT`、`ROLLBACK`。
 
-## 增删改查
+## 3. 增删改查
 
 ### 插入数据
 
@@ -251,7 +251,7 @@ SELECT * FROM mytable LIMIT 0, 5;
 SELECT * FROM mytable LIMIT 2, 3;
 ```
 
-## 过滤
+## 4. 过滤
 
 ### WHERE
 
@@ -388,7 +388,7 @@ FROM products
 WHERE prod_name LIKE '__ inch teddy bear';
 ```
 
-## 函数
+## 5. 函数
 
 各个 DBMS 的函数都是不相同的，因此不可移植。
 
@@ -476,7 +476,7 @@ SELECT AVG(DISTINCT col1) AS avg_col
 FROM mytable
 ```
 
-## 排序和分组
+## 6. 排序和分组
 
 ### ORDER BY
 
@@ -546,7 +546,7 @@ GROUP BY cust_name
 HAVING COUNT(*) >= 1;
 ```
 
-## 子查询
+## 7. 子查询
 
 ### 要点
 
@@ -575,7 +575,7 @@ WHERE cust_id IN (SELECT cust_id
                                       WHERE prod_id = 'RGAN01'));
 ```
 
-## 连接和组合
+## 8. 连接和组合
 
 ### 连接（JOIN）
 
@@ -680,7 +680,7 @@ WHERE cust_name = 'Fun4All';
   - `JOIN` 中连接表的列可能不同，但在 `UNION` 中，所有查询的列数和列顺序必须相同。
   - `UNION` 将查询之后的行放在一起（垂直放置），但 `JOIN` 将查询之后的列放在一起（水平放置），即它构成一个笛卡尔积。
 
-## 数据定义
+## 9. 数据定义
 
 > DDL 的主要功能是定义数据库对象（如：数据库、数据表、视图、索引等）。
 
@@ -838,7 +838,7 @@ CREATE UNIQUE INDEX user_index
 ON user (id);
 ```
 
-## 约束
+## 10. 约束
 
 ### 要点
 
@@ -868,7 +868,7 @@ CREATE TABLE Users (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 ```
 
-## 事务处理
+## 11. 事务处理
 
 ### 要点
 
@@ -907,7 +907,7 @@ ROLLBACK TO updateA;
 COMMIT;
 ```
 
-## 权限控制
+## 12. 权限控制
 
 ### 要点
 
@@ -970,7 +970,7 @@ REVOKE SELECT, INSERT ON *.* FROM myuser;
 SET PASSWORD FOR myuser = 'mypass';
 ```
 
-## 存储过程
+## 13. 存储过程
 
 ### 要点
 
@@ -1015,7 +1015,7 @@ call proc_adder(2,@b,@s);
 select @s as sum;
 ```
 
-## 游标
+## 14. 游标
 
 ### 要点
 
@@ -1066,7 +1066,7 @@ DELIMITER ;
 call getTotal();
 ```
 
-## 触发器
+## 15. 触发器
 
 ### 示例
 
@@ -1141,13 +1141,13 @@ DROP TRIGGER IF EXISTS trigger_insert_user;
   - 在 `DELETE` 型触发器中，`OLD` 用来表示将要或已经被删除的原数据；
   - 使用方法： `NEW.columnName` （columnName 为相应数据表某一列名）
 
-## 知识点小结
+## 16. 知识点小结
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/dunwu/database/master/images/mysql/mysql.png" alt="mysql" width="1024">
 </p>
 
-## 参考资料
+## 17. 参考资料
 
 - BenForta. SQL 必知必会 [M]. 人民邮电出版社, 2013.
 - [『浅入深出』MySQL 中事务的实现](https://draveness.me/mysql-transaction)
