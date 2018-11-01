@@ -1,3 +1,5 @@
+--    【超过5名学生的课】
+--
 --    有一个courses 表 ，有: student (学生) 和 class (课程)。
 --
 --    请列出所有超过或等于5名学生的课。
@@ -27,4 +29,7 @@
 --    Note:
 --    学生在每个课中不应被重复计算。
 
-SELECT class FROM courses GROUP BY class HAVING COUNT(DISTINCT student)>4;
+SELECT CLASS
+FROM COURSES
+GROUP BY CLASS
+HAVING COUNT(DISTINCT STUDENT)>4;

@@ -1,3 +1,5 @@
+--  大的国家
+--
 --  这里有张 World 表
 --
 --  +-----------------+------------+------------+--------------+---------------+
@@ -22,6 +24,7 @@
 --  | Algeria      | 37100000    | 2381741      |
 --  +--------------+-------------+--------------+
 
-SELECT name, population, area FROM World
-WHERE area > 3000000 OR population > 25000000;
+SELECT NAME, POPULATION, AREA
+FROM World
+WHERE AREA > 3000000 OR POPULATION > 25000000;
 

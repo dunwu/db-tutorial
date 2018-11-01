@@ -1,3 +1,5 @@
+--    超过经理收入的员工
+--
 --    Employee 表包含所有员工，他们的经理也属于员工。每个员工都有一个 Id，此外还有一列对应员工的经理的 Id。
 --
 --    +----+-------+--------+-----------+
@@ -21,13 +23,18 @@
 -- 第 1 种查询
 SELECT e1.Name AS Employee
 FROM Employee e1
-INNER JOIN Employee e2
-ON e1.ManagerId = e2.Id AND e1.Salary > e2.Salary;
+    INNER JOIN Employee e2
+    ON e1.ManagerId = e2.Id AND e1.Salary > e2.Salary;
 
 -- 第 2 种解法
-SELECT e1.Name AS Employee FROM Employee e1, Employee  e2
+SELECT e1.Name AS Employee
+FROM Employee e1, Employee  e2
 WHERE e1.ManagerId = e2.Id AND e1.Salary > e2.Salary;
 
 -- 第 3 种查询
-SELECT e1.Name AS Employee FROM Employee e1 WHERE
-e1.Salary > (SELECT e2.Salary FROM Employee e2 WHERE e1.ManagerId = e2.Id);
+SELECT e1.Name AS Employee
+FROM Employee e1
+WHERE
+e1.Salary > (SELECT e2.Salary
+FROM Employee e2
+WHERE e1.ManagerId = e2.Id);

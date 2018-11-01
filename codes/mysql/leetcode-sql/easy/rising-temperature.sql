@@ -1,3 +1,5 @@
+--    上升的温度
+--
 --    给定一个 Weather 表，编写一个 SQL 查询，来查找与之前（昨天的）日期相比温度更高的所有日期的 Id。
 --
 --    +---------+------------------+------------------+
@@ -17,6 +19,8 @@
 --    |  4 |
 --    +----+
 
-SELECT w1.Id FROM Weather w1, Weather w2
-WHERE w1.RecordDate = DATE_ADD(w2.RecordDate,interval 1 DAY )
+SELECT w1.Id
+FROM Weather w1, Weather w2
+WHERE w1.RecordDate = DATE_ADD(w2.RecordDate,interval
+1 DAY )
 AND w1.Temperature > w2.Temperature;

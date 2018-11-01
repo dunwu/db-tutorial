@@ -1,3 +1,5 @@
+--    第二高的薪水
+--
 --    编写一个 SQL 查询，获取 Employee 表中第二高的薪水（Salary） 。
 --
 --    +----+--------+
@@ -15,7 +17,7 @@
 --    | 200                 |
 --    +---------------------+
 
-
-SELECT (SELECT DISTINCT salary FROM Employee
-ORDER BY salary DESC LIMIT 1,1)
+SELECT (SELECT DISTINCT SALARY
+    FROM Employee
+    ORDER BY SALARY DESC LIMIT 1,1)
 AS SecondHighestSalary;

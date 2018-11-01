@@ -1,3 +1,5 @@
+--    从不订购的客户
+--
 --    某网站包含两个表，Customers 表和 Orders 表。编写一个 SQL 查询，找出所有从不订购任何东西的客户。
 --
 --    Customers 表：
@@ -27,10 +29,12 @@
 --    | Max       |
 --    +-----------+
 
-SELECT Name AS Customers FROM Customers c
-WHERE c.Id NOT IN (SELECT DISTINCT CustomerId FROM Orders);
+SELECT Name AS Customers
+FROM Customers c
+WHERE c.Id NOT IN (SELECT DISTINCT CustomerId
+FROM Orders);
 
 SELECT Name AS Customers
 FROM Customers
-INNER JOIN Orders
-ON Customers.Id != Orders.CustomerId;
+    INNER JOIN Orders
+    ON Customers.Id != Orders.CustomerId;

@@ -1,3 +1,5 @@
+--    【交换工资】
+--
 --    给定一个 salary表，如下所示，有m=男性 和 f=女性的值 。
 --    交换所有的 f 和 m 值(例如，将所有 f 值更改为 m，反之亦然)。要求使用一个更新查询，并且没有中间临时表。
 --
@@ -18,9 +20,9 @@
 --    | 3  | C    | f   | 5500   |
 --    | 4  | D    | m   | 500    |
 
-UPDATE salary
-SET sex =
-    CASE sex
+UPDATE SALARY
+SET SEX =
+    CASE SEX
         WHEN 'm'
         THEN 'f'
         ELSE 'm'
