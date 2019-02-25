@@ -4,7 +4,7 @@
 >
 > 关键词：Database, RDBM, psql
 
-![](http://oyz7npk35.bkt.clouddn.com/images/20180920181010182614.png)
+<br><div align="center"><img src="http://oyz7npk35.bkt.clouddn.com/images/20180920181010182614.png"/></div><br>
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
@@ -26,7 +26,7 @@
 
 官方下载页面要求用户选择相应版本，然后动态的给出安装提示，如下图所示：
 
-![](http://oyz7npk35.bkt.clouddn.com/images/20180920181010174348.png)
+<br><div align="center"><img src="http://oyz7npk35.bkt.clouddn.com/images/20180920181010174348.png"/></div><br>
 
 前 3 步要求用户选择，后 4 步是根据选择动态提示的安装步骤
 
