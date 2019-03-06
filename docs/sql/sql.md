@@ -1073,7 +1073,7 @@ DROP TRIGGER IF EXISTS trigger_insert_user;
 
 ## 16. 更多内容
 
-> :notebook: 本文已归档到：https://github.com/dunwu/notes
+> :notebook: 本文已归档到：「[blog](https://github.com/dunwu/blog)」
 
 - BenForta. SQL 必知必会 [M]. 人民邮电出版社, 2013.
 - [『浅入深出』MySQL 中事务的实现](https://draveness.me/mysql-transaction)

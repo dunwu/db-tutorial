@@ -9,4 +9,4 @@
 
 ## :door: 传送门
 
-| [回首頁](https://github.com/dunwu/notes) |
+| [回首頁](https://github.com/dunwu/blog) |
