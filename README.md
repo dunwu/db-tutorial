@@ -1,30 +1,18 @@
-# 数据库（Database）
+# 数据库教程
 
-## 数据库原理
+> 数据库经验总结
 
-- [数据库系统概论](docs/数据库系统概论.md)
-- [数据库面试题](docs/数据库面试题.md)
-
-## Sql
-
-### [Sql 语句](docs/sql.md)
-
-### [Mysql](docs/mysql/mysql.md)
-
-> 关键词：存储引擎,数据类型,事务,MVCC,索引,执行计划,复制
-
-- [Mysql 安装](docs/mysql/install-mysql.md) - Centos 环境下的 Mysql 安装
-- [Leetcode 数据库篇题解](codes/mysql/leetcode-sql)
-
-### 其他 RDB
-
-- [PostgreSQL](docs/postgresql.md)
-- [H2](docs/h2.md)
-
-## NoSql
-
-- [Redis](docs/redis/redis.md)
-
-## 数据库工具
-
-- [Flyway](docs/flyway.md)
+- :one: [关系型数据库](docs/sql/README.md)
+  - [关系型数据库面试题](docs/sql/关系型数据库面试题.md)
+  - [关系型数据库基本原理](docs/sql/关系型数据库基本原理.md)
+  - [SQL 基本语法](docs/sql/sql.md)
+  - [H2 快速指南](docs/sql/h2.md)
+  - [PostgreSQL 快速指南](docs/sql/postgresql.md)
+  - [数据库中间件 flyway](docs/sql/middleware/flyway.md)
+- :two: [Nosql](docs/nosql/README.md)
+- :three: [Mysql](docs/sql/mysql/README.md)
+  - [Mysql 命令](docs/sql/mysql/mysql-cli.md)
+  - [Mysql 维护](docs/sql/mysql/mysql-maintain.md)
+  - [Mysql 原理](docs/sql/mysql/mysql-theory.md)
+- :four: [Redis](docs/nosql/redis/README.md)
+  - [Redis 快速入门](docs/nosql/redis/redis-quickstart.md)
