@@ -20,6 +20,7 @@
     - [命令](#命令)
     - [支持的数据库](#支持的数据库)
 - [资料](#资料)
+- [:door: 传送门](#door-传送门)
 
 <!-- /TOC -->
 
@@ -453,7 +454,7 @@ SQL Callbacks 也可以包含描述（description）。这种情况下，SQL Cal
 
 当同一个 event 有多个 SQL callbacks，将按照它们描述（description）的顺序执行。
 
-> **注：** Flyway 也支持你配置的  `sqlMigrationSuffixes`。
+> **注：** Flyway 也支持你配置的 `sqlMigrationSuffixes`。
 
 ##### JAVA Callbacks
 
@@ -463,7 +464,7 @@ JAVA Callbacks 有 3 种形式：
 
 1. **基于 Java 的 Migrations** - 实现 JdbcMigration、SpringJdbcMigration、MigrationInfoProvider、MigrationChecksumProvider、ConfigurationAware、FlywayConfiguration
 2. **基于 Java 的 Callbacks** - 实现 org.flywaydb.core.api.callback 接口。
-3. **自定义 Migration resolvers 和 executors** -  实现 MigrationResolver、MigrationExecutor、ConfigurationAware、FlywayConfiguration 接口。
+3. **自定义 Migration resolvers 和 executors** - 实现 MigrationResolver、MigrationExecutor、ConfigurationAware、FlywayConfiguration 接口。
 
 > :point_right: 更多细节请参考：https://flywaydb.org/documentation/callbacks
 
@@ -506,3 +507,7 @@ Flyway 的功能主要围绕着 7 个基本命令：[Migrate](https://flywaydb.o
 ## 资料
 
 | [Github](https://github.com/flyway/flyway) | [官方文档](https://flywaydb.org/) |
+
+## :door: 传送门
+
+| [技术文档归档](https://github.com/dunwu/blog) | [数据库教程系列](https://github.com/dunwu/db-tutorial/codes) |

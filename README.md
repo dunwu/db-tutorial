@@ -1,6 +1,10 @@
 # 数据库教程
 
-> 数据库经验总结
+> 数据库技术总结
+>
+> :dart: 所有配套源码整理归档在 [**db-tutorial**](https://github.com/dunwu/db-tutorial/codes) 中。
+
+## :memo: 知识点
 
 - :one: [关系型数据库](docs/sql/README.md)
   - [关系型数据库面试题](docs/sql/关系型数据库面试题.md)
@@ -16,3 +20,7 @@
   - [Mysql 原理](docs/sql/mysql/mysql-theory.md)
 - :four: [Redis](docs/nosql/redis/README.md)
   - [Redis 快速入门](docs/nosql/redis/redis-quickstart.md)
+
+## :door: 传送门
+
+| [技术文档归档](https://github.com/dunwu/blog) | [数据库教程系列](https://github.com/dunwu/db-tutorial/codes) |

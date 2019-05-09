@@ -30,6 +30,7 @@
     - [7.1. 主从复制](#71-主从复制)
     - [7.2. 读写分离](#72-读写分离)
 - [8. 参考资料](#8-参考资料)
+- [:door: 传送门](#door-传送门)
 
 <!-- /TOC -->
 
@@ -562,3 +563,7 @@ MySQL 读写分离能提高性能的原因在于：
 - [20+ 条 MySQL 性能优化的最佳经验](https://www.jfox.info/20-tiao-mysql-xing-nen-you-hua-de-zui-jia-jing-yan.html)
 - [How to create unique row ID in sharded databases?](https://stackoverflow.com/questions/788829/how-to-create-unique-row-id-in-sharded-databases)
 - [SQL Azure Federation – Introduction](http://geekswithblogs.net/shaunxu/archive/2012/01/07/sql-azure-federation-ndash-introduction.aspx)
+
+## :door: 传送门
+
+| [技术文档归档](https://github.com/dunwu/blog) | [数据库教程系列](https://github.com/dunwu/db-tutorial/codes) |

@@ -13,6 +13,7 @@
 - [备份和恢复](#备份和恢复)
     - [数据库备份](#数据库备份)
     - [数据库恢复](#数据库恢复)
+- [:door: 传送门](#door-传送门)
 
 <!-- /TOC -->
 
@@ -85,3 +86,7 @@ mysqldump -u root -p'yourpassword' -h<ip> mysql >/tmp/mysql.sql
 ```bash
 mysql -u root -p'yourpassword' mysql < /home/zp/sql/all.sql
 ```
+
+## :door: 传送门
+
+| [技术文档归档](https://github.com/dunwu/blog) | [数据库教程系列](https://github.com/dunwu/db-tutorial/codes) |
