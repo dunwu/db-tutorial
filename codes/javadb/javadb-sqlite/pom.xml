@@ -9,9 +9,8 @@
     <version>2.1.1.RELEASE</version>
   </parent>
 
-  <groupId>io.github.dunwu.db</groupId>
-  <artifactId>sqlite-demo</artifactId>
-  <name>SQLite Demo</name>
+  <groupId>io.github.dunwu</groupId>
+  <artifactId>javadb-sqlite</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
@@ -45,6 +44,16 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>io.github.dunwu.db.SqliteApplication</mainClass>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
