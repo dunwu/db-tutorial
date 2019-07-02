@@ -1,0 +1,15 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[submodule]
+	active = .
+[remote "github"]
+	url = git@github.com:dunwu/db-tutorial.git
+	fetch = +refs/heads/*:refs/remotes/github/*
+[remote "gitee"]
+	url = git@gitee.com:turnon/db-tutorial.git
+	fetch = +refs/heads/*:refs/remotes/gitee/*
