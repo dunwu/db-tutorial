@@ -1,16 +1,15 @@
 # 数据库教程
 
 > 数据库技术总结
->
-> :dart: 所有配套源码整理归档在 [**db-tutorial**](https://github.com/dunwu/db-tutorial/codes) 中。
 
-## :memo: 知识点
+## 知识点
 
 - :one: [关系型数据库](sql/README.md)
-  - [关系型数据库面试题](sql/关系型数据库面试题.md)
-  - [关系型数据库基本原理](sql/关系型数据库基本原理.md)
-  - [SQL 基本语法](sql/sql.md)
+  - [关系型数据库面试题](sql/sql-interview.md)
+  - [关系型数据库基本原理](sql/sql-theory.md)
+  - [SQL 基本语法](sql/sql-grammar.md)
   - [H2 快速指南](sql/h2.md)
+  - [SqLite 快速指南](sql/sqlite.md)
   - [PostgreSQL 快速指南](sql/postgresql.md)
   - [数据库中间件 flyway](sql/middleware/flyway.md)
 - :two: [Nosql](nosql/README.md)
@@ -21,6 +20,6 @@
 - :four: [Redis](nosql/redis/README.md)
   - [Redis 快速入门](nosql/redis/redis-quickstart.md)
 
-## :door: 传送门
+## 传送门
 
 | [技术文档归档](https://github.com/dunwu/blog) | [数据库教程系列](https://github.com/dunwu/db-tutorial/codes) |

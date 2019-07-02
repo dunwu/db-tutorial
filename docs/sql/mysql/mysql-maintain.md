@@ -1,26 +1,5 @@
 # Mysql 维护
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [安装配置](#安装配置)
-    - [安装 mysql yum 源](#安装-mysql-yum-源)
-    - [安装 mysql 服务器](#安装-mysql-服务器)
-    - [启动 mysql 服务](#启动-mysql-服务)
-    - [初始化数据库密码](#初始化数据库密码)
-    - [配置远程访问](#配置远程访问)
-    - [跳过登录认证](#跳过登录认证)
-- [运维](#运维)
-- [备份与恢复](#备份与恢复)
-    - [备份](#备份)
-    - [恢复](#恢复)
-- [卸载](#卸载)
-- [问题](#问题)
-    - [JDBC 与 Mysql 因 CST 时区协商无解导致偏差了 14 或 13 小时](#jdbc-与-mysql-因-cst-时区协商无解导致偏差了-14-或-13-小时)
-- [参考资料](#参考资料)
-- [:door: 传送门](#door-传送门)
-
-<!-- /TOC -->
-
 ## 安装配置
 
 通过 rpm 包安装
@@ -96,14 +75,14 @@ $ yum install mysql-community-server
 
 ```bash
 # 启动 mysql 服务
-$ systemctl start mysqld.service
+systemctl start mysqld.service
 
 # 查看运行状态
-$ systemctl status mysqld.service
+systemctl status mysqld.service
 
 # 开机启动
-$ systemctl enable mysqld
-$ systemctl daemon-reload
+systemctl enable mysqld
+systemctl daemon-reload
 ```
 
 ### 初始化数据库密码
@@ -118,22 +97,24 @@ $ grep "password" /var/log/mysqld.log
 执行命令：
 
 ```bash
-mysql -uroot -p
+mysql -uroot -p<临时密码>
 ```
 
-输入临时密码，进入 mysql
+输入临时密码，进入 mysql，如果要修改密码，执行以下指令：
 
 ```bash
-ALTER user 'root'@'localhost' IDENTIFIED BY 'Tw#123456';
+ALTER user 'root'@'localhost' IDENTIFIED BY '你的密码';
 ```
 
 注：密码强度默认为中等，大小写字母、数字、特殊符号，只有修改成功后才能修改配置再设置更简单的密码
 
 ### 配置远程访问
 
-```
-GRANT ALL ON *.* TO 'root'@'localhost';
-FLUSH PRIVILEGES;
+```sql
+mysql> CREATE USER 'root'@'%' IDENTIFIED BY '你的密码';
+mysql> GRANT ALL ON *.* TO 'root'@'%';
+mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '你的密码';
+mysql> FLUSH PRIVILEGES;
 ```
 
 ### 跳过登录认证
@@ -148,15 +129,257 @@ vim /etc/my.cnf
 
 执行 `service mysqld restart`，重启 mysql
 
+## 部署
+
+### 主从节点部署
+
+假设需要配置一个主从 Mysql 服务器环境
+
+- master 节点：192.168.8.10
+- slave 节点：192.168.8.11
+
+#### 配置主从同步
+
+（1）主节点配置
+
+执行 `vi /etc/my.cnf` ，添加如下配置：
+
+```ini
+[mysqld]
+server-id=1
+log-bin=mysql-bin
+```
+
+- `server-id` - 服务器 ID 号；
+- `log-bin` - 同步的日志路径及文件名，一定注意这个目录要是mysql有权限写入的；
+
+（2）从节点配置
+
+执行 `vi /etc/my.cnf` ，添加如下配置：
+
+```ini
+[mysqld]
+server-id=2
+log-bin=mysql-bin
+```
+
+（3）创建用于复制操作的用户
+
+```sql
+mysql> CREATE USER 'sync'@'192.168.8.11' IDENTIFIED WITH mysql_native_password BY '密码'; -- 创建用户
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'sync'@'192.168.8.11'; -- 授权
+mysql> FLUSH PRIVILEGES; -- 刷新授权表信息
+```
+
+（4）查看主节点状态
+
+```sql
+mysql> show master status;
++------------------+----------+--------------+---------------------------------------------+-------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB                            | Executed_Gtid_Set |
++------------------+----------+--------------+---------------------------------------------+-------------------+
+| mysql-bin.000001 |     4202 |              | mysql,information_schema,performance_schema |                   |
++------------------+----------+--------------+---------------------------------------------+-------------------+
+1 row in set (0.00 sec)
+```
+
+（5）在Slave节点上设置主节点参数
+
+`MASTER_LOG_FILE` 和 `MASTER_LOG_POS` 参数要分别与 `show master status` 指令获得的 `File` 和 `Position` 属性值对应。
+
+```sql
+mysql> CHANGE MASTER TO
+MASTER_HOST='192.168.199.149',
+MASTER_USER='sync',
+MASTER_PASSWORD='密码',
+MASTER_LOG_FILE='binlog.000001',
+MASTER_LOG_POS=4202;
+
+```
+
+（6）查看主从同步状态
+
+```
+mysql> show slave status\G;
+```
+
+说明：如果以下两项参数均为 YES，说明配置正确。
+
+- `Slave_IO_Running`
+- `Slave_SQL_Running`
+
+（7）启动 slave 进程
+
+```
+mysql> start slave;
+```
+
+#### 同步主节点已有数据到从节点
+
+主库操作：
+
+（1）停止主库的数据更新操作
+
+```sql
+mysql> flush tables with read lock;
+```
+
+（2）新开终端，生成主数据库的备份（导出数据库）
+
+```bash
+$ mysqldump -uroot -p<密码> test > test.sql
+```
+
+（3）将备份文件传到从库
+
+```bash
+$ scp test.sql root@192.168.8.11:/root/
+```
+
+（4）主库解锁
+
+```mysql
+mysql> unlock tables;
+```
+
+ 从库操作：
+
+（1）停止从库slave
+
+```mysql
+mysql> stop slave;
+```
+
+（2）新建数据库test
+
+```mysql
+mysql> create database test default charset utf8;
+```
+
+（3）导入数据
+
+```bash
+$ mysql -uroot -ptest123 cmdb<cmdb.sql 
+```
+
+（4）查看从库已有该数据库和数据 
+
+```mysql
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| cmdb               |
+| mysql              |
+| performance_schema |
+| test               |
++--------------------+
+```
+
 ## 运维
 
-## 备份与恢复
+### 创建用户
+
+```
+CREATE USER 'username'@'host' IDENTIFIED BY 'password';
+```
+
+说明：
+
+- username：你将创建的用户名
+- host：指定该用户在哪个主机上可以登陆，如果是本地用户可用 localhost，如果想让该用户可以**从任意远程主机登陆**，可以使用通配符`%`
+- password：该用户的登陆密码，密码可以为空，如果为空则该用户可以不需要密码登陆服务器
+
+示例：
+
+```sql
+CREATE USER 'dog'@'localhost' IDENTIFIED BY '123456';
+CREATE USER 'pig'@'192.168.1.101_' IDENDIFIED BY '123456';
+CREATE USER 'pig'@'%' IDENTIFIED BY '123456';
+CREATE USER 'pig'@'%' IDENTIFIED BY '';
+CREATE USER 'pig'@'%';
+```
+
+### 授权
+
+命令：
+
+```sql
+GRANT privileges ON databasename.tablename TO 'username'@'host'
+```
+
+说明：
+
+- privileges：用户的操作权限，如`SELECT`，`INSERT`，`UPDATE`等，如果要授予所的权限则使用`ALL`
+- databasename：数据库名
+- tablename：表名，如果要授予该用户对所有数据库和表的相应操作权限则可用`*`表示，如`*.*`
+
+示例：
+
+```sql
+GRANT SELECT, INSERT ON test.user TO 'pig'@'%';
+GRANT ALL ON *.* TO 'pig'@'%';
+GRANT ALL ON maindataplus.* TO 'pig'@'%';
+```
+
+注意：
+
+用以上命令授权的用户不能给其它用户授权，如果想让该用户可以授权，用以下命令:
+
+```sql
+GRANT privileges ON databasename.tablename TO 'username'@'host' WITH GRANT OPTION;
+```
+
+### 撤销授权
+
+命令:
+
+```
+REVOKE privilege ON databasename.tablename FROM 'username'@'host';
+```
+
+说明:
+
+privilege, databasename, tablename：同授权部分
+
+例子:
+
+```
+REVOKE SELECT ON *.* FROM 'pig'@'%';
+```
+
+注意:
+
+假如你在给用户`'pig'@'%'`授权的时候是这样的（或类似的）：`GRANT SELECT ON test.user TO 'pig'@'%'`，则在使用`REVOKE SELECT ON *.* FROM 'pig'@'%';`命令并不能撤销该用户对 test 数据库中 user 表的`SELECT` 操作。相反，如果授权使用的是`GRANT SELECT ON *.* TO 'pig'@'%';`则`REVOKE SELECT ON test.user FROM 'pig'@'%';`命令也不能撤销该用户对 test 数据库中 user 表的`Select`权限。
+
+具体信息可以用命令`SHOW GRANTS FOR 'pig'@'%';` 查看。
+
+### 更改用户密码
+
+```sql
+SET PASSWORD FOR 'username'@'host' = PASSWORD('newpassword');
+```
+
+如果是当前登陆用户用:
+
+```sql
+SET PASSWORD = PASSWORD("newpassword");
+```
+
+示例：
+
+```sql
+SET PASSWORD FOR 'pig'@'%' = PASSWORD("123456");
+```
+
+### 备份与恢复
 
 Mysql 备份数据使用 mysqldump 命令。
 
 mysqldump 将数据库中的数据备份成一个文本文件，表的结构和表中的数据将存储在生成的文本文件中。
 
-### 备份
+备份：
 
 （1）备份一个数据库
 
@@ -183,7 +406,7 @@ mysqldump -u <username> -p --databases <database1> <database2> ... > backup.sql
 mysqldump -u <username> -p -all-databases > backup.sql
 ```
 
-### 恢复
+恢复：
 
 Mysql 恢复数据使用 mysqldump 命令。
 
@@ -193,7 +416,7 @@ Mysql 恢复数据使用 mysqldump 命令。
 mysql -u <username> -p <database> < backup.sql
 ```
 
-## 卸载
+### 卸载
 
 （1）查看已安装的 mysql
 
@@ -258,11 +481,12 @@ Query OK, 0 rows affected (0.00 sec)
 
 ## 参考资料
 
-https://www.cnblogs.com/xiaopotian/p/8196464.html
-https://www.cnblogs.com/bigbrotherer/p/7241845.html
-https://blog.csdn.net/managementandjava/article/details/80039650
-http://www.manongjc.com/article/6996.html
-https://www.cnblogs.com/xyabk/p/8967990.html
+- https://www.cnblogs.com/xiaopotian/p/8196464.html
+- https://www.cnblogs.com/bigbrotherer/p/7241845.html
+- https://blog.csdn.net/managementandjava/article/details/80039650
+- http://www.manongjc.com/article/6996.html
+- https://www.cnblogs.com/xyabk/p/8967990.html
+- [MySQL 8.0主从（Master-Slave）配置](https://blog.csdn.net/zyhlwzy/article/details/80569422)
 
 ## :door: 传送门
 

@@ -7,10 +7,11 @@
 ## :memo: 知识点
 
 - :one: [关系型数据库](docs/sql/README.md)
-  - [关系型数据库面试题](docs/sql/关系型数据库面试题.md)
-  - [关系型数据库基本原理](docs/sql/关系型数据库基本原理.md)
-  - [SQL 基本语法](docs/sql/sql.md)
+  - [关系型数据库面试题](docs/sql/sql-interview.md)
+  - [关系型数据库基本原理](docs/sql/sql-theory.md)
+  - [SQL 基本语法](docs/sql/sql-grammar.md)
   - [H2 快速指南](docs/sql/h2.md)
+  - [SqLite 快速指南](docs/sql/sqlite.md)
   - [PostgreSQL 快速指南](docs/sql/postgresql.md)
   - [数据库中间件 flyway](docs/sql/middleware/flyway.md)
 - :two: [Nosql](docs/nosql/README.md)
