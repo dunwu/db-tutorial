@@ -134,7 +134,7 @@ CALL phelloword()
 对于任意结点，其内部的关键字 Key 是升序排列的。每个节点中都包含了 data。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/B-TREE.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/B-TREE.png" />
 </div>
 
 对于每个结点，主要包含一个关键字数组 Key[]，一个指针数组（指向儿子）Son[]。
@@ -153,7 +153,7 @@ B+Tree 是 B-Tree 的变种：
 - 非叶子节点不存储 data，只存储 key；叶子节点不存储指针。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/B+TREE.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/B+TREE.png" />
 </div>
 
 由于并不是所有节点都具有相同的域，因此 B+Tree 中叶节点和内节点一般大小不同。这点与 B-Tree 不同，虽然 B-Tree 中不同节点存放的 key 和指针可能数量不一致，但是每个节点的域和上限是一致的，所以在实现中 B-Tree 往往对每个节点申请同等大小的空间。
@@ -163,7 +163,7 @@ B+Tree 是 B-Tree 的变种：
 一般在数据库系统或文件系统中使用的 B+Tree 结构都在经典 B+Tree 的基础上进行了优化，增加了顺序访问指针。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/带有顺序访问指针的B+Tree.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/带有顺序访问指针的B+Tree.png" />
 </div>
 
 在 B+Tree 的每个叶子节点增加一个指向相邻叶子节点的指针，就形成了带有顺序访问指针的 B+Tree。
@@ -558,7 +558,7 @@ MySQL 读写分离能提高性能的原因在于：
 - 增加冗余，提高可用性。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/mysql/master-slave-proxy.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/master-slave-proxy.png" />
 </div>
 
 #### 1.7.1.2. 垂直切分

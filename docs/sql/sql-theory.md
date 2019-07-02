@@ -5,45 +5,39 @@
 <!-- TOC depthFrom:2 depthTo:3 -->
 
 - [1. 索引](#1-索引)
-  - [1.1. 索引的优点和缺点](#11-索引的优点和缺点)
-  - [1.2. 索引类型](#12-索引类型)
-  - [1.3. 索引数据结构](#13-索引数据结构)
-  - [1.4. 索引原则](#14-索引原则)
+    - [1.1. 索引的优点和缺点](#11-索引的优点和缺点)
+    - [1.2. 索引类型](#12-索引类型)
+    - [1.3. 索引数据结构](#13-索引数据结构)
+    - [1.4. 索引原则](#14-索引原则)
 - [2. 事务](#2-事务)
-  - [2.1. ACID](#21-acid)
-  - [2.2. 并发一致性问题](#22-并发一致性问题)
-  - [2.3. 事务隔离级别](#23-事务隔离级别)
-  - [2.4. 死锁](#24-死锁)
+    - [2.1. ACID](#21-acid)
+    - [2.2. 并发一致性问题](#22-并发一致性问题)
+    - [2.3. 事务隔离级别](#23-事务隔离级别)
 - [3. 并发控制](#3-并发控制)
-  - [3.1. 锁粒度](#31-锁粒度)
-  - [3.2. 数据库锁的类型](#32-数据库锁的类型)
-  - [3.3. 数据库锁的协议](#33-数据库锁的协议)
+    - [3.1. 锁粒度](#31-锁粒度)
+    - [3.2. 锁类型](#32-锁类型)
+    - [3.3. 锁协议](#33-锁协议)
+    - [3.4. 死锁](#34-死锁)
 - [4. 多版本并发控制](#4-多版本并发控制)
-  - [4.1. 版本号](#41-版本号)
-  - [4.2. Undo 日志](#42-undo-日志)
-  - [4.3. 实现过程](#43-实现过程)
-  - [4.4. 快照读与当前读](#44-快照读与当前读)
+    - [4.1. 版本号](#41-版本号)
+    - [4.2. Undo 日志](#42-undo-日志)
+    - [4.3. 实现过程](#43-实现过程)
+    - [4.4. 快照读与当前读](#44-快照读与当前读)
 - [5. 分库分表](#5-分库分表)
-  - [5.1. 水平拆分](#51-水平拆分)
-  - [5.2. 垂直拆分](#52-垂直拆分)
-  - [5.3. Sharding 策略](#53-sharding-策略)
-  - [5.4. 分库分表的问题及解决方案](#54-分库分表的问题及解决方案)
-  - [5.5. 常用的分库分表中间件](#55-常用的分库分表中间件)
-- [6. sql 优化](#6-sql-优化)
-  - [6.1. 使用执行计划进行分析](#61-使用执行计划进行分析)
-  - [6.2. 优化数据访问](#62-优化数据访问)
-  - [6.3. 重构查询方式](#63-重构查询方式)
+    - [5.1. 水平拆分](#51-水平拆分)
+    - [5.2. 垂直拆分](#52-垂直拆分)
+    - [5.3. Sharding 策略](#53-sharding-策略)
+    - [5.4. 分库分表的问题及解决方案](#54-分库分表的问题及解决方案)
+    - [5.5. 常用的分库分表中间件](#55-常用的分库分表中间件)
+- [6. SQL 优化](#6-sql-优化)
+    - [6.1. 使用执行计划进行分析](#61-使用执行计划进行分析)
+    - [6.2. 优化数据访问](#62-优化数据访问)
+    - [6.3. 重构查询方式](#63-重构查询方式)
 - [7. 关系数据库设计理论](#7-关系数据库设计理论)
-  - [7.1. 函数依赖](#71-函数依赖)
-  - [7.2. 异常](#72-异常)
-  - [7.3. 范式](#73-范式)
-- [8. ER 图](#8-er-图)
-  - [8.1. 实体的三种联系](#81-实体的三种联系)
-  - [8.2. 表示出现多次的关系](#82-表示出现多次的关系)
-  - [8.3. 联系的多向性](#83-联系的多向性)
-  - [8.4. 表示子类](#84-表示子类)
-- [9. 资料](#9-资料)
-- [:door: 传送门](#door-传送门)
+    - [7.1. 函数依赖](#71-函数依赖)
+    - [7.2. 异常](#72-异常)
+    - [7.3. 范式](#73-范式)
+- [8. 参考资料](#8-参考资料)
 
 <!-- /TOC -->
 
@@ -97,7 +91,7 @@ B-Tree 不同于 Binary Tree（二叉树，最多有两个子树），它是平�
 对于任意结点，其内部的关键字 Key 是升序排列的。每个节点中都包含了 data。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/B-TREE.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/B-TREE.png" />
 </div>
 
 对于每个结点，主要包含一个关键字数组 Key[]，一个指针数组（指向儿子）Son[]。
@@ -116,17 +110,17 @@ B+Tree 是 B-Tree 的变种：
 - 非叶子节点不存储 data，只存储 key；叶子节点不存储指针。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/B+TREE.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/B+TREE.png" />
 </div>
 
 由于并不是所有节点都具有相同的域，因此 B+Tree 中叶节点和内节点一般大小不同。这点与 B-Tree 不同，虽然 B-Tree 中不同节点存放的 key 和指针可能数量不一致，但是每个节点的域和上限是一致的，所以在实现中 B-Tree 往往对每个节点申请同等大小的空间。
 
-##### 带有顺序访问指针的 B+Tree
+**带有顺序访问指针的 B+Tree**
 
 一般在数据库系统或文件系统中使用的 B+Tree 结构都在经典 B+Tree 的基础上进行了优化，增加了顺序访问指针。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/带有顺序访问指针的B+Tree.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/带有顺序访问指针的B+Tree.png" />
 </div>
 
 在 B+Tree 的每个叶子节点增加一个指向相邻叶子节点的指针，就形成了带有顺序访问指针的 B+Tree。
@@ -217,86 +211,71 @@ SELECT ... WHERE TO_DAYS(CURRENT_DAT) - TO_DAYS(date_col) <= 10;
 
 ## 2. 事务
 
+> 事务指的是满足 ACID 特性的一组操作，可以通过 Commit 提交一个事务，也可以使用 Rollback 进行回滚。
+
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库事务.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库事务.png"/>
 </div>
-
-事务指的是满足 ACID 特性的一组操作，可以通过 Commit 提交一个事务，也可以使用 Rollback 进行回滚。
-
 ### 2.1. ACID
 
-#### 原子性（Automicity）
+- **原子性（Automicity）**
+  - 事务被视为不可分割的最小单元，事务中的所有操作要么全部提交成功，要么全部失败回滚。
+  - 回滚可以用日志来实现，日志记录着事务所执行的修改操作，在回滚时反向执行这些修改操作即可。
+- **一致性（Consistency）**
+  - 数据库在事务执行前后都保持一致性状态。
+  - 在一致性状态下，所有事务对一个数据的读取结果都是相同的。
+- **隔离性（Isolation）**
+  - 一个事务所做的修改在最终提交以前，对其它事务是不可见的。
+- **持久性（Durability）**
+  - 一旦事务提交，则其所做的修改将会永远保存到数据库中。即使系统发生崩溃，事务执行的结果也不能丢失。
+  - 可以通过数据库备份和恢复来实现，在系统发生奔溃时，使用备份的数据库进行数据恢复。
 
-事务被视为不可分割的最小单元，事务中的所有操作要么全部提交成功，要么全部失败回滚。
-
-回滚可以用日志来实现，日志记录着事务所执行的修改操作，在回滚时反向执行这些修改操作即可。
-
-#### 一致性（Consistency）
-
-数据库在事务执行前后都保持一致性状态。
-
-在一致性状态下，所有事务对一个数据的读取结果都是相同的。
-
-#### 隔离性（Isolation）
-
-一个事务所做的修改在最终提交以前，对其它事务是不可见的。
-
-#### 持久性（Durability）
-
-一旦事务提交，则其所做的修改将会永远保存到数据库中。即使系统发生崩溃，事务执行的结果也不能丢失。
-
-可以通过数据库备份和恢复来实现，在系统发生奔溃时，使用备份的数据库进行数据恢复。
-
-#### ACID 小结
-
-事务的 ACID 特性概念简单，但不是很好理解，主要是因为这几个特性不是一种平级关系：
-
-- 只有满足一致性，事务的执行结果才是正确的。
-- 在无并发的情况下，事务串行执行，隔离性一定能够满足。此时要只要能满足原子性，就一定能满足一致性。
-- 在并发的情况下，多个事务并发执行，事务不仅要满足原子性，还需要满足隔离性，才能满足一致性。
-- 事务满足持久化是为了能应对数据库奔溃的情况。
+> ACID 小结：
+>
+> 事务的 ACID 特性概念简单，但不是很好理解，主要是因为这几个特性不是一种平级关系：
+>
+> - 只有满足一致性，事务的执行结果才是正确的。
+> - 在无并发的情况下，事务串行执行，隔离性一定能够满足。此时要只要能满足原子性，就一定能满足一致性。
+> - 在并发的情况下，多个事务并发执行，事务不仅要满足原子性，还需要满足隔离性，才能满足一致性。
+> - 事务满足持久化是为了能应对数据库奔溃的情况。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库ACID.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库ACID.png"/>
 </div>
 
 ### 2.2. 并发一致性问题
 
 在并发环境下，事务的隔离性很难保证，因此会出现很多并发一致性问题。
 
-#### 丢失修改
+- **丢失修改**
 
 T<sub>1</sub> 和 T<sub>2</sub> 两个事务都对一个数据进行修改，T<sub>1</sub> 先修改，T<sub>2</sub> 随后修改，T<sub>2</sub> 的修改覆盖了 T<sub>1</sub> 的修改。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库并发一致性-丢失修改.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库并发一致性-丢失修改.png"/>
 </div>
-
-#### 脏数据
+- **脏数据**
 
 T<sub>1</sub> 修改一个数据，T<sub>2</sub> 随后读取这个数据。如果 T<sub>1</sub> 撤销了这次修改，那么 T<sub>2</sub> 读取的数据是脏数据。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库并发一致性-脏数据.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库并发一致性-脏数据.png"/>
 </div>
-
-#### 不可重复读
+- **不可重复读**
 
 T<sub>2</sub> 读取一个数据，T<sub>1</sub> 对该数据做了修改。如果 T<sub>2</sub> 再次读取这个数据，此时读取的结果和第一次读取的结果不同。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库并发一致性-不可重复读.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库并发一致性-不可重复读.png"/>
 </div>
-
-#### 幻影读
+- **幻读**
 
 T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插入新的数据，T<sub>1</sub> 再次读取这个范围的数据，此时读取的结果和和第一次读取的结果不同。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库并发一致性-幻读.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库并发一致性-幻读.png"/>
 </div>
-
-#### 并发一致性解决方案
+并发一致性解决方案：
 
 产生并发不一致性问题主要原因是破坏了事务的隔离性，解决方法是通过并发控制来保证隔离性。
 
@@ -304,21 +283,17 @@ T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插�
 
 ### 2.3. 事务隔离级别
 
-- 未提交读（READ UNCOMMITTED） - 事务中的修改，即使没有提交，对其它事务也是可见的。
-- 提交读（READ COMMITTED） - 一个事务只能读取已经提交的事务所做的修改。换句话说，一个事务所做的修改在提交之前对其它事务是不可见的。
-- 可重复读（REPEATABLE READ） - 保证在同一个事务中多次读取同样数据的结果是一样的。
-- 可串行化（SERIALIXABLE） - 强制事务串行执行。
+- **`未提交读（READ UNCOMMITTED）`** - 事务中的修改，即使没有提交，对其它事务也是可见的。
+- **`提交读（READ COMMITTED）`** - 一个事务只能读取已经提交的事务所做的修改。换句话说，一个事务所做的修改在提交之前对其它事务是不可见的。
+- **`重复读（REPEATABLE READ）`** - 保证在同一个事务中多次读取同样数据的结果是一样的。
+- **`串行化（SERIALIXABLE）`** - 强制事务串行执行。
 
 | 隔离级别 | 脏读 | 不可重复读 | 幻影读 |
 | :------: | :--: | :--------: | :----: |
-| 未提交读 | YES  |    YES     |  YES   |
-|  提交读  |  NO  |    YES     |  YES   |
-| 可重复读 |  NO  |     NO     |  YES   |
-| 可串行化 |  NO  |     NO     |   NO   |
-
-### 2.4. 死锁
-
-死锁是指两个或者多个事务在同一资源上相互占用，并请求锁定对方占用的资源，从而导致恶性循环的现象。当多个事务试图以不同的顺序锁定资源时，就可能会产生死锁。多个事务同时锁定一个资源时，也会产生死锁。
+| 未提交读 |  ✔   |     ✔      |   ✔    |
+|  提交读  |  ❌  |     ✔      |   ✔    |
+|  重复读  |  ❌  |     ❌     |   ✔    |
+|  串行化  |  ❌  |     ❌     |   ❌   |
 
 ## 3. 并发控制
 
@@ -337,7 +312,7 @@ T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插�
 - **表级锁（table lock）** - 锁定整张表。用户对表进行写操作前，需要先获得写锁，这会阻塞其他用户对该表的所有读写操作。只有没有写锁时，其他用户才能获得读锁，读锁之间不会相互阻塞。
 - **行级锁（row lock）** - 仅对指定的行记录进行加锁，这样其它进程还是可以对同一个表中的其它记录进行操作。
 
-### 3.2. 数据库锁的类型
+### 3.2. 锁类型
 
 #### 读写锁
 
@@ -351,10 +326,10 @@ T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插�
 
 锁的兼容关系如下：
 
-|  -  |  X  |  S  |
-| :-: | :-: | :-: |
-|  X  | NO  | NO  |
-|  S  | NO  | YES |
+| 锁类型 |  X  |  S  |
+| :----: | :-: | :-: |
+|   X    | ❌  | ❌  |
+|   S    | ❌  |  ✔  |
 
 #### 意向锁
 
@@ -371,19 +346,19 @@ T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插�
 
 各种锁的兼容关系如下：
 
-|  -  |  X  | IX  |  S  | IS  |
-| :-: | :-: | :-: | :-: | :-: |
-|  X  | NO  | NO  | NO  | NO  |
-| IX  | NO  | YES | NO  | YES |
-|  S  | NO  | NO  | YES | YES |
-| IS  | NO  | YES | YES | YES |
+| 锁类型 |  X  | IX  |  S  | IS  |
+| :----: | :-: | :-: | :-: | :-: |
+|   X    | ❌  | ❌  | ❌  | ❌  |
+|   IX   | ❌  |  ✔  | ❌  |  ✔  |
+|   S    | ❌  | ❌  |  ✔  |  ✔  |
+|   IS   | ❌  |  ✔  |  ✔  |  ✔  |
 
 解释如下：
 
 - 任意 IS/IX 锁之间都是兼容的，因为它们只是表示想要对表加锁，而不是真正加锁；
 - S 锁只与 S 锁和 IS 锁兼容，也就是说事务 T 想要对数据行加 S 锁，其它事务可以已经获得对表或者表中的行的 S 锁。
 
-### 3.3. 数据库锁的协议
+### 3.3. 锁协议
 
 #### 三级锁协议
 
@@ -468,6 +443,12 @@ lock-x(A)...lock-s(B)...lock-s(C)...unlock(A)...unlock(C)...unlock(B)
 lock-x(A)...unlock(A)...lock-s(B)...unlock(B)...lock-s(C)...unlock(C)
 ```
 
+### 3.4. 死锁
+
+**死锁是指两个或者多个事务在同一资源上相互占用，并请求锁定对方占用的资源，从而导致恶性循环的现象**。
+
+当多个事务试图以不同的顺序锁定资源时，就可能会产生死锁。多个事务同时锁定一个资源时，也会产生死锁。
+
 ## 4. 多版本并发控制
 
 多版本并发控制（Multi-Version Concurrency Control, MVCC）是实现隔离级别的一种具体方式。
@@ -482,13 +463,13 @@ MVCC 的实现，是通过保存数据在某个时间的快照来实现的。
 
 ### 4.1. 版本号
 
-- 系统版本号：是一个递增的数字，每开始一个新的事务，系统版本号就会自动递增。
-- 事务版本号：事务开始时的系统版本号。
+- **`系统版本号`** - 是一个递增的数字，每开始一个新的事务，系统版本号就会自动递增。
+- **`事务版本号`** - 事务开始时的系统版本号。
 
 MVCC 在每行记录后面都保存着两个隐藏的列，用来存储两个版本号：
 
-- 创建版本号：指示创建一个数据行的快照时的系统版本号；
-- 删除版本号：如果该快照的删除版本号大于当前事务版本号表示该快照有效，否则表示该快照已经被删除了。
+- **`创建版本号`** - 指示创建一个数据行的快照时的系统版本号；
+- **`删除版本号`** - 如果该快照的删除版本号大于当前事务版本号表示该快照有效，否则表示该快照已经被删除了。
 
 ### 4.2. Undo 日志
 
@@ -513,7 +494,7 @@ MVCC 使用到的快照存储在 Undo 日志中，该日志通过回滚指针把
 将当前系统版本号作为数据行快照的创建版本号。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/mvcc_insert.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/mvcc_insert.png"/>
 </div>
 
 #### DELETE
@@ -521,7 +502,7 @@ MVCC 使用到的快照存储在 Undo 日志中，该日志通过回滚指针把
 将当前系统版本号作为数据行快照的删除版本号。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/mvcc_delete.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/mvcc_delete.png"/>
 </div>
 
 #### UPDATE
@@ -529,7 +510,7 @@ MVCC 使用到的快照存储在 Undo 日志中，该日志通过回滚指针把
 将当前系统版本号作为更新后的数据行快照的创建版本号，同时将当前系统版本号作为更新前的数据行快照的删除版本号。可以理解为先执行 DELETE 后执行 INSERT。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/mvcc_update.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/mvcc_update.png"/>
 </div>
 
 ### 4.4. 快照读与当前读
@@ -563,7 +544,7 @@ delete;
 ### 5.1. 水平拆分
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库水平拆分.jpg" width="500" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库水平拆分.jpg" width="500" />
 </div>
 
 对于海量数据的数据库，如果表并不多，但每张表的数据非常多，这时候适合水平切分，即把表的数据按某种规则（比如按 ID 散列）切分到多个数据库(server)上。
@@ -573,7 +554,7 @@ delete;
 ### 5.2. 垂直拆分
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库垂直拆分.jpg" width="500" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库垂直拆分.jpg" width="500" />
 </div>
 
 垂直切分是将一张表按列切分成多个表，通常是按照列的关系密集程度进行切分，也可以利用垂直切分将经常被使用的列和不经常被使用的列切分到不同的表中。
@@ -653,7 +634,7 @@ delete;
 - [OneProxy(支付宝首席架构师楼方鑫开发)](http://www.cnblogs.com/youge-OneSQL/articles/4208583.html)
 - [vitess（谷歌开发的数据库中间件）](https://github.com/youtube/vitess)
 
-## 6. sql 优化
+## 6. SQL 优化
 
 ### 6.1. 使用执行计划进行分析
 
@@ -671,17 +652,9 @@ delete;
 
 #### 减少请求的数据量
 
-（一）只返回必要的列
-
-最好不要使用 SELECT \* 语句。
-
-（二）只返回必要的行
-
-使用 WHERE 语句进行查询过滤，有时候也需要使用 LIMIT 语句来限制返回的数据。
-
-（三）缓存重复查询的数据
-
-使用缓存可以避免在数据库中进行查询，特别要查询的数据经常被重复查询，缓存可以带来的查询性能提升将会是非常明显的。
+- **只返回必要的列** - 最好不要使用 `SELECT *` 语句。
+- **只返回必要的行** - 使用 `WHERE` 语句进行查询过滤，有时候也需要使用 `LIMIT` 语句来限制返回的数据。
+- **缓存重复查询的数据** - 使用缓存可以避免在数据库中进行查询，特别要查询的数据经常被重复查询，缓存可以带来的查询性能提升将会是非常明显的。
 
 #### 减少服务器端扫描的行数
 
@@ -693,11 +666,11 @@ delete;
 
 一个大查询如果一次性执行的话，可能一次锁住很多数据、占满整个事务日志、耗尽系统资源、阻塞很多小的但重要的查询。
 
-```
+```sql
 DELEFT FROM messages WHERE create < DATE_SUB(NOW(), INTERVAL 3 MONTH);
 ```
 
-```
+```sql
 rows_affected = 0
 do {
     rows_affected = do_query(
@@ -709,13 +682,13 @@ do {
 
 将一个大连接查询（JOIN）分解成对每一个表进行一次单表查询，然后将结果在应用程序中进行关联，这样做的好处有：
 
-- 让缓存更高效。对于连接查询，如果其中一个表发生变化，那么整个查询缓存就无法使用。而分解后的多个查询，即使其中一个表发生变化，对其它表的查询缓存依然可以使用。
-- 分解成多个单表查询，这些单表查询的缓存结果更可能被其它查询使用到，从而减少冗余记录的查询。
-- 减少锁竞争；
-- 在应用层进行连接，可以更容易对数据库进行拆分，从而更容易做到高性能和可扩展。
-- 查询本身效率也可能会有所提升。例如下面的例子中，使用 IN() 代替连接查询，可以让 MySQL 按照 ID 顺序进行查询，这可能比随机的连接要更高效。
+- **缓存更高效**。对于连接查询，如果其中一个表发生变化，那么整个查询缓存就无法使用。而分解后的多个查询，即使其中一个表发生变化，对其它表的查询缓存依然可以使用。
+- 分解成多个单表查询，这些单表查询的缓存结果更可能被其它查询使用到，从而**减少冗余记录的查询**。
+- **减少锁竞争**；
+- **在应用层进行连接，可以更容易对数据库进行拆分**，从而更容易做到高性能和可扩展。
+- **查询本身效率也可能会有所提升**。例如下面的例子中，使用 `IN()` 代替连接查询，可以让 MySQL 按照 ID 顺序进行查询，这可能比随机的连接要更高效。
 
-```
+```sql
 SELECT * FROM tag
 JOIN tag_post ON tag_post.tag_id=tag.id
 JOIN post ON tag_post.post_id=post.id
@@ -762,20 +735,20 @@ SELECT * FROM post WHERE post.id IN (123,456,567,9098,8904);
 高级别范式的依赖于低级别的范式，1NF 是最低级别的范式。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/RDB/数据库范式.png"/>
+<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/数据库范式.png"/>
 </div>
 
 #### 第一范式 (1NF)
 
-属性不可分；
+属性不可分。
 
 #### 第二范式 (2NF)
 
-每个非主属性完全函数依赖于键码。
+- 每个非主属性完全函数依赖于键码。
 
-可以通过分解来满足。
+- 可以通过分解来满足。
 
-<font size=4> **分解前** </font><br>
+**分解前**
 
 | Sno | Sname  | Sdept  | Mname  | Cname  | Grade |
 | :-: | :----: | :----: | :----: | :----: | :---: |
@@ -794,7 +767,7 @@ Grade 完全函数依赖于键码，它没有任何冗余数据，每个学生�
 
 Sname, Sdept 和 Mname 都部分依赖于键码，当一个学生选修了多门课时，这些数据就会出现多次，造成大量冗余数据。
 
-<font size=4> **分解后** </font><br>
+**分解后**
 
 关系-1
 
@@ -824,7 +797,7 @@ Sname, Sdept 和 Mname 都部分依赖于键码，当一个学生选修了多门
 
 #### 第三范式 (3NF)
 
-非主属性不传递依赖于键码。
+- 非主属性不传递依赖于键码。
 
 上面的 关系-1 中存在以下传递依赖：Sno -> Sdept -> Mname，可以进行以下分解：
 
@@ -843,39 +816,9 @@ Sname, Sdept 和 Mname 都部分依赖于键码，当一个学生选修了多门
 | 学院-1 | 院长-1 |
 | 学院-2 | 院长-2 |
 
-## 8. ER 图
-
-Entity-Relationship，有三个组成部分：实体、属性、联系。
-
-用来进行关系型数据库系统的概念设计。
-
-### 8.1. 实体的三种联系
-
-包含一对一，一对多，多对多三种。
-
-如果 A 到 B 是一对多关系，那么画个带箭头的线段指向 B；如果是一对一，画两个带箭头的线段；如果是多对多，画两个不带箭头的线段。下图的 Course 和 Student 是一对多的关系。
-
-### 8.2. 表示出现多次的关系
-
-一个实体在联系出现几次，就要用几条线连接。下图表示一个课程的先修关系，先修关系出现两个 Course 实体，第一个是先修课程，后一个是后修课程，因此需要用两条线来表示这种关系。
-
-### 8.3. 联系的多向性
-
-虽然老师可以开设多门课，并且可以教授多名学生，但是对于特定的学生和课程，只有一个老师教授，这就构成了一个三元联系。
-
-一般只使用二元联系，可以把多元关系转换为二元关系。
-
-### 8.4. 表示子类
-
-用一个三角形和两条线来连接类和子类，与子类有关的属性和联系都连到子类上，而与父类和子类都有关的连到父类上。
-
-## 9. 资料
+## 8. 参考资料
 
 - [数据库系统原理](https://github.com/CyC2018/Interview-Notebook/blob/master/notes/数据库系统原理.md)
 - [分库分表需要考虑的问题及方案](https://www.jianshu.com/p/32b3e91aa22c)
 - [数据库分库分表(sharding)系列(二) 全局主键生成策略](https://blog.csdn.net/bluishglc/article/details/7710738)
 - [一种支持自由规划无须数据迁移和修改路由代码的 Sharding 扩容方案](https://blog.csdn.net/bluishglc/article/details/7970268)
-
-## :door: 传送门
-
-| [技术文档归档](https://github.com/dunwu/blog) | [数据库教程系列](https://github.com/dunwu/db-tutorial/codes) |

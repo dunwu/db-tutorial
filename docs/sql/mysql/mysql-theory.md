@@ -55,18 +55,6 @@ mysql> SHOW ENGINES;
 ALTER TABLE mytable ENGINE = InnoDB
 ```
 
-### 1.1. InnoDB
-
-InnoDB 是 MySQL 默认的事务型存储引擎，只有在需要 InnoDB 不支持的特性时，才考虑使用其它存储引擎。
-
-InnoDB 实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ 间隙锁（next-key locking）防止幻影读。
-
-主索引是聚簇索引，在索引中保存了数据，从而避免直接读取磁盘，因此对查询性能有很大的提升。
-
-内部做了很多优化，包括从磁盘读取数据时采用的可预测性读、能够加快读操作并且自动创建的自适应哈希索引、能够加速插入操作的插入缓冲区等。
-
-支持真正的在线热备份。其它存储引擎不支持在线热备份，要获取一致性视图需要停止对所有表的写入，而在读写混合场景中，停止写入可能也意味着停止读取。
-
 ### 1.2. MyISAM
 
 MyISAM 设计简单，数据以紧密格式存储。对于只读数据，或者表比较小、可以容忍修复操作，则依然可以使用 MyISAM。
@@ -82,6 +70,20 @@ MyISAM 提供了大量的特性，包括压缩表、空间数据索引等。
 可以手工或者自动执行检查和修复操作，但是和事务恢复以及崩溃恢复不同，可能导致一些数据丢失，而且修复操作是非常慢的。
 
 如果指定了 DELAY_KEY_WRITE 选项，在每次修改执行完成时，不会立即将修改的索引数据写入磁盘，而是会写到内存中的键缓冲区，只有在清理键缓冲区或者关闭表的时候才会将对应的索引块写入磁盘。这种方式可以极大的提升写入性能，但是在数据库或者主机崩溃时会造成索引损坏，需要执行修复操作。
+
+###  InnoDB
+
+InnoDB 是 MySQL 默认的事务型存储引擎，只有在需要 InnoDB 不支持的特性时，才考虑使用其它存储引擎。
+
+然InnoDB也使用B+Tree作为索引结构，但具体实现方式却与MyISAM截然不同。MyISAM索引文件和数据文件是分离的，索引文件仅保存数据记录的地址。而**在InnoDB中，表数据文件本身就是按B+Tree组织的一个索引结构**，这棵树的叶节点data域保存了完整的数据记录。这个**索引的key是数据表的主键**，因此**InnoDB表数据文件本身就是主索引**。
+
+InnoDB 实现了四个标准的隔离级别，默认级别是可重复读（REPEATABLE READ）。在可重复读隔离级别下，通过多版本并发控制（MVCC）+ 间隙锁（next-key locking）防止幻影读。
+
+主索引是聚簇索引，在索引中保存了数据，从而避免直接读取磁盘，因此对查询性能有很大的提升。
+
+内部做了很多优化，包括从磁盘读取数据时采用的可预测性读、能够加快读操作并且自动创建的自适应哈希索引、能够加速插入操作的插入缓冲区等。
+
+支持真正的在线热备份。其它存储引擎不支持在线热备份，要获取一致性视图需要停止对所有表的写入，而在读写混合场景中，停止写入可能也意味着停止读取。
 
 ## 2. 数据类型
 
@@ -529,7 +531,7 @@ Mysql 支持两种复制：基于行的复制和基于语句的复制。
 - **SQL 线程** ：负责读取中继日志并重放其中的 SQL 语句。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/mysql/master-slave.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/master-slave.png" />
 </div>
 
 ### 7.2. 读写分离
@@ -545,7 +547,7 @@ MySQL 读写分离能提高性能的原因在于：
 - 增加冗余，提高可用性。
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/dunwu/images/master/images/database/mysql/master-slave-proxy.png" />
+<img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/master-slave-proxy.png" />
 </div>
 
 ## 8. 参考资料

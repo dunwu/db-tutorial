@@ -1,8 +1,9 @@
 # 数据库教程
 
-> 数据库技术总结
+> :1234: 数据库经验总结
 >
-> :dart: 所有配套源码整理归档在 [**db-tutorial**](https://github.com/dunwu/db-tutorial/codes) 中。
+> - :repeat: 项目同步维护：[Github](https://github.com/dunwu/db-tutorial/) | [Gitee](https://gitee.com/turnon/db-tutorial/)
+> - :book: 电子书阅读：[Github Pages](https://dunwu.github.io/db-tutorial/) | [Gitee Pages](https://turnon.gitee.io/db-tutorial/)
 
 ## :memo: 知识点
 
