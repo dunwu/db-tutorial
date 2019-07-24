@@ -18,7 +18,7 @@
 - :two: [Nosql](nosql/README.md)
 - :three: [Mysql](sql/mysql/README.md)
   - [Mysql 命令](sql/mysql/mysql-cli.md)
-  - [Mysql 维护](sql/mysql/mysql-maintain.md)
+  - [Mysql 维护](sql/mysql/mysql-ops.md)
   - [Mysql 原理](sql/mysql/mysql-theory.md)
 - :four: [Redis](nosql/redis/README.md)
   - [Redis 快速入门](nosql/redis/redis-quickstart.md)
