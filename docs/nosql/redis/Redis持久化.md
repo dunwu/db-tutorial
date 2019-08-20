@@ -1,6 +1,6 @@
 ---
 title: Redis 持久化
-date: 2018/06/11
+date: 2018-06-11
 categories:
 - database
 tags:
@@ -242,7 +242,7 @@ Redis 的容灾备份基本上就是对数据进行备份，并将这些备份�
 ### Redis 复制的启动过程
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/redis/Redis复制启动过程.png" width="400"/>
+<img src="http://dunwu.test.upcdn.net/images/database/redis/Redis复制启动过程.png!zp" width="400"/>
 </div>
 
 当多个从服务器尝试连接同一个主服务器时：

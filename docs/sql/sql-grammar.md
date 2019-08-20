@@ -77,7 +77,7 @@
 ### 2.1. SQL 语法结构
 
 <p align="center">
-  <img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/sql-syntax.png" alt="sql-syntax">
+  <img src="http://dunwu.test.upcdn.net/images/database/mysql/sql-syntax.png!zp" alt="sql-syntax">
 </p>
 
 SQL 语法结构包括：
@@ -538,7 +538,7 @@ HAVING COUNT(*) >= 1;
 - 子查询必须被圆括号 `()` 括起来。
 - 内部查询首先在其父查询之前执行，以便可以将内部查询的结果传递给外部查询。执行过程可以参考下图：
   <p align="center">
-    <img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/sql-subqueries.gif" alt="sql-subqueries">
+    <img src="http://dunwu.test.upcdn.net/images/database/mysql/sql-subqueries.gif!zp" alt="sql-subqueries">
   </p>
 
 **子查询的子查询**
@@ -573,7 +573,7 @@ WHERE cust_id IN (SELECT cust_id
 >   - 连接可以替换子查询，并且比子查询的效率一般会更快。
 >
 > <div align="center">
->   <img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/sql-join.png" alt="sql-join">
+>   <img src="http://dunwu.test.upcdn.net/images/database/mysql/sql-join.png!zp" alt="sql-join">
 > </div>
 
 #### 1.8.1.1. 内连接（INNER JOIN）

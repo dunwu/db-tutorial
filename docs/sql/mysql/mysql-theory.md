@@ -283,13 +283,13 @@ InnoDB 的 B+Tree 索引分为主索引和辅助索引。
 主索引的叶子节点 data 域记录着完整的数据记录，这种索引方式被称为聚簇索引。因为无法把数据行存放在两个不同的地方，所以一个表只能有一个聚簇索引。
 
 <div align="center">
-<img src="http://upload-images.jianshu.io/upload_images/3101171-28ea7c1487bd12bb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+<img src="http://upload-images.jianshu.io/upload_images/3101171-28ea7c1487bd12bb.png"/>
 </div>
 
 辅助索引的叶子节点的 data 域记录着主键的值，因此在使用辅助索引进行查找时，需要先查找到主键值，然后再到主索引中进行查找。
 
 <div align="center">
-<img src="http://upload-images.jianshu.io/upload_images/3101171-96c6c85468df0f89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+<img src="http://upload-images.jianshu.io/upload_images/3101171-96c6c85468df0f89.png"/>
 </div>
 
 ##### B Tree 原理
@@ -297,7 +297,7 @@ InnoDB 的 B+Tree 索引分为主索引和辅助索引。
 ###### B-Tree
 
 <div align="center">
-<img src="http://upload-images.jianshu.io/upload_images/3101171-5594de9a48e524e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+<img src="http://upload-images.jianshu.io/upload_images/3101171-5594de9a48e524e7.png"/>
 </div>
 
 定义一条数据记录为一个二元组 [key, data]，B-Tree 是满足下列条件的数据结构：
@@ -313,7 +313,7 @@ InnoDB 的 B+Tree 索引分为主索引和辅助索引。
 ###### B+Tree
 
 <div align="center">
-<img src="http://upload-images.jianshu.io/upload_images/3101171-b5a68f67743141a1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+<img src="http://upload-images.jianshu.io/upload_images/3101171-b5a68f67743141a1.png"/>
 </div>
 
 与 B-Tree 相比，B+Tree 有以下不同点：
@@ -325,7 +325,7 @@ InnoDB 的 B+Tree 索引分为主索引和辅助索引。
 ###### 顺序访问指针的 B+Tree
 
 <div align="center">
-<img src="http://upload-images.jianshu.io/upload_images/3101171-d97c1144093e2841.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240"/>
+<img src="http://upload-images.jianshu.io/upload_images/3101171-d97c1144093e2841.png"/>
 </div>
 
 一般在数据库系统或文件系统中使用的 B+Tree 结构都在经典 B+Tree 基础上进行了优化，在叶子节点增加了顺序访问指针，做这个优化的目的是为了提高区间访问的性能。
@@ -531,7 +531,7 @@ Mysql 支持两种复制：基于行的复制和基于语句的复制。
 - **SQL 线程** ：负责读取中继日志并重放其中的 SQL 语句。
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/master-slave.png" />
+<img src="http://dunwu.test.upcdn.net/images/database/mysql/master-slave.png!zp" />
 </div>
 
 ### 7.2. 读写分离
@@ -547,7 +547,7 @@ MySQL 读写分离能提高性能的原因在于：
 - 增加冗余，提高可用性。
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/master-slave-proxy.png" />
+<img src="http://dunwu.test.upcdn.net/images/database/mysql/master-slave-proxy.png!zp" />
 </div>
 
 ## 8. 参考资料

@@ -1,6 +1,6 @@
 ---
 title: Redis 数据类型
-date: 2018/06/09
+date: 2018-06-09
 categories:
 - database
 tags:
@@ -31,7 +31,7 @@ tags:
 ## STRING
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/redis/redis-datatype-string.png" width="400"/>
+<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-string.png!zp" width="400"/>
 </div>
 
 命令：
@@ -58,7 +58,7 @@ OK
 ## LIST
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/redis/redis-datatype-list.png" width="400"/>
+<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-list.png!zp" width="400"/>
 </div>
 
 命令：
@@ -95,7 +95,7 @@ OK
 ## SET
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/redis/redis-datatype-set.png" width="400"/>
+<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-set.png!zp" width="400"/>
 </div>
 
 命令：
@@ -142,7 +142,7 @@ OK
 ## HASH
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/redis/redis-datatype-hash.png" width="400"/>
+<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-hash.png!zp" width="400"/>
 </div>
 
 命令：
@@ -193,7 +193,7 @@ OK
 ## ZSET
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/redis/redis-datatype-zset.png" width="400"/>
+<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-zset.png!zp" width="400"/>
 </div>
 
 命令：

@@ -20,8 +20,10 @@
   - [Mysql 命令](sql/mysql/mysql-cli.md)
   - [Mysql 维护](sql/mysql/mysql-ops.md)
   - [Mysql 原理](sql/mysql/mysql-theory.md)
-- :four: [Redis](nosql/redis/README.md)
+- :four: Redis
   - [Redis 快速入门](nosql/redis/redis-quickstart.md)
+  - [Redis 复制](nosql/redis/Redis复制.md)
+  - [Redis 哨兵](nosql/redis/Redis哨兵.md)
 
 ## 传送门
 

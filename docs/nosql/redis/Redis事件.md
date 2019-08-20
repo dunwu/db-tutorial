@@ -1,6 +1,6 @@
 ---
 title: Redis 事件
-date: 2018/06/11
+date: 2018-06-11
 categories:
 - database
 tags:
@@ -80,5 +80,5 @@ def main():
 从事件处理的角度来看，服务器运行流程如下：
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/redis/Redis事件的调度与执行.png" />
+<img src="http://dunwu.test.upcdn.net/images/database/redis/Redis事件的调度与执行.png!zp" />
 </div>

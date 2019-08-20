@@ -1,16 +1,6 @@
-# redis 简介
+# Redis
 
-**Redis 是一个基于内存的 key- value 数据库，也可用作缓存和消息代理。**
-
-它支持多种数据类型：
-
-- String
-- Hash
-- List
-- Set
-- Sorted Set
-- Bitmap
-- HyperLogLog
+- [Redis 复制](Redis复制.md)
 
 ## 命令行
 

@@ -62,7 +62,7 @@ CALL phelloword()
 
 我们应该做到：**他们想看到什么样的数据，我们就给他们什么样的数据...一方面就能够让他们只关注自己的数据，另一方面，我们也保证数据表一些保密的数据不会泄露出来...**
 
-![img](https://user-gold-cdn.xitu.io/2018/3/5/161f3de9b3092439?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
+<div align="center"><img src="https://user-gold-cdn.xitu.io/2018/3/5/161f3de9b3092439?imageView2/0/w/1280/h/960/format/webp/ignore-error/1"/></div>
 
 我们在查询数据的时候，常常需要编写非常长的 SQL 语句，几乎每次都要写很长很长....上面已经说了，**视图就是基于查询的一种虚表，也就是说，视图可以将查询出来的数据进行封装。。。那么我们在使用的时候就会变得非常方便**...
 
@@ -134,7 +134,7 @@ CALL phelloword()
 对于任意结点，其内部的关键字 Key 是升序排列的。每个节点中都包含了 data。
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/B-TREE.png" />
+<img src="http://dunwu.test.upcdn.net/images/database/RDB/B-TREE.png!zp" />
 </div>
 
 对于每个结点，主要包含一个关键字数组 Key[]，一个指针数组（指向儿子）Son[]。
@@ -153,7 +153,7 @@ B+Tree 是 B-Tree 的变种：
 - 非叶子节点不存储 data，只存储 key；叶子节点不存储指针。
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/B+TREE.png" />
+<img src="http://dunwu.test.upcdn.net/images/database/RDB/B+TREE.png!zp" />
 </div>
 
 由于并不是所有节点都具有相同的域，因此 B+Tree 中叶节点和内节点一般大小不同。这点与 B-Tree 不同，虽然 B-Tree 中不同节点存放的 key 和指针可能数量不一致，但是每个节点的域和上限是一致的，所以在实现中 B-Tree 往往对每个节点申请同等大小的空间。
@@ -163,7 +163,7 @@ B+Tree 是 B-Tree 的变种：
 一般在数据库系统或文件系统中使用的 B+Tree 结构都在经典 B+Tree 的基础上进行了优化，增加了顺序访问指针。
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/RDB/带有顺序访问指针的B+Tree.png" />
+<img src="http://dunwu.test.upcdn.net/images/database/RDB/带有顺序访问指针的B+Tree.png!zp" />
 </div>
 
 在 B+Tree 的每个叶子节点增加一个指向相邻叶子节点的指针，就形成了带有顺序访问指针的 B+Tree。
@@ -449,11 +449,11 @@ mycat 这种 proxy 层方案的**缺点在于需要部署**，自己运维一套
 
 **水平拆分**的意思，就是把一个表的数据给弄到多个库的多个表里去，但是每个库的表结构都一样，只不过每个库表放的数据是不同的，所有库表的数据加起来就是全部数据。水平拆分的意义，就是将数据均匀放更多的库里，然后用多个库来扛更高的并发，还有就是用多个库的存储容量来进行扩容。
 
-[![database-split-horizon](https://github.com/doocs/advanced-java/raw/master/images/database-split-horizon.png)](https://github.com/doocs/advanced-java/blob/master/images/database-split-horizon.png)
+<div align="center"><img src="https://github.com/doocs/advanced-java/blob/master/images/database-split-horizon.png"/></div>
 
 **垂直拆分**的意思，就是**把一个有很多字段的表给拆分成多个表**，**或者是多个库上去**。每个库表的结构都不一样，每个库表都包含部分字段。一般来说，会**将较少的访问频率很高的字段放到一个表里去**，然后**将较多的访问频率很低的字段放到另外一个表里去**。因为数据库是有缓存的，你访问频率高的行字段越少，就可以在缓存里缓存更多的行，性能就越好。这个一般在表层面做的较多一些。
 
-[![database-split-vertically](https://github.com/doocs/advanced-java/raw/master/images/database-split-vertically.png)](https://github.com/doocs/advanced-java/blob/master/images/database-split-vertically.png)
+<div align="center"><img src="https://github.com/doocs/advanced-java/blob/master/images/database-split-vertically.png"/></div>
 
 这个其实挺常见的，不一定我说，大家很多同学可能自己都做过，把一个大表拆开，订单表、订单支付表、订单商品表。
 
@@ -558,7 +558,7 @@ MySQL 读写分离能提高性能的原因在于：
 - 增加冗余，提高可用性。
 
 <div align="center">
-<img src="https://gitee.com/turnon/images/raw/master/images/database/mysql/master-slave-proxy.png" />
+<img src="http://dunwu.test.upcdn.net/images/database/mysql/master-slave-proxy.png!zp" />
 </div>
 
 #### 1.7.1.2. 垂直切分

@@ -214,6 +214,24 @@ mysql> show slave status\G;
 mysql> start slave;
 ```
 
+（8）将 slave 服务器设为只读
+
+```
+mysql> set global read_only=1;
+mysql> set global super_read_only=1;
+mysql> show global variables like "%read_only%";
++-----------------------+-------+
+| Variable_name         | Value |
++-----------------------+-------+
+| innodb_read_only      | OFF   |
+| read_only             | ON    |
+| super_read_only       | ON    |
+| transaction_read_only | OFF   |
++-----------------------+-------+
+```
+
+> 注：设置 slave 服务器为只读，并不影响主从同步。
+
 #### 同步主节点已有数据到从节点
 
 主库操作：
@@ -403,7 +421,7 @@ mysqldump -u <username> -p --databases <database1> <database2> ... > backup.sql
 （3）备份所有数据库
 
 ```
-mysqldump -u <username> -p -all-databases > backup.sql
+mysqldump -u <username> -p --all-databases > backup.sql
 ```
 
 恢复：
