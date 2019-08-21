@@ -1,6 +1,6 @@
 # Redis
 
-- [Redis 复制](Redis复制.md)
+- [Redis 复制](redis-replication.md)
 
 ## 命令行
 

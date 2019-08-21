@@ -21,7 +21,11 @@
   - [Mysql 维护](docs/sql/mysql/mysql-ops.md)
   - [Mysql 原理](docs/sql/mysql/mysql-theory.md)
 - :four: [Redis](docs/nosql/redis/README.md)
-  - [Redis 快速入门](docs/nosql/redis/redis-quickstart.md)
+  - [Redis 快速入门](docs/nosql/redis/redis.md)
+  - [Redis 数据类型](docs/nosql/redis/redis-data-type.md)
+  - [Redis 复制](docs/nosql/redis/redis-replication.md)
+  - [Redis 哨兵](docs/nosql/redis/redis-sentinel.md)
+  - [Redis 集群](docs/nosql/redis/redis-cluster.md)
 
 ## :door: 传送门
 

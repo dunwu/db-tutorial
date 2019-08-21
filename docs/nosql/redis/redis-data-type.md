@@ -1,13 +1,3 @@
----
-title: Redis 数据类型
-date: 2018-06-09
-categories:
-- database
-tags:
-- database
-- nosql
----
-
 # Redis 数据类型
 
 <!-- TOC depthFrom:2 depthTo:3 -->
@@ -241,3 +231,7 @@ OK
 3) "mongodb"
 4) "2"
 ```
+
+## 参考资料
+
+《Redis 设计与实现》

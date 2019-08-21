@@ -1,15 +1,4 @@
----
-title: Redis
-date: 2018-06-09
-categories:
-- database
-tags:
-- database
-- key-value
-- cache
----
-
-# Redis
+# Redis 入门指南
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 

@@ -21,9 +21,12 @@
   - [Mysql 维护](sql/mysql/mysql-ops.md)
   - [Mysql 原理](sql/mysql/mysql-theory.md)
 - :four: Redis
-  - [Redis 快速入门](nosql/redis/redis-quickstart.md)
-  - [Redis 复制](nosql/redis/Redis复制.md)
-  - [Redis 哨兵](nosql/redis/Redis哨兵.md)
+  - [Redis 入门指南](nosql/redis/redis.md)
+  - [Redis 数据类型](nosql/redis/redis-data-type.md)
+  - [Redis 复制](nosql/redis/redis-replication.md)
+  - [Redis 哨兵](nosql/redis/redis-sentinel.md)
+  - [Redis 集群](nosql/redis/redis-cluster.md)
+  - [Redis 运维](nosql/redis/redis-ops.md)
 
 ## 传送门
 
