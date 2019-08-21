@@ -96,7 +96,7 @@ Redis 与 Memcached 因为都可以用于缓存，所以常常被拿来做比较
 ### 2.1. STRING
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-string.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-string.png!zp" width="400"/>
 </div>
 
 命令：
@@ -123,7 +123,7 @@ OK
 ### 2.2. LIST
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-list.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-list.png!zp" width="400"/>
 </div>
 
 命令：
@@ -160,7 +160,7 @@ OK
 ### 2.3. SET
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-set.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-set.png!zp" width="400"/>
 </div>
 
 命令：
@@ -207,7 +207,7 @@ OK
 ### 2.4. HASH
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-hash.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-hash.png!zp" width="400"/>
 </div>
 
 命令：
@@ -258,7 +258,7 @@ OK
 ### 2.5. ZSET
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-datatype-zset.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-zset.png!zp" width="400"/>
 </div>
 
 命令：

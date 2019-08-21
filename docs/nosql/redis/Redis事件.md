@@ -80,5 +80,5 @@ def main():
 从事件处理的角度来看，服务器运行流程如下：
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/Redis事件的调度与执行.png!zp" />
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/Redis事件的调度与执行.png!zp" />
 </div>

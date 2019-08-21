@@ -1,4 +1,4 @@
-<div align="center"><img width="100px" src="http://dunwu.test.upcdn.net/images/others/zp.png!zp"/></div>
+<div align="center"><img width="100px" src="http://dunwu.test.upcdn.net/cs/others/zp.png!zp"/></div>
 
 # DB Tutorial
 

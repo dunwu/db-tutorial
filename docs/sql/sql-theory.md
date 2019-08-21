@@ -46,7 +46,7 @@
 > 事务指的是满足 ACID 特性的一组操作，可以通过 Commit 提交一个事务，也可以使用 Rollback 进行回滚。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库事务.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库事务.png!zp"/>
 </div>
 ### 1.1. ACID
 
@@ -72,7 +72,7 @@
 > - 事务满足持久化是为了能应对数据库奔溃的情况。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库ACID.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库ACID.png!zp"/>
 </div>
 
 ### 1.2. 并发一致性问题
@@ -84,28 +84,28 @@
 T<sub>1</sub> 和 T<sub>2</sub> 两个事务都对一个数据进行修改，T<sub>1</sub> 先修改，T<sub>2</sub> 随后修改，T<sub>2</sub> 的修改覆盖了 T<sub>1</sub> 的修改。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库并发一致性-丢失修改.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-丢失修改.png!zp"/>
 </div>
 - **脏数据**
 
 T<sub>1</sub> 修改一个数据，T<sub>2</sub> 随后读取这个数据。如果 T<sub>1</sub> 撤销了这次修改，那么 T<sub>2</sub> 读取的数据是脏数据。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库并发一致性-脏数据.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-脏数据.png!zp"/>
 </div>
 - **不可重复读**
 
 T<sub>2</sub> 读取一个数据，T<sub>1</sub> 对该数据做了修改。如果 T<sub>2</sub> 再次读取这个数据，此时读取的结果和第一次读取的结果不同。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库并发一致性-不可重复读.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-不可重复读.png!zp"/>
 </div>
 - **幻读**
 
 T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插入新的数据，T<sub>1</sub> 再次读取这个范围的数据，此时读取的结果和和第一次读取的结果不同。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库并发一致性-幻读.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-幻读.png!zp"/>
 </div>
 并发一致性解决方案：
 
@@ -326,7 +326,7 @@ MVCC 使用到的快照存储在 Undo 日志中，该日志通过回滚指针把
 将当前系统版本号作为数据行快照的创建版本号。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/mvcc_insert.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/mvcc_insert.png!zp"/>
 </div>
 
 #### DELETE
@@ -334,7 +334,7 @@ MVCC 使用到的快照存储在 Undo 日志中，该日志通过回滚指针把
 将当前系统版本号作为数据行快照的删除版本号。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/mvcc_delete.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/mvcc_delete.png!zp"/>
 </div>
 
 #### UPDATE
@@ -342,7 +342,7 @@ MVCC 使用到的快照存储在 Undo 日志中，该日志通过回滚指针把
 将当前系统版本号作为更新后的数据行快照的创建版本号，同时将当前系统版本号作为更新前的数据行快照的删除版本号。可以理解为先执行 DELETE 后执行 INSERT。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/mvcc_update.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/mvcc_update.png!zp"/>
 </div>
 
 ### 3.4. 快照读与当前读
@@ -481,7 +481,7 @@ B-Tree 不同于 Binary Tree（二叉树，最多有两个子树），它是平�
 对于任意结点，其内部的关键字 Key 是升序排列的。每个节点中都包含了 data。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/B-TREE.png!zp" />
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/B-TREE.png!zp" />
 </div>
 
 对于每个结点，主要包含一个关键字数组 Key[]，一个指针数组（指向儿子）Son[]。
@@ -500,7 +500,7 @@ B+Tree 是 B-Tree 的变种：
 - 非叶子节点不存储 data，只存储 key；叶子节点不存储指针。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/B+TREE.png!zp" />
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/B+TREE.png!zp" />
 </div>
 
 由于并不是所有节点都具有相同的域，因此 B+Tree 中叶节点和内节点一般大小不同。这点与 B-Tree 不同，虽然 B-Tree 中不同节点存放的 key 和指针可能数量不一致，但是每个节点的域和上限是一致的，所以在实现中 B-Tree 往往对每个节点申请同等大小的空间。
@@ -510,7 +510,7 @@ B+Tree 是 B-Tree 的变种：
 一般在数据库系统或文件系统中使用的 B+Tree 结构都在经典 B+Tree 的基础上进行了优化，增加了顺序访问指针。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/带有顺序访问指针的B+Tree.png!zp" />
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/带有顺序访问指针的B+Tree.png!zp" />
 </div>
 
 在 B+Tree 的每个叶子节点增加一个指向相邻叶子节点的指针，就形成了带有顺序访问指针的 B+Tree。
@@ -607,7 +607,7 @@ SELECT ... WHERE TO_DAYS(CURRENT_DAT) - TO_DAYS(date_col) <= 10;
 ### 6.1. 水平拆分
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库水平拆分.jpg!zp" width="500" />
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库水平拆分.jpg!zp" width="500" />
 </div>
 
 对于海量数据的数据库，如果表并不多，但每张表的数据非常多，这时候适合水平切分，即把表的数据按某种规则（比如按 ID 散列）切分到多个数据库(server)上。
@@ -617,7 +617,7 @@ SELECT ... WHERE TO_DAYS(CURRENT_DAT) - TO_DAYS(date_col) <= 10;
 ### 6.2. 垂直拆分
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库垂直拆分.jpg!zp" width="500" />
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库垂直拆分.jpg!zp" width="500" />
 </div>
 
 垂直切分是将一张表按列切分成多个表，通常是按照列的关系密集程度进行切分，也可以利用垂直切分将经常被使用的列和不经常被使用的列切分到不同的表中。
@@ -734,7 +734,7 @@ SELECT ... WHERE TO_DAYS(CURRENT_DAT) - TO_DAYS(date_col) <= 10;
 高级别范式的依赖于低级别的范式，1NF 是最低级别的范式。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/RDB/数据库范式.png!zp"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库范式.png!zp"/>
 </div>
 
 #### 第一范式 (1NF)

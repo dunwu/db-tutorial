@@ -35,7 +35,7 @@ Redis 的复制功能分为同步和命令传播两个操作：
 ### 同步
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-sync.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-sync.png!zp" width="400"/>
 </div>
 
 
@@ -80,7 +80,7 @@ Redis 的复制功能分为同步和命令传播两个操作：
 它的工作原理是这样：**主服务器端为复制流维护一个内存缓冲区（in-memory backlog）。主从服务器都维护一个复制偏移量（replication offset）和 master run id ，当连接断开时，从服务器会重新连接上主服务器，然后请求继续复制，假如主从服务器的两个 master run id 相同，并且指定的偏移量在内存缓冲区中还有效，复制就会从上次中断的点开始继续**。如果其中一个条件不满足，就会进行完全重新同步（在 2.8 版本之前就是直接进行完全重新同步）。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-replication-offset.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-replication-offset.png!zp" width="400"/>
 </div>
 
 #### 复制偏移量
@@ -121,7 +121,7 @@ Redis 的复制功能分为同步和命令传播两个操作：
 ### PSYNC 命令的实现
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-psync-workflow.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-psync-workflow.png!zp" width="400"/>
 </div>
 
 ## 复制的实现

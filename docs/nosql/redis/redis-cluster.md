@@ -196,7 +196,7 @@ Redis 集群的重新分片操作由 Redis 集群管理软件 redis-trib 负责�
 重新分片的实现原理如下图所示：
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-cluster-trib.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-cluster-trib.png!zp" width="400"/>
 </div>
 
 ### ASK 错误
@@ -206,7 +206,7 @@ ASK 错误与 MOVED 的区别在于：**ASK 错误只是两个节点在迁移槽
 判断 ASK 错误的过程如下图所示：
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/images/database/redis/redis-ask.png!zp" width="400"/>
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-ask.png!zp" width="400"/>
 </div>
 
 ### 复制
