@@ -242,5 +242,6 @@ REPLCONF ACK <replication_coffset>
 
 ## 参考资料
 
+- 《Redis 实战》
 - 《Redis 设计与实现》
 - http://redisdoc.com/topic/replication.html

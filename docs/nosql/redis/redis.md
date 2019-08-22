@@ -12,10 +12,14 @@
     - [2.3. SET](#23-set)
     - [2.4. HASH](#24-hash)
     - [2.5. ZSET](#25-zset)
-- [3. 使用场景](#3-使用场景)
+- [3. Redis 使用场景](#3-redis-使用场景)
 - [4. Redis 管道](#4-redis-管道)
 - [5. 键的过期时间](#5-键的过期时间)
-- [6. 数据淘汰策略](#6-数据淘汰策略)
+- [6. 内存淘汰](#6-内存淘汰)
+    - [6.1. 内存淘汰要点](#61-内存淘汰要点)
+    - [6.2. 淘汰策略](#62-淘汰策略)
+    - [6.3. 如何选择淘汰策略](#63-如何选择淘汰策略)
+    - [6.4. 内部实现](#64-内部实现)
 - [7. 持久化](#7-持久化)
     - [7.1. 快照持久化](#71-快照持久化)
     - [7.2. AOF 持久化](#72-aof-持久化)
@@ -25,6 +29,7 @@
     - [9.2. MULTI](#92-multi)
     - [9.3. DISCARD](#93-discard)
     - [9.4. WATCH](#94-watch)
+    - [9.5. Redis 不支持回滚](#95-redis-不支持回滚)
 - [10. 事件](#10-事件)
     - [10.1. 文件事件](#101-文件事件)
     - [10.2. 时间事件](#102-时间事件)
@@ -307,7 +312,7 @@ OK
 4) "2"
 ```
 
-## 3. 使用场景
+## 3. Redis 使用场景
 
 - **缓存** - 将热点数据放到内存中，设置内存的最大使用量以及过期淘汰策略来保证缓存的命中率。
 - **计数器** - Redis 这种内存数据库能支持计数器频繁的读写操作。
@@ -353,22 +358,45 @@ redis> TTL mykey
 redis>
 ```
 
-## 6. 数据淘汰策略
+## 6. 内存淘汰
 
-可以设置内存最大使用量，当内存使用量超过时施行淘汰策略，具体有 6 种淘汰策略。
+### 6.1. 内存淘汰要点
 
-| 策略            | 描述                                                 |
-| --------------- | ---------------------------------------------------- |
-| volatile-lru    | 从已设置过期时间的数据集中挑选最近最少使用的数据淘汰 |
-| volatile-ttl    | 从已设置过期时间的数据集中挑选将要过期的数据淘汰     |
-| volatile-random | 从已设置过期时间的数据集中任意选择数据淘汰           |
-| allkeys-lru     | 从所有数据集中挑选最近最少使用的数据淘汰             |
-| allkeys-random  | 从所有数据集中任意选择数据进行淘汰                   |
-| noeviction      | 禁止驱逐数据                                         |
+- 最大缓存 - Redis 允许通过 `maxmemory` 参数来设置内存最大值。
 
-如果使用 Redis 来缓存数据时，要保证所有数据都是热点数据，可以将内存最大使用量设置为热点数据占用的内存量，然后启用 allkeys-lru 淘汰策略，将最近最少使用的数据淘汰。
+- 主键失效 - 作为一种定期清理无效数据的重要机制，在 Redis 提供的诸多命令中，`EXPIRE`、`EXPIREAT`、`PEXPIRE`、`PEXPIREAT` 以及 `SETEX` 和 `PSETEX` 均可以用来设置一条键值对的失效时间。而一条键值对一旦被关联了失效时间就会在到期后自动删除（或者说变得无法访问更为准确）。
 
-作为内存数据库，出于对性能和内存消耗的考虑，Redis 的淘汰算法（LRU、TTL）实际实现上并非针对所有 key，而是抽样一小部分 key 从中选出被淘汰 key，抽样数量可通过 maxmemory-samples 配置。
+- 淘汰策略 - 随着不断的向 redis 中保存数据，当内存剩余空间无法满足添加的数据时，redis 内就会施行数据淘汰策略，清除一部分内容然后保证新的数据可以保存到内存中。内存淘汰机制是为了更好的使用内存，用一定得 miss 来换取内存的利用率，保证 redis 缓存中保存的都是热点数据。
+
+- 非精准的 LRU - 实际上 Redis 实现的 LRU 并不是可靠的 LRU，也就是名义上我们使用 LRU 算法淘汰键，但是实际上被淘汰的键并不一定是真正的最久没用的。
+
+### 6.2. 淘汰策略
+
+内存淘汰只是 Redis 提供的一个功能，为了更好地实现这个功能，必须为不同的应用场景提供不同的策略，内存淘汰策略讲的是为实现内存淘汰我们具体怎么做，要解决的问题包括淘汰键空间如何选择？在键空间中淘汰键如何选择？
+
+Redis 提供了下面几种淘汰策略供用户选择，其中默认的策略为 **`noeviction`** 策略：
+
+- **`noeviction`** - 当内存使用达到阈值的时候，所有引起申请内存的命令会报错。
+- **`allkeys-lru`** - 在主键空间中，优先移除最近未使用的 key。
+- **`allkeys-random`** - 在主键空间中，随机移除某个 key。
+- **`volatile-lru`** - 在设置了过期时间的键空间中，优先移除最近未使用的 key。
+- **`volatile-random`** - 在设置了过期时间的键空间中，随机移除某个 key。
+- **`volatile-ttl`** - 在设置了过期时间的键空间中，具有更早过期时间的 key 优先移除。
+
+### 6.3. 如何选择淘汰策略
+
+- 如果数据呈现幂律分布，也就是一部分数据访问频率高，一部分数据访问频率低，则使用 allkeys-lru。
+- 如果数据呈现平等分布，也就是所有的数据访问频率都相同，则使用 allkeys-random。
+- volatile-lru 策略和 volatile-random 策略适合我们将一个 Redis 实例既应用于缓存和又应用于持久化存储的时候，然而我们也可以通过使用两个 Redis 实例来达到相同的效果。
+- 将 key 设置过期时间实际上会消耗更多的内存，因此我们建议使用 allkeys-lru 策略从而更有效率的使用内存。
+
+### 6.4. 内部实现
+
+Redis 删除失效主键的方法主要有两种：
+
+- 消极方法（passive way），在主键被访问时如果发现它已经失效，那么就删除它。
+- 主动方法（active way），周期性地从设置了失效时间的主键中选择一部分失效的主键删除。
+- 主动删除：当前已用内存超过 maxmemory 限定时，触发主动清理策略，该策略由启动参数的配置决定主键具体的失效时间全部都维护在 expires 这个字典表中。
 
 ## 7. 持久化
 
@@ -426,22 +454,38 @@ MULTI 、 EXEC 、 DISCARD 和 WATCH 是 Redis 事务相关的命令。
 
 ### 9.1. EXEC
 
-EXEC 命令负责触发并执行事务中的所有命令：
+**[`EXEC`](https://redis.io/commands/exec) 命令负责触发并执行事务中的所有命令。**
 
-- 如果客户端在使用 MULTI 开启了一个事务之后，却因为断线而没有成功执行 EXEC ，那么事务中的所有命令都不会被执行。
-- 另一方面，如果客户端成功在开启事务之后执行 EXEC ，那么事务中的所有命令都会被执行。
+- 如果客户端在使用 `MULTI` 开启了一个事务之后，却因为断线而没有成功执行 `EXEC` ，那么事务中的所有命令都不会被执行。
+- 另一方面，如果客户端成功在开启事务之后执行 `EXEC` ，那么事务中的所有命令都会被执行。
 
 ### 9.2. MULTI
 
-MULTI 命令用于开启一个事务，它总是返回 OK 。 MULTI 执行之后， 客户端可以继续向服务器发送任意多条命令， 这些命令不会立即被执行， 而是被放到一个队列中， 当 EXEC 命令被调用时， 所有队列中的命令才会被执行。
+**[`MULTI`](https://redis.io/commands/multi) 命令用于开启一个事务，它总是返回 OK 。**
+
+`MULTI` 执行之后， 客户端可以继续向服务器发送任意多条命令， 这些命令不会立即被执行， 而是被放到一个队列中， 当 EXEC 命令被调用时， 所有队列中的命令才会被执行。
+
+以下是一个事务例子， 它原子地增加了 foo 和 bar 两个键的值：
+
+```python
+> MULTI
+OK
+> INCR foo
+QUEUED
+> INCR bar
+QUEUED
+> EXEC
+1) (integer) 1
+2) (integer) 1
+```
 
 ### 9.3. DISCARD
 
-当执行 DISCARD 命令时， 事务会被放弃， 事务队列会被清空， 并且客户端会从事务状态中退出。
+**当执行 [`DISCARD`](https://redis.io/commands/discard) 命令时， 事务会被放弃， 事务队列会被清空， 并且客户端会从事务状态中退出。**
 
 示例：
 
-```py
+```python
 > SET foo 1
 OK
 > MULTI
@@ -456,11 +500,11 @@ OK
 
 ### 9.4. WATCH
 
-WATCH 命令可以为 Redis 事务提供 check-and-set （CAS）行为。
+**[`WATCH`](https://redis.io/commands/watch) 命令可以为 Redis 事务提供 check-and-set （CAS）行为。**
 
 被 WATCH 的键会被监视，并会发觉这些键是否被改动过了。 如果有至少一个被监视的键在 EXEC 执行之前被修改了， 那么整个事务都会被取消， EXEC 返回 nil-reply 来表示事务已经失败。
 
-```
+```python
 WATCH mykey
 val = GET mykey
 val = val + 1
@@ -479,10 +523,12 @@ WATCH 命令可以被调用多次。对键的监视从 WATCH 执行之后开始�
 
 用户还可以在单个 WATCH 命令中监视任意多个键，例如：
 
-```py
+```python
 redis> WATCH key1 key2 key3
 OK
 ```
+
+#### 取消 WATCH 的场景
 
 当 EXEC 被调用时， 不管事务是否成功执行， 对所有键的监视都会被取消。
 
@@ -490,9 +536,35 @@ OK
 
 使用无参数的 UNWATCH 命令可以手动取消对所有键的监视。 对于一些需要改动多个键的事务， 有时候程序需要同时对多个键进行加锁， 然后检查这些键的当前值是否符合程序的要求。 当值达不到要求时， 就可以使用 UNWATCH 命令来取消目前对键的监视， 中途放弃这个事务， 并等待事务的下次尝试。
 
+#### 使用 WATCH 创建原子操作
+
+WATCH 可以用于创建 Redis 没有内置的原子操作。
+
+举个例子，以下代码实现了原创的 ZPOP 命令，它可以原子地弹出有序集合中分值（score）最小的元素：
+
+```
+WATCH zset
+element = ZRANGE zset 0 0
+MULTI
+ZREM zset element
+EXEC
+```
+
+### 9.5. Redis 不支持回滚
+
+Redis 不支持回滚的理由：
+
+- Redis 命令只会因为错误的语法而失败，或是命令用在了错误类型的键上面。
+- 因为不需要对回滚进行支持，所以 Redis 的内部可以保持简单且快速。
+
 ## 10. 事件
 
 Redis 服务器是一个事件驱动程序。
+
+Redis 服务器需要处理两类事件：
+
+- 文件事件
+- 时间事件
 
 ### 10.1. 文件事件
 
@@ -513,7 +585,7 @@ Redis 将所有时间事件都放在一个无序链表中，通过遍历整个�
 
 ### 10.3. 事件的调度与执行
 
-服务器需要不断监听文件事件的套接字才能得到待处理的文件事件，但是不能监听太久，否则时间事件无法在规定的时间内执行，因此监听时间应该根据距离现在最近的时间事件来决定。
+服务器需要不断监听文件事件的套接字才能得到待处理的文件事件，但是不能一直监听，否则时间事件无法在规定的时间内执行，因此监听时间应该根据距离现在最近的时间事件来决定。
 
 事件调度与执行由 aeProcessEvents 函数负责，伪代码如下：
 
@@ -560,6 +632,10 @@ def main():
 ```
 
 从事件处理的角度来看，服务器运行流程如下：
+
+<div align="center">
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-event.png!zp" />
+</div>
 
 ## 11. 集群
 
@@ -609,6 +685,19 @@ redis 官方推荐的 Java Redis Client：
 
 ## 13. 资料
 
-- [Redis 官网](https://redis.io/)
-- [awesome-redis](https://github.com/JamzyWang/awesome-redis)
-- [Redis 实战](https://item.jd.com/11791607.html)
+- 官网
+  - [redis 官网](https://redis.io/)
+  - [redis github](https://github.com/antirez/redis)
+  - [官方文档翻译版本一](http://ifeve.com/redis-sentinel/) 翻译,排版一般,新
+  - [官方文档翻译版本二](http://redisdoc.com/topic/sentinel.html) 翻译有段时间了,但主要部分都包含,排版好
+- 书
+  - 《Redis 实战》
+  - 《Redis 设计与实现》
+- 资源汇总
+  - [awesome-redis](https://github.com/JamzyWang/awesome-redis)
+- Redis Client
+  - [spring-data-redis 官方文档 ](https://docs.spring.io/spring-data/redis/docs/1.8.13.RELEASE/reference/html/)
+  - [redisson 官方文档(中文,略有滞后)](https://github.com/redisson/redisson/wiki/%E7%9B%AE%E5%BD%95)
+  - [redisson 官方文档(英文)](https://github.com/redisson/redisson/wiki/Table-of-Content)
+  - [CRUG | Redisson PRO vs. Jedis: Which Is Faster? 翻译](https://www.jianshu.com/p/82f0d5abb002)
+  - [redis分布锁Redisson性能测试](https://blog.csdn.net/everlasting_188/article/details/51073505)

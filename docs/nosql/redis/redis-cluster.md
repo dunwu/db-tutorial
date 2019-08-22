@@ -260,6 +260,7 @@ Redis 集群选举新的主节点流程基于[共识算法：Raft](https://www.j
 
 ## 参考资料
 
+- 《Redis 实战》
 - 《Redis 设计与实现》
 - [Redis 集群教程](http://ifeve.com/redis-cluster-tutorial/)
 - [深入剖析 Redis 系列(三) - Redis 集群模式搭建与原理详解](https://juejin.im/post/5b8fc5536fb9a05d2d01fb11)

@@ -22,11 +22,8 @@
   - [Mysql 原理](docs/sql/mysql/mysql-theory.md)
 - :four: [Redis](docs/nosql/redis/README.md)
   - [Redis 快速入门](docs/nosql/redis/redis.md)
-  - [Redis 数据类型](docs/nosql/redis/redis-data-type.md)
+  - [Redis 持久化](docs/nosql/redis/redis-persistence.md)
   - [Redis 复制](docs/nosql/redis/redis-replication.md)
   - [Redis 哨兵](docs/nosql/redis/redis-sentinel.md)
   - [Redis 集群](docs/nosql/redis/redis-cluster.md)
-
-## :door: 传送门
-
-| [技术文档归档](https://github.com/dunwu/blog) | [数据库教程系列](https://github.com/dunwu/db-tutorial/codes) |
+  - [Redis 运维](docs/nosql/redis/redis-ops.md)
