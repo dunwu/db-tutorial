@@ -1,4 +1,3 @@
-
 '''
 # <start id="linux-redis-install"/>
 ~:$ wget -q http://redis.googlecode.com/files/redis-2.6.2.tar.gz    # 从http://redis.io/download下载最新版的Redis。本书写作时Redis的最新版为2.6版本。
@@ -101,7 +100,6 @@ Finished processing dependencies for redis                              #
 C:\Users\josiah>
 # <end id="windows-python-install"/>
 '''
-
 
 '''
 # <start id="hello-redis-appendix"/>

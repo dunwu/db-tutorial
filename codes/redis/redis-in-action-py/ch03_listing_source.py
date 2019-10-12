@@ -1,15 +1,12 @@
 # coding: utf-8
 
+import redis
 import threading
 import time
-import unittest
-
-import redis
 
 ONE_WEEK_IN_SECONDS = 7 * 86400
 VOTE_SCORE = 432
 ARTICLES_PER_PAGE = 25
-
 
 # 代码清单 3-1
 '''
@@ -30,7 +27,6 @@ True                            # 但只要这个值可以被解释为整数，
 14                              #
 # <end id="string-calls-1"/>
 '''
-
 
 # 代码清单 3-2
 '''
@@ -60,7 +56,6 @@ True                            # 但只要这个值可以被解释为整数，
 # <end id="string-calls-2"/>
 '''
 
-
 # 代码清单 3-3
 '''
 # <start id="list-calls-1"/>
@@ -89,7 +84,6 @@ True                                        #
 # <end id="list-calls-1"/>
 '''
 
-
 # 代码清单 3-4
 '''
 # <start id="list-calls-2"/>
@@ -117,20 +111,23 @@ True                                        #
 # <end id="list-calls-2"/>
 '''
 
+
 # <start id="exercise-update-token"/>
 def update_token(conn, token, user, item=None):
-    timestamp = time.time()
-    conn.hset('login:', token, user)
-    conn.zadd('recent:', token, timestamp)
-    if item:
-        key = 'viewed:' + token
-        # 如果指定的元素存在于列表当中，那么移除它
-        conn.lrem(key, item)
-        # 将元素推入到列表的右端，使得 ZRANGE 和 LRANGE 可以取得相同的结果
-        conn.rpush(key, item)
-        # 对列表进行修剪，让它最多只能保存 25 个元素
-        conn.ltrim(key, -25, -1)
-    conn.zincrby('viewed:', item, -1)
+  timestamp = time.time()
+  conn.hset('login:', token, user)
+  conn.zadd('recent:', token, timestamp)
+  if item:
+    key = 'viewed:' + token
+    # 如果指定的元素存在于列表当中，那么移除它
+    conn.lrem(key, item)
+    # 将元素推入到列表的右端，使得 ZRANGE 和 LRANGE 可以取得相同的结果
+    conn.rpush(key, item)
+    # 对列表进行修剪，让它最多只能保存 25 个元素
+    conn.ltrim(key, -25, -1)
+  conn.zincrby('viewed:', item, -1)
+
+
 # <end id="exercise-update-token"/>
 
 
@@ -156,7 +153,6 @@ set(['a'])                                      #
 # <end id="set-calls-1"/>
 '''
 
-
 # 代码清单 3-6
 '''
 # <start id="set-calls-2"/>
@@ -173,7 +169,6 @@ set(['a', 'c', 'b', 'e', 'd', 'f'])         #
 # <end id="set-calls-2"/>
 '''
 
-
 # 代码清单 3-7
 '''
 # <start id="hash-calls-1"/>
@@ -187,7 +182,6 @@ True                                                            #
 True                                                            # 因为HDEL命令已经可以同时删除多个键值对了，所以Redis没有实现HMDEL命令。
 # <end id="hash-calls-1"/>
 '''
-
 
 # 代码清单 3-8
 '''
@@ -204,7 +198,6 @@ False                                                           #
 True                                                            #
 # <end id="hash-calls-2"/>
 '''
-
 
 # 代码清单 3-9
 '''
@@ -227,7 +220,6 @@ True                                                #
 [('a', 3.0), ('c', 4.0)]                            # 但是在实际用例中，通常一次只会取出一小部分元素。
 # <end id="zset-calls-1"/>
 '''
-
 
 # 代码清单 3-10
 '''
@@ -253,24 +245,26 @@ True                                                #
 # <end id="zset-calls-2"/>
 '''
 
+
 def publisher(n):
+  time.sleep(1)
+  for i in xrange(n):
+    conn.publish('channel', i)
     time.sleep(1)
-    for i in xrange(n):
-        conn.publish('channel', i)
-        time.sleep(1)
+
 
 def run_pubsub():
-    threading.Thread(target=publisher, args=(3,)).start()
-    pubsub = conn.pubsub()
-    pubsub.subscribe(['channel'])
-    count = 0
-    for item in pubsub.listen():
-        print item
-        count += 1
-        if count == 4:
-            pubsub.unsubscribe()
-        if count == 5:
-            break
+  threading.Thread(target=publisher, args=(3,)).start()
+  pubsub = conn.pubsub()
+  pubsub.subscribe(['channel'])
+  count = 0
+  for item in pubsub.listen():
+    print item
+    count += 1
+    if count == 4:
+      pubsub.unsubscribe()
+    if count == 5:
+      break
 
 
 # 代码清单 3-11
@@ -319,7 +313,6 @@ def run_pubsub():
 # <end id="pubsub-calls-1"/>
 '''
 
-
 # 代码清单 3-12
 '''
 # <start id="sort-calls"/>
@@ -344,7 +337,6 @@ def run_pubsub():
 # <end id="sort-calls"/>
 '''
 
-
 # 代码清单 3-13
 '''
 # <start id="simple-pipeline-notrans"/>
@@ -363,7 +355,6 @@ def run_pubsub():
 3                                                       # 使得计数器的值持续地增大。
 # <end id="simple-pipeline-notrans"/>
 '''
-
 
 # 代码清单 3-14
 '''
@@ -389,23 +380,25 @@ def run_pubsub():
 
 # <start id="exercise-fix-article-vote"/>
 def article_vote(conn, user, article):
-    # 在进行投票之前，先检查这篇文章是否仍然处于可投票的时间之内
-    cutoff = time.time() - ONE_WEEK_IN_SECONDS
-    posted = conn.zscore('time:', article)
-    if posted < cutoff:
-        return
+  # 在进行投票之前，先检查这篇文章是否仍然处于可投票的时间之内
+  cutoff = time.time() - ONE_WEEK_IN_SECONDS
+  posted = conn.zscore('time:', article)
+  if posted < cutoff:
+    return
 
-    article_id = article.partition(':')[-1]
-    pipeline = conn.pipeline()
-    pipeline.sadd('voted:' + article_id, user)
-    # 为文章的投票设置过期时间
-    pipeline.expire('voted:' + article_id, int(posted-cutoff))
-    if pipeline.execute()[0]:
-        # 因为客户端可能会在执行 SADD/EXPIRE 之间或者执行 ZINCRBY/HINCRBY 之间掉线
-        # 所以投票可能会不被计数，但这总比在执行 ZINCRBY/HINCRBY 之间失败并导致不完整的计数要好
-        pipeline.zincrby('score:', article, VOTE_SCORE)
-        pipeline.hincrby(article, 'votes', 1)
-        pipeline.execute()
+  article_id = article.partition(':')[-1]
+  pipeline = conn.pipeline()
+  pipeline.sadd('voted:' + article_id, user)
+  # 为文章的投票设置过期时间
+  pipeline.expire('voted:' + article_id, int(posted - cutoff))
+  if pipeline.execute()[0]:
+    # 因为客户端可能会在执行 SADD/EXPIRE 之间或者执行 ZINCRBY/HINCRBY 之间掉线
+    # 所以投票可能会不被计数，但这总比在执行 ZINCRBY/HINCRBY 之间失败并导致不完整的计数要好
+    pipeline.zincrby('score:', article, VOTE_SCORE)
+    pipeline.hincrby(article, 'votes', 1)
+    pipeline.execute()
+
+
 # <end id="exercise-fix-article-vote"/>
 
 # 从技术上来将，上面的 article_vote() 函数仍然有一些问题，
@@ -413,47 +406,50 @@ def article_vote(conn, user, article):
 # 这段代码里面用到了本书第 4 章才会介绍的技术
 
 def article_vote(conn, user, article):
-    cutoff = time.time() - ONE_WEEK_IN_SECONDS
-    posted = conn.zscore('time:', article)
-    article_id = article.partition(':')[-1]
-    voted = 'voted:' + article_id
+  cutoff = time.time() - ONE_WEEK_IN_SECONDS
+  posted = conn.zscore('time:', article)
+  article_id = article.partition(':')[-1]
+  voted = 'voted:' + article_id
 
-    pipeline = conn.pipeline()
-    while posted > cutoff:
-        try:
-            pipeline.watch(voted)
-            if not pipeline.sismember(voted, user):
-                pipeline.multi()
-                pipeline.sadd(voted, user)
-                pipeline.expire(voted, int(posted-cutoff))
-                pipeline.zincrby('score:', article, VOTE_SCORE)
-                pipeline.hincrby(article, 'votes', 1)
-                pipeline.execute()
-            else:
-                pipeline.unwatch()
-            return
-        except redis.exceptions.WatchError:
-            cutoff = time.time() - ONE_WEEK_IN_SECONDS
+  pipeline = conn.pipeline()
+  while posted > cutoff:
+    try:
+      pipeline.watch(voted)
+      if not pipeline.sismember(voted, user):
+        pipeline.multi()
+        pipeline.sadd(voted, user)
+        pipeline.expire(voted, int(posted - cutoff))
+        pipeline.zincrby('score:', article, VOTE_SCORE)
+        pipeline.hincrby(article, 'votes', 1)
+        pipeline.execute()
+      else:
+        pipeline.unwatch()
+      return
+    except redis.exceptions.WatchError:
+      cutoff = time.time() - ONE_WEEK_IN_SECONDS
+
 
 # <start id="exercise-fix-get_articles"/>
 def get_articles(conn, page, order='score:'):
-    start = max(page-1, 0) * ARTICLES_PER_PAGE
-    end = start + ARTICLES_PER_PAGE - 1
+  start = max(page - 1, 0) * ARTICLES_PER_PAGE
+  end = start + ARTICLES_PER_PAGE - 1
 
-    ids = conn.zrevrangebyscore(order, start, end)
+  ids = conn.zrevrangebyscore(order, start, end)
 
-    pipeline = conn.pipeline()
-    # 将等待执行的多个 HGETALL 调用放入流水线
-    map(pipeline.hgetall, ids)                              #A
+  pipeline = conn.pipeline()
+  # 将等待执行的多个 HGETALL 调用放入流水线
+  map(pipeline.hgetall, ids)  # A
 
-    articles = []
-    # 执行被流水线包含的多个 HGETALL 命令，
-    # 并将执行所得的多个 id 添加到 articles 变量里面
-    for id, article_data in zip(ids, pipeline.execute()):   #B
-        article_data['id'] = id
-        articles.append(article_data)
+  articles = []
+  # 执行被流水线包含的多个 HGETALL 命令，
+  # 并将执行所得的多个 id 添加到 articles 变量里面
+  for id, article_data in zip(ids, pipeline.execute()):  # B
+    article_data['id'] = id
+    articles.append(article_data)
 
-    return articles
+  return articles
+
+
 # <end id="exercise-fix-get_articles"/>
 
 
@@ -477,31 +473,35 @@ True                                            #
 '''
 
 # <start id="exercise-no-recent-zset"/>
-THIRTY_DAYS = 30*86400
+THIRTY_DAYS = 30 * 86400
+
+
 def check_token(conn, token):
-    # 为了能够对登录令牌进行过期，我们将把它存储为字符串值
-    return conn.get('login:' + token)
+  # 为了能够对登录令牌进行过期，我们将把它存储为字符串值
+  return conn.get('login:' + token)
+
 
 def update_token(conn, token, user, item=None):
-    # 在一次命令调用里面，同时为字符串键设置值和过期时间
-    conn.setex('login:' + token, user, THIRTY_DAYS)
-    key = 'viewed:' + token
-    if item:
-        conn.lrem(key, item)
-        conn.rpush(key, item)
-        conn.ltrim(key, -25, -1)
-    # 跟字符串不一样，Redis 并没有提供能够在操作列表的同时，
-    # 为列表设置过期时间的命令，
-    # 所以我们需要在这里调用 EXPIRE 命令来为列表设置过期时间
-    conn.expire(key, THIRTY_DAYS)
-    conn.zincrby('viewed:', item, -1)
+  # 在一次命令调用里面，同时为字符串键设置值和过期时间
+  conn.setex('login:' + token, user, THIRTY_DAYS)
+  key = 'viewed:' + token
+  if item:
+    conn.lrem(key, item)
+    conn.rpush(key, item)
+    conn.ltrim(key, -25, -1)
+  # 跟字符串不一样，Redis 并没有提供能够在操作列表的同时，
+  # 为列表设置过期时间的命令，
+  # 所以我们需要在这里调用 EXPIRE 命令来为列表设置过期时间
+  conn.expire(key, THIRTY_DAYS)
+  conn.zincrby('viewed:', item, -1)
+
 
 def add_to_cart(conn, session, item, count):
-    key = 'cart:' + session
-    if count <= 0:
-        conn.hrem(key, item)
-    else:
-        conn.hset(key, item, count)
-    # 散列也和列表一样，需要通过调用 EXPIRE 命令来设置过期时间
-    conn.expire(key, THIRTY_DAYS)
+  key = 'cart:' + session
+  if count <= 0:
+    conn.hrem(key, item)
+  else:
+    conn.hset(key, item, count)
+  # 散列也和列表一样，需要通过调用 EXPIRE 命令来设置过期时间
+  conn.expire(key, THIRTY_DAYS)
 # <end id="exercise-no-recent-zset"/>
