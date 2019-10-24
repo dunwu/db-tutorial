@@ -200,7 +200,7 @@ Hash 索引只有精确匹配索引所有列的查询才有效。
 
 “独立的列” 是指索引列不能是表达式的一部分，也不能是函数的参数。
 
-:x: 错误示例：
+❌ 错误示例：
 
 ```sql
 SELECT actor_id FROM sakila.actor WHERE actor_id + 1 = 5;

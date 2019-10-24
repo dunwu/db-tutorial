@@ -8,7 +8,7 @@
 - [MongoDB](mongodb)
 - [Cassandra](Cassandra.md)
 
-## :books: 学习资源
+## 📚 学习资源
 
 ## :door: 传送门
 

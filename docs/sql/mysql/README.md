@@ -6,7 +6,7 @@
 - [mysql 命令](mysql-cli.md)
 - [mysql 原理](mysql-theory.md)
 
-## :books: 学习资源
+## 📚 学习资源
 
 ### 官方
 
