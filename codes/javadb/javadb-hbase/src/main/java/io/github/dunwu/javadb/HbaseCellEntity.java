@@ -4,7 +4,7 @@ package io.github.dunwu.javadb;
  * HBase Cell 实体
  *
  * @author Zhang Peng
- * @date 2019-03-04
+ * @since 2019-03-04
  */
 public class HbaseCellEntity {
 
@@ -79,7 +79,7 @@ public class HbaseCellEntity {
 	@Override
 	public String toString() {
 		return "HbaseCellEntity{" + "table='" + table + '\'' + ", row='" + row + '\'' + ", colFamily='" + colFamily
-				+ '\'' + ", col='" + col + '\'' + ", val='" + val + '\'' + '}';
+			+ '\'' + ", col='" + col + '\'' + ", val='" + val + '\'' + '}';
 	}
 
 }

@@ -1,126 +1,127 @@
 <?xml version="1.0"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>io.github.dunwu</groupId>
-  <artifactId>javadb-redis</artifactId>
-  <version>1.0.0</version>
-  <packaging>jar</packaging>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>io.github.dunwu</groupId>
+	<artifactId>javadb-redis</artifactId>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.8</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 
-    <spring.version>4.3.13.RELEASE</spring.version>
-    <logback.version>1.2.3</logback.version>
-    <jedis.version>2.9.0</jedis.version>
-    <redisson.version>3.7.2</redisson.version>
-    <junit.version>4.12</junit.version>
-  </properties>
+		<spring.version>4.3.13.RELEASE</spring.version>
+		<logback.version>1.2.3</logback.version>
+		<jedis.version>2.9.0</jedis.version>
+		<redisson.version>3.7.2</redisson.version>
+		<junit.version>4.12</junit.version>
+	</properties>
 
-  <dependencies>
-    <!-- database begin -->
-    <dependency>
-      <groupId>redis.clients</groupId>
-      <artifactId>jedis</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.redisson</groupId>
-      <artifactId>redisson</artifactId>
-    </dependency>
-    <!-- database end -->
+	<dependencies>
+		<!-- database begin -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson</artifactId>
+		</dependency>
+		<!-- database end -->
 
-    <!-- log start -->
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-    </dependency>
-    <!-- log end -->
+		<!-- log start -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<!-- log end -->
 
-    <!-- spring begin -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-beans</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context-support</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- spring end -->
+		<!-- spring begin -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- spring end -->
 
-    <!-- test begin -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <!-- test end -->
-  </dependencies>
+		<!-- test begin -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<!-- test end -->
+	</dependencies>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${spring.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>${spring.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-      <!-- database begin -->
-      <dependency>
-        <groupId>redis.clients</groupId>
-        <artifactId>jedis</artifactId>
-        <version>${jedis.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.redisson</groupId>
-        <artifactId>redisson</artifactId>
-        <version>${redisson.version}</version>
-      </dependency>
-      <!-- database end -->
+			<!-- database begin -->
+			<dependency>
+				<groupId>redis.clients</groupId>
+				<artifactId>jedis</artifactId>
+				<version>${jedis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.redisson</groupId>
+				<artifactId>redisson</artifactId>
+				<version>${redisson.version}</version>
+			</dependency>
+			<!-- database end -->
 
-      <!-- log begin -->
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-parent</artifactId>
-        <version>${logback.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- log end -->
+			<!-- log begin -->
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-parent</artifactId>
+				<version>${logback.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- log end -->
 
-      <!-- test begin -->
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <!-- test end -->
-    </dependencies>
-  </dependencyManagement>
+			<!-- test begin -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- test end -->
+		</dependencies>
+	</dependencyManagement>
 
-  <build>
-    <finalName>${project.artifactId}</finalName>
-    <resources>
-      <resource>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>logback.xml</include>
-        </includes>
-      </resource>
-    </resources>
-  </build>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>logback.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>

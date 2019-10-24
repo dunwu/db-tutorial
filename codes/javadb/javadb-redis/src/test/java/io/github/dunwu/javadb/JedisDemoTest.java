@@ -38,8 +38,7 @@ public class JedisDemoTest {
 		try {
 			jedis.ping();
 			logger.debug("jedis 连接成功。");
-		}
-		catch (JedisConnectionException e) {
+		} catch (JedisConnectionException e) {
 			e.printStackTrace();
 		}
 	}

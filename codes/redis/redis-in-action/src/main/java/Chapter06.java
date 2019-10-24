@@ -5,8 +5,6 @@ import redis.clients.jedis.Transaction;
 import redis.clients.jedis.Tuple;
 import redis.clients.jedis.ZParams;
 
-import java.io.*;
-import java.util.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -92,7 +90,7 @@ public class Chapter06 {
 		System.out.println();
 
 		System.out.println("Let's add a few people to the guild");
-		for (String name : new String[] { "jeff", "jenny", "jack", "jennifer" }) {
+		for (String name : new String[] {"jeff", "jenny", "jack", "jennifer"}) {
 			joinGuild(conn, "test", name);
 		}
 		System.out.println();
@@ -172,7 +170,7 @@ public class Chapter06 {
 		System.out.println("\n----- testDelayedTasks -----");
 		conn.del("queue:tqueue", "delayed:");
 		System.out.println("Let's start some regular and delayed tasks...");
-		for (long delay : new long[] { 0, 500, 0, 1500 }) {
+		for (long delay : new long[] {0, 500, 0, 1500}) {
 			assert executeLater(conn, "tqueue", "testfn", new ArrayList<String>(), delay) != null;
 		}
 		long r = conn.llen("queue:tqueue");
@@ -341,7 +339,7 @@ public class Chapter06 {
 		String start = prefix.substring(0, prefix.length() - 1) + suffix + '{';
 		String end = prefix + '{';
 		// 返回范围。
-		return new String[] { start, end };
+		return new String[] {start, end}
 	}
 
 	public void joinGuild(Jedis conn, String guild, String user) {
@@ -394,7 +392,7 @@ public class Chapter06 {
 
 		// 如果有其他自动补完操作正在执行，
 		// 那么从获取到的元素里面移除起始元素和终结元素。
-		for (Iterator<String> iterator = items.iterator(); iterator.hasNext();) {
+		for (Iterator<String> iterator = items.iterator(); iterator.hasNext(); ) {
 			if (iterator.next().indexOf('{') != -1) {
 				iterator.remove();
 			}
@@ -422,8 +420,7 @@ public class Chapter06 {
 
 			try {
 				Thread.sleep(1);
-			}
-			catch (InterruptedException ie) {
+			} catch (InterruptedException ie) {
 				Thread.currentThread().interrupt();
 			}
 		}
@@ -452,8 +449,7 @@ public class Chapter06 {
 
 			try {
 				Thread.sleep(1);
-			}
-			catch (InterruptedException ie) {
+			} catch (InterruptedException ie) {
 				Thread.currentThread().interrupt();
 			}
 		}
@@ -540,11 +536,10 @@ public class Chapter06 {
 		Gson gson = new Gson();
 		String identifier = UUID.randomUUID().toString();
 		String itemArgs = gson.toJson(args);
-		String item = gson.toJson(new String[] { identifier, queue, name, itemArgs });
+		String item = gson.toJson(new String[] {identifier, queue, name, itemArgs});
 		if (delay > 0) {
 			conn.zadd("delayed:", System.currentTimeMillis() + delay, item);
-		}
-		else {
+		} else {
 			conn.rpush("queue:" + queue, item);
 		}
 		return identifier;
@@ -582,8 +577,7 @@ public class Chapter06 {
 			values.put("message", message);
 			String packed = new Gson().toJson(values);
 			conn.zadd("msgs:" + chatId, messageId, packed);
-		}
-		finally {
+		} finally {
 			releaseLock(conn, "chat:" + chatId, identifier);
 		}
 		return chatId;
@@ -621,8 +615,8 @@ public class Chapter06 {
 			List<Map<String, Object>> messages = new ArrayList<Map<String, Object>>();
 			for (String messageJson : messageStrings) {
 				Map<String, Object> message = (Map<String, Object>) gson.fromJson(messageJson,
-						new TypeToken<Map<String, Object>>() {
-						}.getType());
+					new TypeToken<Map<String, Object>>() {
+					}.getType());
 				int messageId = ((Double) message.get("id")).intValue();
 				if (messageId > seenId) {
 					seenId = messageId;
@@ -632,11 +626,11 @@ public class Chapter06 {
 			}
 
 			conn.zadd("chat:" + chatId, seenId, recipient);
-			seenUpdates.add(new Object[] { "seen:" + recipient, seenId, chatId });
+			seenUpdates.add(new Object[] {"seen:" + recipient, seenId, chatId});
 
 			Set<Tuple> minIdSet = conn.zrangeWithScores("chat:" + chatId, 0, 0);
 			if (minIdSet.size() > 0) {
-				msgRemoves.add(new Object[] { "msgs:" + chatId, minIdSet.iterator().next().getScore() });
+				msgRemoves.add(new Object[] {"msgs:" + chatId, minIdSet.iterator().next().getScore()});
 			}
 			chatMessages.add(new ChatMessages(chatId, messages));
 		}
@@ -654,7 +648,7 @@ public class Chapter06 {
 	}
 
 	public void processLogsFromRedis(Jedis conn, String id, Callback callback)
-			throws InterruptedException, IOException {
+		throws InterruptedException, IOException {
 		while (true) {
 			List<ChatMessages> fdata = fetchPendingMessages(conn, id);
 
@@ -681,8 +675,7 @@ public class Chapter06 {
 							callback.callback(line);
 						}
 						callback.callback(null);
-					}
-					finally {
+					} finally {
 						reader.close();
 					}
 
@@ -702,10 +695,10 @@ public class Chapter06 {
 
 	}
 
-
 	public class TestCallback implements Callback {
 
 		public List<Integer> counts = new ArrayList<Integer>();
+
 		private int index;
 
 		public void callback(String line) {
@@ -720,7 +713,6 @@ public class Chapter06 {
 		}
 
 	}
-
 
 	public class RedisInputStream extends InputStream {
 
@@ -769,7 +761,6 @@ public class Chapter06 {
 
 	}
 
-
 	public class ChatMessages {
 
 		public String chatId;
@@ -815,8 +806,7 @@ public class Chapter06 {
 				if (item == null || item.getScore() > System.currentTimeMillis()) {
 					try {
 						sleep(10);
-					}
-					catch (InterruptedException ie) {
+					} catch (InterruptedException ie) {
 						Thread.interrupted();
 					}
 					continue;
@@ -884,12 +874,10 @@ public class Chapter06 {
 					long cleaned = clean(waiting, count);
 					if (cleaned != 0) {
 						bytesInRedis -= cleaned;
-					}
-					else {
+					} else {
 						try {
 							sleep(250);
-						}
-						catch (InterruptedException ie) {
+						} catch (InterruptedException ie) {
 							Thread.interrupted();
 						}
 					}
@@ -905,21 +893,17 @@ public class Chapter06 {
 							byte[] bytes = new byte[read];
 							System.arraycopy(buffer, 0, bytes, 0, read);
 							conn.append((channel + logFile).getBytes(), bytes);
-						}
-						else {
+						} else {
 							conn.append((channel + logFile).getBytes(), buffer);
 						}
 					}
-				}
-				catch (IOException ioe) {
+				} catch (IOException ioe) {
 					ioe.printStackTrace();
 					throw new RuntimeException(ioe);
-				}
-				finally {
+				} finally {
 					try {
 						in.close();
-					}
-					catch (Exception ignore) {
+					} catch (Exception ignore) {
 					}
 				}
 
@@ -935,12 +919,10 @@ public class Chapter06 {
 				long cleaned = clean(waiting, count);
 				if (cleaned != 0) {
 					bytesInRedis -= cleaned;
-				}
-				else {
+				} else {
 					try {
 						sleep(250);
-					}
-					catch (InterruptedException ie) {
+					} catch (InterruptedException ie) {
 						Thread.interrupted();
 					}
 				}

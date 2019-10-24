@@ -267,7 +267,7 @@
 // indexAd(conn, "1", new String[]{"USA", "CA"}, CONTENT, Ecpm.CPC, .25);
 // indexAd(conn, "2", new String[]{"USA", "VA"}, CONTENT + " wooooo", Ecpm.CPC, .125);
 //
-// String[] usa = new String[]{"USA"};
+// String[] usa = new String[]{"USA"}
 // for (int i = 0; i < 100; i++) {
 // targetAds(conn, usa, CONTENT);
 // }
@@ -526,7 +526,7 @@
 // int updateWeight = weights.containsKey("update") ? weights.get("update") : 1;
 // int voteWeight = weights.containsKey("vote") ? weights.get("vote") : 0;
 //
-// String[] keys = new String[]{id, "sort:update", "sort:votes"};
+// String[] keys = new String[]{id, "sort:update", "sort:votes"}
 // Transaction trans = conn.multi();
 // id = zintersect(
 // trans, ttl, new ZParams().weights(0, updateWeight, voteWeight), keys);

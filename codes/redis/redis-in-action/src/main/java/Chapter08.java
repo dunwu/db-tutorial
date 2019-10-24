@@ -145,15 +145,13 @@ public class Chapter08 {
 			if (conn.setnx(lockName, id) >= 1) {
 				conn.expire(lockName, lockTimeout);
 				return id;
-			}
-			else if (conn.ttl(lockName) <= 0) {
+			} else if (conn.ttl(lockName) <= 0) {
 				conn.expire(lockName, lockTimeout);
 			}
 
 			try {
 				Thread.sleep(1);
-			}
-			catch (InterruptedException ie) {
+			} catch (InterruptedException ie) {
 				Thread.interrupted();
 			}
 		}
@@ -340,7 +338,7 @@ public class Chapter08 {
 
 	public void syndicateStatus(Jedis conn, long uid, long postId, long postTime, double start) {
 		Set<Tuple> followers = conn.zrangeByScoreWithScores("followers:" + uid, String.valueOf(start), "inf", 0,
-				POSTS_PER_PASS);
+			POSTS_PER_PASS);
 
 		Transaction trans = conn.multi();
 		for (Tuple tuple : followers) {
@@ -355,10 +353,9 @@ public class Chapter08 {
 		if (followers.size() >= POSTS_PER_PASS) {
 			try {
 				Method method = getClass().getDeclaredMethod("syndicateStatus", Jedis.class, Long.TYPE, Long.TYPE,
-						Long.TYPE, Double.TYPE);
+					Long.TYPE, Double.TYPE);
 				executeLater("default", method, uid, postId, postTime, start);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -384,8 +381,7 @@ public class Chapter08 {
 			trans.exec();
 
 			return true;
-		}
-		finally {
+		} finally {
 			releaseLock(conn, key, lock);
 		}
 	}
@@ -453,10 +449,9 @@ public class Chapter08 {
 		if (users.size() >= REFILL_USERS_STEP) {
 			try {
 				Method method = getClass().getDeclaredMethod("refillTimeline", Jedis.class, String.class, String.class,
-						Double.TYPE);
+					Double.TYPE);
 				executeLater("default", method, incoming, timeline, start);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}
@@ -486,17 +481,14 @@ public class Chapter08 {
 		Method method = null;
 		try {
 			method = getClass().getDeclaredMethod("cleanTimelines", Jedis.class, Long.TYPE, Long.TYPE, Double.TYPE,
-					Boolean.TYPE);
-		}
-		catch (Exception e) {
+				Boolean.TYPE);
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		if (followers.size() >= POSTS_PER_PASS) {
 			executeLater("default", method, uid, statusId, start, onLists);
-
-		}
-		else if (!onLists) {
+		} else if (!onLists) {
 			executeLater("default", method, uid, statusId, 0, true);
 		}
 	}
@@ -530,8 +522,7 @@ public class Chapter08 {
 
 			try {
 				method.invoke(instance, args);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		}

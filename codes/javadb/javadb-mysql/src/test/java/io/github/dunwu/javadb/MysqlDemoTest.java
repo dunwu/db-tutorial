@@ -6,8 +6,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
-
 /**
  * Mysql 测试例
  *
@@ -17,11 +15,17 @@ import java.sql.*;
 public class MysqlDemoTest {
 
 	private static final String DB_HOST = "localhost";
+
 	private static final String DB_PORT = "3306";
+
 	private static final String DB_SCHEMA = "sakila";
+
 	private static final String DB_USER = "root";
+
 	private static final String DB_PASSWORD = "root";
+
 	private static Logger logger = LoggerFactory.getLogger(MysqlDemoTest.class);
+
 	private static Statement statement;
 
 	private static Connection connection;
@@ -35,8 +39,7 @@ public class MysqlDemoTest {
 			// DriverManager.getConnection("jdbc:mysql://localhost:3306/sakila?" +
 			// "user=root&password=root");
 			statement = connection.createStatement();
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -47,8 +50,7 @@ public class MysqlDemoTest {
 			if (connection != null) {
 				connection.close();
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -67,10 +69,9 @@ public class MysqlDemoTest {
 				Date lastUpdate = rs.getDate("last_update");
 				// 输出数据
 				logger.debug("actor_id: {}, first_name: {}, last_name: {}, last_update: {}", id, firstName, lastName,
-						lastUpdate.toLocalDate());
+					lastUpdate.toLocalDate());
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}

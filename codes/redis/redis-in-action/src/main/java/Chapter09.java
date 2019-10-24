@@ -10,7 +10,8 @@ import java.util.zip.CRC32;
 
 public class Chapter09 {
 
-	private static final String[] COUNTRIES = ("ABW AFG AGO AIA ALA ALB AND ARE ARG ARM ASM ATA ATF ATG AUS AUT AZE BDI "
+	private static final String[] COUNTRIES =
+		("ABW AFG AGO AIA ALA ALB AND ARE ARG ARM ASM ATA ATF ATG AUS AUT AZE BDI "
 			+ "BEL BEN BES BFA BGD BGR BHR BHS BIH BLM BLR BLZ BMU BOL BRA BRB BRN BTN "
 			+ "BVT BWA CAF CAN CCK CHE CHL CHN CIV CMR COD COG COK COL COM CPV CRI CUB "
 			+ "CUW CXR CYM CYP CZE DEU DJI DMA DNK DOM DZA ECU EGY ERI ESH ESP EST ETH "
@@ -26,20 +27,27 @@ public class Chapter09 {
 			+ "USA UZB VAT VCT VEN VGB VIR VNM VUT WLF WSM YEM ZAF ZMB ZWE").split(" ");
 
 	private static final Map<String, String[]> STATES = new HashMap<String, String[]>();
+
 	private static final SimpleDateFormat ISO_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:00:00");
+
 	static {
 		STATES.put("CAN", "AB BC MB NB NL NS NT NU ON PE QC SK YT".split(" "));
 		STATES.put("USA",
-				("AA AE AK AL AP AR AS AZ CA CO CT DC DE FL FM GA GU HI IA ID IL IN "
-						+ "KS KY LA MA MD ME MH MI MN MO MP MS MT NC ND NE NH NJ NM NV NY OH "
-						+ "OK OR PA PR PW RI SC SD TN TX UT VA VI VT WA WI WV WY").split(" "));
+			("AA AE AK AL AP AR AS AZ CA CO CT DC DE FL FM GA GU HI IA ID IL IN "
+				+ "KS KY LA MA MD ME MH MI MN MO MP MS MT NC ND NE NH NJ NM NV NY OH "
+				+ "OK OR PA PR PW RI SC SD TN TX UT VA VI VT WA WI WV WY").split(" "));
 	}
+
 	static {
 		ISO_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
+
 	private int SHARD_SIZE = 512;
+
 	private long DAILY_EXPECTED = 1000000;
+
 	private Map<String, Long> EXPECTED = new HashMap<String, Long>();
+
 	private long USERS_PER_SHARD = (long) Math.pow(2, 20);
 
 	public static final void main(String[] args) {
@@ -135,8 +143,7 @@ public class Chapter09 {
 					setLocation(conn, i, country, state);
 					i++;
 				}
-			}
-			else {
+			} else {
 				setLocation(conn, i, country, "");
 				i++;
 			}
@@ -160,8 +167,7 @@ public class Chapter09 {
 				for (String state : STATES.get(country)) {
 					assert states.get(country).get(state) == 1;
 				}
-			}
-			else {
+			} else {
 				assert countries.get(country) == 1;
 			}
 		}
@@ -189,8 +195,7 @@ public class Chapter09 {
 		long shardId = 0;
 		if (isDigit(key)) {
 			shardId = Integer.parseInt(key, 10) / shardSize;
-		}
-		else {
+		} else {
 			CRC32 crc = new CRC32();
 			crc.update(key.getBytes());
 			long shards = 2 * totalElements / shardSize;
@@ -241,8 +246,7 @@ public class Chapter09 {
 					expectedStr = conn.get(exkey);
 					expected = Integer.parseInt(expectedStr);
 				}
-			}
-			else {
+			} else {
 				expected = Long.parseLong(expectedStr);
 			}
 
@@ -287,15 +291,12 @@ public class Chapter09 {
 						updateAggregates(countries, states, code);
 					}
 				}
-			}
-			catch (IOException ioe) {
+			} catch (IOException ioe) {
 				throw new RuntimeException(ioe);
-			}
-			finally {
+			} finally {
 				try {
 					in.close();
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					// ignore
 				}
 			}
@@ -328,7 +329,7 @@ public class Chapter09 {
 	}
 
 	public void updateAggregates(Map<String, Long> countries, Map<String, Map<String, Long>> states,
-			List<Object> codes) {
+		List<Object> codes) {
 		for (Object code : codes) {
 			updateAggregates(countries, states, (String) code);
 		}
@@ -390,7 +391,7 @@ public class Chapter09 {
 		}
 		sindex++;
 
-		return new String(new char[] { (char) cindex, (char) sindex });
+		return new String(new char[] {(char) cindex, (char) sindex});
 	}
 
 	private int bisectLeft(String[] values, String key) {

@@ -193,8 +193,7 @@ public class Chapter02 {
 		if (count <= 0) {
 			// 从购物车里面移除指定的商品。
 			conn.hdel("cart:" + session, item);
-		}
-		else {
+		} else {
 			// 将指定的商品添加到购物车。
 			conn.hset("cart:" + session, item, String.valueOf(count));
 		}
@@ -259,8 +258,7 @@ public class Chapter02 {
 			Long rank = conn.zrank("viewed:", itemId);
 			// 根据商品的浏览次数排名来判断是否需要缓存这个页面。
 			return rank != null && rank < 10000;
-		}
-		catch (MalformedURLException mue) {
+		} catch (MalformedURLException mue) {
 			return false;
 		}
 	}
@@ -283,7 +281,6 @@ public class Chapter02 {
 
 	}
 
-
 	public static class Inventory {
 
 		private String id;
@@ -303,7 +300,6 @@ public class Chapter02 {
 		}
 
 	}
-
 
 	/**
 	 * 代码清单 2-3
@@ -335,8 +331,7 @@ public class Chapter02 {
 				if (size <= limit) {
 					try {
 						sleep(1000);
-					}
-					catch (InterruptedException ie) {
+					} catch (InterruptedException ie) {
 						Thread.currentThread().interrupt();
 					}
 					continue;
@@ -361,7 +356,6 @@ public class Chapter02 {
 		}
 
 	}
-
 
 	/**
 	 * 代码清单 2-5
@@ -391,8 +385,7 @@ public class Chapter02 {
 				if (size <= limit) {
 					try {
 						sleep(1000);
-					}
-					catch (InterruptedException ie) {
+					} catch (InterruptedException ie) {
 						Thread.currentThread().interrupt();
 					}
 					continue;
@@ -416,7 +409,6 @@ public class Chapter02 {
 		}
 
 	}
-
 
 	/**
 	 * 代码清单 2-8
@@ -449,8 +441,7 @@ public class Chapter02 {
 					try {
 						// 暂时没有行需要被缓存，休眠50毫秒后重试。
 						sleep(50);
-					}
-					catch (InterruptedException ie) {
+					} catch (InterruptedException ie) {
 						Thread.currentThread().interrupt();
 					}
 					continue;

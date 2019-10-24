@@ -16,13 +16,16 @@ import java.util.Properties;
  * HBase 服务实现类
  *
  * @author Zhang Peng
- * @date 2019-03-01
+ * @since 2019-03-01
  */
 public class HbaseHelper {
 
 	private static final String FIRST_CONFIG = "classpath://config//hbase.properties";
+
 	private static final String SECOND_CONFIG = "classpath://application.properties";
+
 	private HbaseProperties hbaseProperties;
+
 	private Connection connection;
 
 	public HbaseHelper() throws Exception {
@@ -38,22 +41,17 @@ public class HbaseHelper {
 		String quorum = PropertiesUtil.getString(properties, HBaseConstant.HBASE_ZOOKEEPER_QUORUM.key(), "");
 		String hbaseMaster = PropertiesUtil.getString(properties, HBaseConstant.HBASE_MASTER.key(), "");
 		String clientPort = PropertiesUtil.getString(properties,
-				HBaseConstant.HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT.key(), "");
+			HBaseConstant.HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT.key(), "");
 		String znodeParent = PropertiesUtil.getString(properties, HBaseConstant.ZOOKEEPER_ZNODE_PARENT.key(), "");
 		String maxThreads = PropertiesUtil.getString(properties, HBaseConstant.HBASE_HCONNECTION_THREADS_MAX.key(), "");
 		String coreThreads = PropertiesUtil.getString(properties, HBaseConstant.HBASE_HCONNECTION_THREADS_CORE.key(),
-				"");
+			"");
 		String columnFamily = PropertiesUtil.getString(properties, HBaseConstant.HBASE_COLUMN_FAMILY.key(), "");
 		String hbaseExecutorsNum = PropertiesUtil.getString(properties, HBaseConstant.HBASE_EXECUTOR_NUM.key(), "10");
 		String ipcPoolSize = PropertiesUtil.getString(properties, HBaseConstant.HBASE_IPC_POOL_SIZE.key(), "1");
 
 		hbaseProperties = new HbaseProperties(hbaseMaster, quorum, clientPort, znodeParent, maxThreads, coreThreads,
-				columnFamily, hbaseExecutorsNum, ipcPoolSize);
-		init(hbaseProperties);
-	}
-
-	public HbaseHelper(HbaseProperties hbaseProperties) throws Exception {
-		this.hbaseProperties = hbaseProperties;
+			columnFamily, hbaseExecutorsNum, ipcPoolSize);
 		init(hbaseProperties);
 	}
 
@@ -61,16 +59,14 @@ public class HbaseHelper {
 		Properties properties = null;
 		try {
 			properties = PropertiesUtil.loadFromFile(FIRST_CONFIG);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		if (properties == null) {
 			try {
 				properties = PropertiesUtil.loadFromFile(SECOND_CONFIG);
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				return null;
 			}
@@ -81,32 +77,35 @@ public class HbaseHelper {
 	private void init(HbaseProperties hbaseProperties) throws Exception {
 		try {
 			// @formatter:off
-            Configuration configuration = HBaseConfiguration.create();
-            configuration.set(HBaseConstant.HBASE_ZOOKEEPER_QUORUM.key(), hbaseProperties.getQuorum());
-            configuration.set(HBaseConstant.HBASE_MASTER.key(), hbaseProperties.getHbaseMaster());
-            configuration.set(HBaseConstant.HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT.key(),
-                    hbaseProperties.getClientPort());
-            configuration.set(HBaseConstant.HBASE_HCONNECTION_THREADS_MAX.key(),
-                    hbaseProperties.getMaxThreads());
-            configuration.set(HBaseConstant.HBASE_HCONNECTION_THREADS_CORE.key(),
-                    hbaseProperties.getCoreThreads());
-            configuration.set(HBaseConstant.ZOOKEEPER_ZNODE_PARENT.key(), hbaseProperties.getZnodeParent());
-            configuration.set(HBaseConstant.HBASE_COLUMN_FAMILY.key(), hbaseProperties.getColumnFamily());
-            configuration.set(HBaseConstant.HBASE_IPC_POOL_SIZE.key(), hbaseProperties.getIpcPoolSize());
-            // @formatter:on
+			Configuration configuration = HBaseConfiguration.create();
+			configuration.set(HBaseConstant.HBASE_ZOOKEEPER_QUORUM.key(), hbaseProperties.getQuorum());
+			configuration.set(HBaseConstant.HBASE_MASTER.key(), hbaseProperties.getHbaseMaster());
+			configuration.set(HBaseConstant.HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT.key(),
+				hbaseProperties.getClientPort());
+			configuration.set(HBaseConstant.HBASE_HCONNECTION_THREADS_MAX.key(),
+				hbaseProperties.getMaxThreads());
+			configuration.set(HBaseConstant.HBASE_HCONNECTION_THREADS_CORE.key(),
+				hbaseProperties.getCoreThreads());
+			configuration.set(HBaseConstant.ZOOKEEPER_ZNODE_PARENT.key(), hbaseProperties.getZnodeParent());
+			configuration.set(HBaseConstant.HBASE_COLUMN_FAMILY.key(), hbaseProperties.getColumnFamily());
+			configuration.set(HBaseConstant.HBASE_IPC_POOL_SIZE.key(), hbaseProperties.getIpcPoolSize());
+			// @formatter:on
 			connection = ConnectionFactory.createConnection(configuration);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new Exception("hbase链接未创建", e);
 		}
+	}
+
+	public HbaseHelper(HbaseProperties hbaseProperties) throws Exception {
+		this.hbaseProperties = hbaseProperties;
+		init(hbaseProperties);
 	}
 
 	public void destory() {
 		if (connection != null) {
 			try {
 				connection.close();
-			}
-			catch (IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
@@ -125,12 +124,10 @@ public class HbaseHelper {
 		try {
 			if (StringUtils.isEmpty(tableName)) {
 				hTableDescriptors = connection.getAdmin().listTables();
-			}
-			else {
+			} else {
 				hTableDescriptors = connection.getAdmin().listTables(tableName);
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new Exception("执行失败", e);
 		}
 		return hTableDescriptors;
@@ -145,7 +142,7 @@ public class HbaseHelper {
 	 * </ul>
 	 */
 	public void createTable(String tableName) throws Exception {
-		createTable(tableName, new String[] { hbaseProperties.getColumnFamily() });
+		createTable(tableName, new String[] {hbaseProperties.getColumnFamily()});
 	}
 
 	/**
@@ -173,8 +170,7 @@ public class HbaseHelper {
 			}
 
 			connection.getAdmin().createTable(tableDescriptor);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -187,6 +183,7 @@ public class HbaseHelper {
 	 * <li>disable 'tablename'</li>
 	 * <li>drop 't1'</li>
 	 * </ul>
+	 *
 	 * @param name
 	 */
 	public void dropTable(String name) throws Exception {
@@ -203,8 +200,7 @@ public class HbaseHelper {
 				admin.disableTable(tableName);
 				admin.deleteTable(tableName);
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -216,7 +212,7 @@ public class HbaseHelper {
 
 		Put put = new Put(Bytes.toBytes(hBaseTableDTO.getRow()));
 		put.addColumn(Bytes.toBytes(hBaseTableDTO.getColFamily()), Bytes.toBytes(hBaseTableDTO.getCol()),
-				Bytes.toBytes(hBaseTableDTO.getVal()));
+			Bytes.toBytes(hBaseTableDTO.getVal()));
 		return put;
 	}
 
@@ -230,8 +226,7 @@ public class HbaseHelper {
 			table = connection.getTable(TableName.valueOf(tableName));
 			Delete delete = new Delete(Bytes.toBytes(rowKey));
 			table.delete(delete);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			throw new Exception("delete失败");
 		}
@@ -279,14 +274,12 @@ public class HbaseHelper {
 			if (StringUtils.isNotEmpty(colFamily)) {
 				if (StringUtils.isNotEmpty(qualifier)) {
 					get.addColumn(Bytes.toBytes(colFamily), Bytes.toBytes(qualifier));
-				}
-				else {
+				} else {
 					get.addFamily(Bytes.toBytes(colFamily));
 				}
 			}
 			result = table.get(get);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			throw new Exception("查询时发生异常");
 		}
 		return result;
@@ -301,7 +294,7 @@ public class HbaseHelper {
 	}
 
 	public Result[] scan(String tableName, String colFamily, String qualifier, String startRow, String stopRow)
-			throws Exception {
+		throws Exception {
 		if (connection == null) {
 			throw new Exception("hbase链接未创建");
 		}
@@ -333,11 +326,9 @@ public class HbaseHelper {
 				list.add(result);
 				result = resultScanner.next();
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			if (resultScanner != null) {
 				resultScanner.close();
 			}
@@ -366,8 +357,7 @@ public class HbaseHelper {
 				list.add(result);
 				result = resultScanner.next();
 			}
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return list;

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 /**
  * @author Zhang Peng
- * @date 2019-03-29
+ * @since 2019-03-29
  */
 public class HbaseHelperTest {
 
@@ -18,8 +18,7 @@ public class HbaseHelperTest {
 	public static void BeforeClass() {
 		try {
 			hbaseHelper = new HbaseHelper();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -39,13 +38,13 @@ public class HbaseHelperTest {
 
 	@Test
 	public void createTable() throws Exception {
-		hbaseHelper.createTable("table1", new String[] { "columnFamliy1", "columnFamliy2" });
+		hbaseHelper.createTable("table1", new String[] {"columnFamliy1", "columnFamliy2"});
 		HTableDescriptor[] table1s = hbaseHelper.listTables("table1");
 		if (table1s == null || table1s.length <= 0) {
 			Assert.fail();
 		}
 
-		hbaseHelper.createTable("table2", new String[] { "columnFamliy1", "columnFamliy2" });
+		hbaseHelper.createTable("table2", new String[] {"columnFamliy1", "columnFamliy2"});
 		table1s = hbaseHelper.listTables("table2");
 		if (table1s == null || table1s.length <= 0) {
 			Assert.fail();

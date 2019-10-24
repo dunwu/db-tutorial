@@ -7,28 +7,19 @@ import java.sql.Statement;
 
 /**
  * @author Zhang Peng
- * @date 2019-03-05
+ * @since 2019-03-05
  */
 public class SqliteDemo {
 
-	public static void createTable() {
-		try {
-			Class.forName("org.sqlite.JDBC");
-			Connection connection = DriverManager.getConnection("jdbc:sqlite:test.db");
-
-			Statement statement = connection.createStatement();
-			String sql = new StringBuilder().append("CREATE TABLE COMPANY ").append("(ID INT PRIMARY KEY     NOT NULL,")
-					.append(" NAME           TEXT    NOT NULL, ").append(" AGE            INT     NOT NULL, ")
-					.append(" ADDRESS        CHAR(50), ").append(" SALARY         REAL)").toString();
-			statement.executeUpdate(sql);
-			statement.close();
-			connection.close();
-		}
-		catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
-		}
-		System.out.println("Create table successfully.");
+	public static void main(String[] args) {
+		SqliteDemo.dropTable();
+		SqliteDemo.createTable();
+		SqliteDemo.insert();
+		SqliteDemo.select();
+		SqliteDemo.delete();
+		SqliteDemo.select();
+		SqliteDemo.update();
+		SqliteDemo.select();
 	}
 
 	public static void dropTable() {
@@ -41,12 +32,30 @@ public class SqliteDemo {
 			statement.executeUpdate(sql);
 			statement.close();
 			connection.close();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 		System.out.println("Drop table successfully.");
+	}
+
+	public static void createTable() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			Connection connection = DriverManager.getConnection("jdbc:sqlite:test.db");
+
+			Statement statement = connection.createStatement();
+			String sql = new StringBuilder().append("CREATE TABLE COMPANY ").append("(ID INT PRIMARY KEY     NOT NULL,")
+				.append(" NAME           TEXT    NOT NULL, ").append(" AGE            INT     NOT NULL, ")
+				.append(" ADDRESS        CHAR(50), ").append(" SALARY         REAL)").toString();
+			statement.executeUpdate(sql);
+			statement.close();
+			connection.close();
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		System.out.println("Create table successfully.");
 	}
 
 	public static void insert() {
@@ -57,7 +66,7 @@ public class SqliteDemo {
 
 			Statement statement = connection.createStatement();
 			String sql = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) "
-					+ "VALUES (1, 'Paul', 32, 'California', 20000.00 );";
+				+ "VALUES (1, 'Paul', 32, 'California', 20000.00 );";
 			statement.executeUpdate(sql);
 
 			sql = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) " + "VALUES (2, 'Allen', 25, 'Texas', 15000.00 );";
@@ -67,18 +76,44 @@ public class SqliteDemo {
 			statement.executeUpdate(sql);
 
 			sql = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) "
-					+ "VALUES (4, 'Mark', 25, 'Rich-Mond ', 65000.00 );";
+				+ "VALUES (4, 'Mark', 25, 'Rich-Mond ', 65000.00 );";
 			statement.executeUpdate(sql);
 
 			statement.close();
 			connection.commit();
 			connection.close();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 		System.out.println("Insert table successfully.");
+	}
+
+	public static void select() {
+		try {
+			Class.forName("org.sqlite.JDBC");
+			Connection connection = DriverManager.getConnection("jdbc:sqlite:test.db");
+			connection.setAutoCommit(false);
+
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM COMPANY;");
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("name");
+				int age = resultSet.getInt("age");
+				String address = resultSet.getString("address");
+				float salary = resultSet.getFloat("salary");
+				String format = String.format("ID = %s, NAME = %s, AGE = %d, ADDRESS = %s, SALARY = %f", id, name, age,
+					address, salary);
+				System.out.println(format);
+			}
+			resultSet.close();
+			statement.close();
+			connection.close();
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
 	}
 
 	public static void delete() {
@@ -100,8 +135,7 @@ public class SqliteDemo {
 
 			statement.close();
 			connection.close();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
@@ -121,51 +155,11 @@ public class SqliteDemo {
 
 			statement.close();
 			connection.close();
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 		System.out.println("Update table successfully.");
-	}
-
-	public static void select() {
-		try {
-			Class.forName("org.sqlite.JDBC");
-			Connection connection = DriverManager.getConnection("jdbc:sqlite:test.db");
-			connection.setAutoCommit(false);
-
-			Statement statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery("SELECT * FROM COMPANY;");
-			while (resultSet.next()) {
-				int id = resultSet.getInt("id");
-				String name = resultSet.getString("name");
-				int age = resultSet.getInt("age");
-				String address = resultSet.getString("address");
-				float salary = resultSet.getFloat("salary");
-				String format = String.format("ID = %s, NAME = %s, AGE = %d, ADDRESS = %s, SALARY = %f", id, name, age,
-						address, salary);
-				System.out.println(format);
-			}
-			resultSet.close();
-			statement.close();
-			connection.close();
-		}
-		catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
-			System.exit(0);
-		}
-	}
-
-	public static void main(String[] args) {
-		SqliteDemo.dropTable();
-		SqliteDemo.createTable();
-		SqliteDemo.insert();
-		SqliteDemo.select();
-		SqliteDemo.delete();
-		SqliteDemo.select();
-		SqliteDemo.update();
-		SqliteDemo.select();
 	}
 
 }

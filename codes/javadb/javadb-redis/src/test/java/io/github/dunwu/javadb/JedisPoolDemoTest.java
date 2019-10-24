@@ -20,7 +20,7 @@ import java.util.Set;
  */
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:/applicationContext.xml" })
+@ContextConfiguration(locations = {"classpath:/applicationContext.xml"})
 public class JedisPoolDemoTest {
 
 	private static Logger logger = LoggerFactory.getLogger(JedisPoolDemoTest.class);

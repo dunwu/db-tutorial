@@ -5,7 +5,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 
 /**
  * @author Zhang Peng
- * @date 2019-03-05
+ * @since 2019-03-05
  */
 public class SqliteApplication implements CommandLineRunner {
 

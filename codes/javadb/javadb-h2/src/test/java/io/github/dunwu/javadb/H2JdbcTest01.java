@@ -43,8 +43,7 @@ public class H2JdbcTest01 {
 			CONNECTION = DriverManager.getConnection(JDBC_URL3, USER, PASSWORD);
 			// 创建sql声明
 			STATEMENT = CONNECTION.createStatement();
-		}
-		catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -56,8 +55,7 @@ public class H2JdbcTest01 {
 			STATEMENT.close();
 			// 关闭连接
 			CONNECTION.close();
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -85,8 +83,7 @@ public class H2JdbcTest01 {
 			while (rs.next()) {
 				System.out.println(rs.getString("id") + "," + rs.getString("name") + "," + rs.getString("sex"));
 			}
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			Assert.assertTrue(e.getMessage(), true);
 		}
 	}

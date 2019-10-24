@@ -281,7 +281,7 @@
 // updateCounter(conn, name, count, System.currentTimeMillis() / 1000);
 // }
 //
-// public static final int[] PRECISION = new int[]{1, 5, 60, 300, 3600, 18000, 86400};
+// public static final int[] PRECISION = new int[]{1, 5, 60, 300, 3600, 18000, 86400}
 // public void updateCounter(Jedis conn, String name, int count, long now){
 // Transaction trans = conn.multi();
 // for (int prec : PRECISION) {

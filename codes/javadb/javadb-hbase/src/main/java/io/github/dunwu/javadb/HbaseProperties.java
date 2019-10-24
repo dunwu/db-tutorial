@@ -33,7 +33,7 @@ public class HbaseProperties implements Serializable {
 	}
 
 	public HbaseProperties(String hbaseMaster, String quorum, String clientPort, String znodeParent, String maxThreads,
-			String coreThreads, String columnFamily, String hbaseExecutorsNum, String ipcPoolSize) {
+		String coreThreads, String columnFamily, String hbaseExecutorsNum, String ipcPoolSize) {
 		this.hbaseMaster = hbaseMaster;
 		this.quorum = quorum;
 		this.clientPort = clientPort;
@@ -120,9 +120,9 @@ public class HbaseProperties implements Serializable {
 	@Override
 	public String toString() {
 		return "HbaseProperties{" + "quorum='" + quorum + '\'' + ", clientPort='" + clientPort + '\''
-				+ ", znodeParent='" + znodeParent + '\'' + ", maxThreads='" + maxThreads + '\'' + ", coreThreads='"
-				+ coreThreads + '\'' + ", columnFamily='" + columnFamily + '\'' + ", hbaseExecutorsNum='"
-				+ hbaseExecutorsNum + '\'' + '}';
+			+ ", znodeParent='" + znodeParent + '\'' + ", maxThreads='" + maxThreads + '\'' + ", coreThreads='"
+			+ coreThreads + '\'' + ", columnFamily='" + columnFamily + '\'' + ", hbaseExecutorsNum='"
+			+ hbaseExecutorsNum + '\'' + '}';
 	}
 
 }

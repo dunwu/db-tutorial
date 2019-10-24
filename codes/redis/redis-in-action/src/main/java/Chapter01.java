@@ -40,36 +40,11 @@ public class Chapter01 {
 		printArticles(articles);
 		assert articles.size() >= 1;
 
-		addRemoveGroups(conn, articleId, new String[] { "new-group" }, new String[] {});
+		addRemoveGroups(conn, articleId, new String[] {"new-group"}, new String[] {});
 		System.out.println("We added the article to a new group, other articles include:");
 		articles = getGroupArticles(conn, "new-group", 1);
 		printArticles(articles);
 		assert articles.size() >= 1;
-	}
-
-	/**
-	 * 代码清单 1-6 对文章进行投票
-	 */
-	public void articleVote(Jedis conn, String user, String article) {
-		// 计算文章的投票截止时间。
-		long cutoff = (System.currentTimeMillis() / 1000) - ONE_WEEK_IN_SECONDS;
-
-		// 检查是否还可以对文章进行投票
-		// （虽然使用散列也可以获取文章的发布时间，
-		// 但有序集合返回的文章发布时间为浮点数，
-		// 可以不进行转换直接使用）。
-		if (conn.zscore("time:", article) < cutoff) {
-			return;
-		}
-
-		// 从article:id标识符（identifier）里面取出文章的ID。
-		String articleId = article.substring(article.indexOf(':') + 1);
-
-		// 如果用户是第一次为这篇文章投票，那么增加这篇文章的投票数量和评分。
-		if (conn.sadd("voted:" + articleId, user) == 1) {
-			conn.zincrby("score:", VOTE_SCORE, article);
-			conn.hincrBy(article, "votes", 1);
-		}
 	}
 
 	/**
@@ -103,8 +78,65 @@ public class Chapter01 {
 		return articleId;
 	}
 
+	/**
+	 * 代码清单 1-6 对文章进行投票
+	 */
+	public void articleVote(Jedis conn, String user, String article) {
+		// 计算文章的投票截止时间。
+		long cutoff = (System.currentTimeMillis() / 1000) - ONE_WEEK_IN_SECONDS;
+
+		// 检查是否还可以对文章进行投票
+		// （虽然使用散列也可以获取文章的发布时间，
+		// 但有序集合返回的文章发布时间为浮点数，
+		// 可以不进行转换直接使用）。
+		if (conn.zscore("time:", article) < cutoff) {
+			return;
+		}
+
+		// 从article:id标识符（identifier）里面取出文章的ID。
+		String articleId = article.substring(article.indexOf(':') + 1);
+
+		// 如果用户是第一次为这篇文章投票，那么增加这篇文章的投票数量和评分。
+		if (conn.sadd("voted:" + articleId, user) == 1) {
+			conn.zincrby("score:", VOTE_SCORE, article);
+			conn.hincrBy(article, "votes", 1);
+		}
+	}
+
 	public List<Map<String, String>> getArticles(Jedis conn, int page) {
 		return getArticles(conn, page, "score:");
+	}
+
+	private void printArticles(List<Map<String, String>> articles) {
+		for (Map<String, String> article : articles) {
+			System.out.println("  id: " + article.get("id"));
+			for (Map.Entry<String, String> entry : article.entrySet()) {
+				if (entry.getKey().equals("id")) {
+					continue;
+				}
+				System.out.println("    " + entry.getKey() + ": " + entry.getValue());
+			}
+		}
+	}
+
+	/**
+	 * 代码清单 1-9
+	 */
+	public void addRemoveGroups(Jedis conn, String articleId, String[] toAdd, String[] toRemove) {
+		// 构建存储文章信息的键名。
+		String article = "article:" + articleId;
+		// 将文章添加到它所属的群组里面。
+		for (String group : toAdd) {
+			conn.sadd("group:" + group, article);
+		}
+		// 从群组里面移除文章。
+		for (String group : toRemove) {
+			conn.srem("group:" + group, article);
+		}
+	}
+
+	public List<Map<String, String>> getGroupArticles(Jedis conn, String group, int page) {
+		return getGroupArticles(conn, group, page, "score:");
 	}
 
 	/**
@@ -129,26 +161,6 @@ public class Chapter01 {
 	}
 
 	/**
-	 * 代码清单 1-9
-	 */
-	public void addRemoveGroups(Jedis conn, String articleId, String[] toAdd, String[] toRemove) {
-		// 构建存储文章信息的键名。
-		String article = "article:" + articleId;
-		// 将文章添加到它所属的群组里面。
-		for (String group : toAdd) {
-			conn.sadd("group:" + group, article);
-		}
-		// 从群组里面移除文章。
-		for (String group : toRemove) {
-			conn.srem("group:" + group, article);
-		}
-	}
-
-	public List<Map<String, String>> getGroupArticles(Jedis conn, String group, int page) {
-		return getGroupArticles(conn, group, page, "score:");
-	}
-
-	/**
 	 * 代码清单 1-10 取出群组里的文章
 	 */
 	public List<Map<String, String>> getGroupArticles(Jedis conn, String group, int page, String order) {
@@ -164,18 +176,6 @@ public class Chapter01 {
 		}
 		// 调用之前定义的getArticles函数来进行分页并获取文章数据。
 		return getArticles(conn, page, key);
-	}
-
-	private void printArticles(List<Map<String, String>> articles) {
-		for (Map<String, String> article : articles) {
-			System.out.println("  id: " + article.get("id"));
-			for (Map.Entry<String, String> entry : article.entrySet()) {
-				if (entry.getKey().equals("id")) {
-					continue;
-				}
-				System.out.println("    " + entry.getKey() + ": " + entry.getValue());
-			}
-		}
 	}
 
 }

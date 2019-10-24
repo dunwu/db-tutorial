@@ -7,7 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Zhang Peng
- * @date 2018/6/19
+ * @since 2018/6/19
  */
 public class RedissonStandaloneTest {
 

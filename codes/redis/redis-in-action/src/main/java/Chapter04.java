@@ -160,9 +160,9 @@ public class Chapter04 {
 	public void benchmarkUpdateToken(Jedis conn, int duration) {
 		try {
 			@SuppressWarnings("rawtypes")
-			Class[] args = new Class[] { Jedis.class, String.class, String.class, String.class };
-			Method[] methods = new Method[] { this.getClass().getDeclaredMethod("updateToken", args),
-					this.getClass().getDeclaredMethod("updateTokenPipeline", args), };
+			Class[] args = new Class[] {Jedis.class, String.class, String.class, String.class}
+			Method[] methods = new Method[] {this.getClass().getDeclaredMethod("updateToken", args),
+				this.getClass().getDeclaredMethod("updateTokenPipeline", args),}
 			for (Method method : methods) {
 				int count = 0;
 				long start = System.currentTimeMillis();
@@ -173,10 +173,9 @@ public class Chapter04 {
 				}
 				long delta = System.currentTimeMillis() - start;
 				System.out.println(
-						method.getName() + ' ' + count + ' ' + (delta / 1000) + ' ' + (count / (delta / 1000)));
+					method.getName() + ' ' + count + ' ' + (delta / 1000) + ' ' + (count / (delta / 1000)));
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
