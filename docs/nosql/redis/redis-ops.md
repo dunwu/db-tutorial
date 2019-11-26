@@ -4,6 +4,32 @@
 >
 > SET 操作每秒钟 110000 次；GET 操作每秒钟 81000 次。
 
+<!-- TOC depthfrom:2 depthto:3 -->
+
+- [安装](#安装)
+  - [Window 下安装](#window-下安装)
+  - [Linux 下安装](#linux-下安装)
+  - [Ubuntu 下安装](#ubuntu-下安装)
+  - [开机启动](#开机启动)
+  - [开放防火墙端口](#开放防火墙端口)
+- [Redis 使用和配置](#redis-使用和配置)
+  - [启动](#启动)
+  - [常见配置](#常见配置)
+  - [设为守护进程](#设为守护进程)
+    - [远程访问](#远程访问)
+    - [设置密码](#设置密码)
+    - [配置参数表](#配置参数表)
+- [Redis 集群使用和配置](#redis-集群使用和配置)
+  - [集群规划](#集群规划)
+  - [部署](#部署)
+- [Redis 命令](#redis-命令)
+- [压力测试](#压力测试)
+- [客户端](#客户端)
+- [脚本](#脚本)
+- [参考资料](#参考资料)
+
+<!-- /TOC -->
+
 ## 安装
 
 ### Window 下安装
@@ -77,14 +103,14 @@ $sudo apt-get install redis-server
 **启动 redis 服务**
 
 ```
-cd /opt/redis/redis-5.0.4/src
+cd /usr/local/redis/src
 ./redis-server
 ```
 
 **启动 redis 客户端**
 
 ```
-cd /opt/redis/redis-5.0.4/src
+cd /usr/local/redis/src
 ./redis-cli
 ```
 
@@ -206,29 +232,29 @@ Redis 集群节点的安装与单节点服务相同，差异仅在于部署方�
 
 #### （1）创建节点目录
 
-我个人偏好将软件放在 `/opt` 目录下，在我的机器中，Redis 都安装在 `/opt/redis/redis-5.0.4` 目录下。所以，下面的命令和配置都假设 Redis 安装目录为 `/opt/redis/redis-5.0.4` 。
+我个人偏好将软件放在 `/opt` 目录下，在我的机器中，Redis 都安装在 `/usr/local/redis` 目录下。所以，下面的命令和配置都假设 Redis 安装目录为 `/usr/local/redis` 。
 
 确保机器上已经安装了 Redis 后，执行以下命令，创建 Redis 集群节点实例目录：
 
 - 127.0.0.1
 
 ```bash
-sudo mkdir -p /opt/redis/redis-5.0.4/cluster/6381
-sudo mkdir -p /opt/redis/redis-5.0.4/cluster/6382
+sudo mkdir -p /usr/local/redis/cluster/6381
+sudo mkdir -p /usr/local/redis/cluster/6382
 ```
 
 - 127.0.0.2
 
 ```bash
-sudo mkdir -p /opt/redis/redis-5.0.4/cluster/6383
-sudo mkdir -p /opt/redis/redis-5.0.4/cluster/6384
+sudo mkdir -p /usr/local/redis/cluster/6383
+sudo mkdir -p /usr/local/redis/cluster/6384
 ```
 
 - 127.0.0.3
 
 ```bash
-sudo mkdir -p /opt/redis/redis-5.0.4/cluster/6385
-sudo mkdir -p /opt/redis/redis-5.0.4/cluster/6386
+sudo mkdir -p /usr/local/redis/cluster/6385
+sudo mkdir -p /usr/local/redis/cluster/6386
 ```
 
 
@@ -249,18 +275,18 @@ daemonize yes
 # 开启集群模式
 cluster-enabled yes
 # 集群的配置，配置文件首次启动自动生成
-cluster-config-file /opt/redis/redis-5.0.4/cluster/6381/6381.conf
+cluster-config-file /usr/local/redis/cluster/6381/6381.conf
 # 请求超时时间，设置 10 秒
 cluster-node-timeout 10000
 
 # 开启 AOF 持久化
 appendonly yes
 # 数据存放目录
-dir /opt/redis/redis-5.0.4/cluster/6381
+dir /usr/local/redis/cluster/6381
 # 进程文件
-pidfile /var/run/redis-cluster/redis-6381.pid
+pidfile /var/run/redis/redis-6381.pid
 # 日志文件
-logfile /opt/redis/redis-5.0.4/cluster/6381/6381.log
+logfile /usr/local/redis/cluster/6381/6381.log
 ```
 
 #### （3）启动 Redis 节点
@@ -286,7 +312,7 @@ then
     while [ $((PORT < ENDPORT)) != "0" ]; do
         PORT=$((PORT+1))
         echo "Starting $PORT"
-        /opt/redis/redis-5.0.4/src/redis-server /opt/redis/redis-5.0.4/cluster/${PORT}/redis.conf
+        /usr/local/redis/src/redis-server /usr/local/redis/cluster/${PORT}/redis.conf
     done
     exit 0
 fi
@@ -298,8 +324,8 @@ fi
 
 ```
 $ ps -ef | grep redis
-root     12036     1 12 16:26 ?        00:08:28 /opt/redis/redis-5.0.4/src/redis-server 0.0.0.0:6381 [cluster]
-root     12038     1  0 16:26 ?        00:00:03 /opt/redis/redis-5.0.4/src/redis-server 0.0.0.0:6382 [cluster]
+root     12036     1 12 16:26 ?        00:08:28 /usr/local/redis/src/redis-server 0.0.0.0:6381 [cluster]
+root     12038     1  0 16:26 ?        00:00:03 /usr/local/redis/src/redis-server 0.0.0.0:6382 [cluster]
 ```
 
 #### （4）启动集群
@@ -307,7 +333,7 @@ root     12038     1  0 16:26 ?        00:00:03 /opt/redis/redis-5.0.4/src/redis
 通过 `redis-cli --cluster create` 命令可以自动配置集群，如下：
 
 ```bash
-$ /opt/redis/redis-5.0.4/src/redis-cli --cluster create 127.0.0.1:6381 127.0.0.1:6382 127.0.0.2:6383 127.0.0.2:6384 127.0.0.3:6385 127.0.0.3:6386 --cluster-replicas 1
+$ /usr/local/redis/src/redis-cli --cluster create 127.0.0.1:6381 127.0.0.1:6382 127.0.0.2:6383 127.0.0.2:6384 127.0.0.3:6385 127.0.0.3:6386 --cluster-replicas 1
 ```
 
 如果启动成功，可以看到如下信息：
@@ -416,7 +442,35 @@ GET: 508388.41 requests per second
 
 ## 脚本
 
-如果想傻瓜式安装一个 Redis 单节点服务，可以使用我的 [安装脚本](https://github.com/dunwu/linux-tutorial/tree/master/codes/linux/soft#redis-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE)
+> CentOS7 环境安装脚本：[软件运维配置脚本集合](https://github.com/dunwu/linux-tutorial/tree/master/codes/linux/soft)
+
+**安装说明**
+
+- 采用编译方式安装 Redis, 并将其注册为 systemd 服务
+- 安装路径为：`/usr/local/redis`
+- 默认下载安装 `5.0.4` 版本，端口号为：`6379`，密码为空
+
+**使用方法**
+
+- 默认安装 - 执行以下任意命令即可：
+
+```sh
+curl -o- https://gitee.com/turnon/linux-tutorial/raw/master/codes/linux/soft/redis-install.sh | bash
+wget -qO- https://gitee.com/turnon/linux-tutorial/raw/master/codes/linux/soft/redis-install.sh | bash
+```
+
+- 自定义安装 - 下载脚本到本地，并按照以下格式执行：
+
+
+```sh
+sh redis-install.sh [version] [port] [password]
+```
+
+参数说明：
+
+- `version` - redis 版本号
+- `port` - redis 服务端口号
+- `password` - 访问密码
 
 ## 参考资料
 

@@ -1,12 +1,14 @@
-# Mysql 维护
+# Mysql 运维
 
-## 安装配置
+> 环境：CentOS7
+>
+> 版本：![mysql](https://img.shields.io/badge/mysql-8.0-blue)
 
-通过 rpm 包安装
+## 1. 部署
 
-centos 的 yum 源中默认是没有 mysql 的，所以我们需要先去官网下载 mysql 的 repo 源并安装。
+> 本文仅介绍 rpm 安装方式
 
-### 安装 mysql yum 源
+### 1.1. 安装 mysql yum 源
 
 官方下载地址：https://dev.mysql.com/downloads/repo/yum/
 
@@ -53,6 +55,8 @@ mysql-community-server.x86_64 : A very fast and reliable SQL database server
 通过 yum 安装 mysql 有几个重要目录：
 
 ```
+# 配置文件
+/etc/my.cnf
 # 数据库目录
 /var/lib/mysql/
 # 配置文件
@@ -60,32 +64,37 @@ mysql-community-server.x86_64 : A very fast and reliable SQL database server
 # 相关命令
 /usr/bin（mysqladmin mysqldump等命令）
 # 启动脚本
-/etc/rc.d/init.d/（启动脚本文件mysql的目录）
-# 配置文件
-/etc/my.cnf
+/usr/lib/systemd/system/mysqld.service （注册为 systemd 服务）
 ```
 
-### 安装 mysql 服务器
+（4）安装 mysql 服务器
 
 ```bash
 $ yum install mysql-community-server
 ```
 
-### 启动 mysql 服务
+### 1.2. mysql 服务管理
+
+通过 yum 方式安装 mysql 后，本地会有一个名为 `mysqld` 的 systemd 服务。
+
+其服务管理十分简便：
 
 ```bash
-# 启动 mysql 服务
-systemctl start mysqld.service
-
-# 查看运行状态
-systemctl status mysqld.service
-
-# 开机启动
+# 查看状态
+systemctl status mysqld
+# 启用服务
 systemctl enable mysqld
-systemctl daemon-reload
+# 禁用服务
+systemctl disable mysqld
+# 启动服务
+systemctl start mysqld
+# 重启服务
+systemctl restart mysqld
+# 停止服务
+systemctl stop mysqld
 ```
 
-### 初始化数据库密码
+### 1.3. 初始化数据库密码
 
 查看一下初始密码
 
@@ -108,18 +117,18 @@ ALTER user 'root'@'localhost' IDENTIFIED BY '你的密码';
 
 注：密码强度默认为中等，大小写字母、数字、特殊符号，只有修改成功后才能修改配置再设置更简单的密码
 
-### 配置远程访问
+### 1.4. 配置远程访问
 
 ```sql
-mysql> CREATE USER 'root'@'%' IDENTIFIED BY '你的密码';
-mysql> GRANT ALL ON *.* TO 'root'@'%';
-mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '你的密码';
-mysql> FLUSH PRIVILEGES;
+CREATE USER 'root'@'%' IDENTIFIED BY '你的密码';
+GRANT ALL ON *.* TO 'root'@'%';
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '你的密码';
+FLUSH PRIVILEGES;
 ```
 
-### 跳过登录认证
+### 1.5. 跳过登录认证
 
-```
+```bash
 vim /etc/my.cnf
 ```
 
@@ -127,179 +136,13 @@ vim /etc/my.cnf
 
 作用是登录时跳过登录认证，换句话说就是 root 什么密码都可以登录进去。
 
-执行 `service mysqld restart`，重启 mysql
+执行 `systemctl restart mysqld`，重启 mysql
 
-## 部署
+## 2. 运维
 
-### 主从节点部署
-
-假设需要配置一个主从 Mysql 服务器环境
-
-- master 节点：192.168.8.10
-- slave 节点：192.168.8.11
-
-#### 配置主从同步
-
-（1）主节点配置
-
-执行 `vi /etc/my.cnf` ，添加如下配置：
-
-```ini
-[mysqld]
-server-id=1
-log-bin=mysql-bin
-```
-
-- `server-id` - 服务器 ID 号；
-- `log-bin` - 同步的日志路径及文件名，一定注意这个目录要是mysql有权限写入的；
-
-（2）从节点配置
-
-执行 `vi /etc/my.cnf` ，添加如下配置：
-
-```ini
-[mysqld]
-server-id=2
-log-bin=mysql-bin
-```
-
-（3）创建用于复制操作的用户
+### 2.1. 创建用户
 
 ```sql
-mysql> CREATE USER 'sync'@'192.168.8.11' IDENTIFIED WITH mysql_native_password BY '密码'; -- 创建用户
-mysql> GRANT REPLICATION SLAVE ON *.* TO 'sync'@'192.168.8.11'; -- 授权
-mysql> FLUSH PRIVILEGES; -- 刷新授权表信息
-```
-
-（4）查看主节点状态
-
-```sql
-mysql> show master status;
-+------------------+----------+--------------+---------------------------------------------+-------------------+
-| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB                            | Executed_Gtid_Set |
-+------------------+----------+--------------+---------------------------------------------+-------------------+
-| mysql-bin.000001 |     4202 |              | mysql,information_schema,performance_schema |                   |
-+------------------+----------+--------------+---------------------------------------------+-------------------+
-1 row in set (0.00 sec)
-```
-
-（5）在Slave节点上设置主节点参数
-
-`MASTER_LOG_FILE` 和 `MASTER_LOG_POS` 参数要分别与 `show master status` 指令获得的 `File` 和 `Position` 属性值对应。
-
-```sql
-mysql> CHANGE MASTER TO
-MASTER_HOST='192.168.199.149',
-MASTER_USER='sync',
-MASTER_PASSWORD='密码',
-MASTER_LOG_FILE='binlog.000001',
-MASTER_LOG_POS=4202;
-
-```
-
-（6）查看主从同步状态
-
-```
-mysql> show slave status\G;
-```
-
-说明：如果以下两项参数均为 YES，说明配置正确。
-
-- `Slave_IO_Running`
-- `Slave_SQL_Running`
-
-（7）启动 slave 进程
-
-```
-mysql> start slave;
-```
-
-（8）将 slave 服务器设为只读
-
-```
-mysql> set global read_only=1;
-mysql> set global super_read_only=1;
-mysql> show global variables like "%read_only%";
-+-----------------------+-------+
-| Variable_name         | Value |
-+-----------------------+-------+
-| innodb_read_only      | OFF   |
-| read_only             | ON    |
-| super_read_only       | ON    |
-| transaction_read_only | OFF   |
-+-----------------------+-------+
-```
-
-> 注：设置 slave 服务器为只读，并不影响主从同步。
-
-#### 同步主节点已有数据到从节点
-
-主库操作：
-
-（1）停止主库的数据更新操作
-
-```sql
-mysql> flush tables with read lock;
-```
-
-（2）新开终端，生成主数据库的备份（导出数据库）
-
-```bash
-$ mysqldump -uroot -p<密码> test > test.sql
-```
-
-（3）将备份文件传到从库
-
-```bash
-$ scp test.sql root@192.168.8.11:/root/
-```
-
-（4）主库解锁
-
-```mysql
-mysql> unlock tables;
-```
-
- 从库操作：
-
-（1）停止从库slave
-
-```mysql
-mysql> stop slave;
-```
-
-（2）新建数据库test
-
-```mysql
-mysql> create database test default charset utf8;
-```
-
-（3）导入数据
-
-```bash
-$ mysql -uroot -ptest123 cmdb<cmdb.sql 
-```
-
-（4）查看从库已有该数据库和数据 
-
-```mysql
-mysql> show databases;
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| cmdb               |
-| mysql              |
-| performance_schema |
-| test               |
-+--------------------+
-```
-
-## 运维
-
-### 创建用户
-
-```
 CREATE USER 'username'@'host' IDENTIFIED BY 'password';
 ```
 
@@ -319,7 +162,7 @@ CREATE USER 'pig'@'%' IDENTIFIED BY '';
 CREATE USER 'pig'@'%';
 ```
 
-### 授权
+### 2.2. 授权
 
 命令：
 
@@ -349,7 +192,7 @@ GRANT ALL ON maindataplus.* TO 'pig'@'%';
 GRANT privileges ON databasename.tablename TO 'username'@'host' WITH GRANT OPTION;
 ```
 
-### 撤销授权
+### 2.3. 撤销授权
 
 命令:
 
@@ -363,7 +206,7 @@ privilege, databasename, tablename：同授权部分
 
 例子:
 
-```
+```sql
 REVOKE SELECT ON *.* FROM 'pig'@'%';
 ```
 
@@ -373,7 +216,7 @@ REVOKE SELECT ON *.* FROM 'pig'@'%';
 
 具体信息可以用命令`SHOW GRANTS FOR 'pig'@'%';` 查看。
 
-### 更改用户密码
+### 2.4. 更改用户密码
 
 ```sql
 SET PASSWORD FOR 'username'@'host' = PASSWORD('newpassword');
@@ -391,7 +234,7 @@ SET PASSWORD = PASSWORD("newpassword");
 SET PASSWORD FOR 'pig'@'%' = PASSWORD("123456");
 ```
 
-### 备份与恢复
+### 2.5. 备份与恢复
 
 Mysql 备份数据使用 mysqldump 命令。
 
@@ -399,11 +242,11 @@ mysqldump 将数据库中的数据备份成一个文本文件，表的结构和�
 
 备份：
 
-（1）备份一个数据库
+#### 2.5.1. 备份一个数据库
 
 语法：
 
-```
+```sql
 mysqldump -u <username> -p <database> [<table1> <table2> ...] > backup.sql
 ```
 
@@ -412,29 +255,35 @@ mysqldump -u <username> -p <database> [<table1> <table2> ...] > backup.sql
 - table1 和 table2 参数表示需要备份的表的名称，为空则整个数据库备份；
 - BackupName.sql 参数表设计备份文件的名称，文件名前面可以加上一个绝对路径。通常将数据库被分成一个后缀名为 sql 的文件
 
-（2）备份多个数据库
+#### 2.5.2. 备份多个数据库
 
-```
+```sql
 mysqldump -u <username> -p --databases <database1> <database2> ... > backup.sql
 ```
 
-（3）备份所有数据库
+#### 2.5.3. 备份所有数据库
 
-```
+```sql
 mysqldump -u <username> -p --all-databases > backup.sql
 ```
 
-恢复：
+#### 2.5.4. 恢复一个数据库
 
 Mysql 恢复数据使用 mysqldump 命令。
 
 语法：
 
-```
+```sql
 mysql -u <username> -p <database> < backup.sql
 ```
 
-### 卸载
+#### 2.5.5. 恢复所有数据库
+
+```sql
+mysql -u <username> -p --all-databases < backup.sql
+```
+
+### 2.6. 卸载
 
 （1）查看已安装的 mysql
 
@@ -454,9 +303,405 @@ mysql-community-libs-8.0.12-1.el7.x86_64
 $ yum remove mysql-community-server.x86_64
 ```
 
-## 问题
+### 2.7. 主从节点部署
 
-### JDBC 与 Mysql 因 CST 时区协商无解导致偏差了 14 或 13 小时
+假设需要配置一个主从 Mysql 服务器环境
+
+- master 节点：192.168.8.10
+- slave 节点：192.168.8.11
+
+#### 2.7.1. 主节点上的操作
+
+（1）修改配置并重启
+
+执行 `vi /etc/my.cnf` ，添加如下配置：
+
+```ini
+[mysqld]
+server-id=1
+log_bin=/var/lib/mysql/binlog
+```
+
+- `server-id` - 服务器 ID 号。在主从架构中，每台机器的 ID 必须唯一。
+- `log_bin` - 同步的日志路径及文件名，一定注意这个目录要是 mysql 有权限写入的；
+
+修改后，重启 mysql 使配置生效：
+
+```sql
+$ systemctl restart mysql
+```
+
+（2）创建用于同步的用户
+
+进入 mysql 命令控制台：
+
+```
+$ mysql -u root -p
+Password:
+```
+
+执行以下 SQL：
+
+```sql
+-- 创建 slave1 用户，并指定该用户只能在主机 192.168.8.11 上登录
+mysql> CREATE USER 'slave1'@'192.168.8.11' IDENTIFIED WITH mysql_native_password BY '密码';
+-- 为 slave1 赋予 REPLICATION SLAVE 权限
+mysql> GRANT REPLICATION SLAVE ON *.* TO 'slave1'@'192.168.8.11';
+-- 刷新授权表信息
+mysql> FLUSH PRIVILEGES;
+```
+
+（3）加读锁
+
+为了主库与从库的数据保持一致，我们先为 mysql 加入读锁，使其变为只读。
+
+```sql
+mysql> FLUSH TABLES WITH READ LOCK;
+```
+
+（4）查看主节点状态
+
+```sql
+mysql> show master status;
++------------------+----------+--------------+---------------------------------------------+-------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB                            | Executed_Gtid_Set |
++------------------+----------+--------------+---------------------------------------------+-------------------+
+| mysql-bin.000001 |     4202 |              | mysql,information_schema,performance_schema |                   |
++------------------+----------+--------------+---------------------------------------------+-------------------+
+1 row in set (0.00 sec)
+```
+
+> 注意：需要记录下 `File` 和 `Position`，后面会用到。
+
+（5）导出 sql
+
+```bash
+$ mysqldump -u root -p --all-databases --master-data > dbdump.sql
+```
+
+（6）解除读锁
+
+```sql
+mysql> UNLOCK TABLES;
+```
+
+（7）将 sql 远程传送到从节点上
+
+```
+$ scp dbdump.sql root@192.168.8.11:/home
+```
+
+#### 2.7.2. 从节点上的操作
+
+（1）修改配置并重启
+
+执行 `vi /etc/my.cnf` ，添加如下配置：
+
+```ini
+[mysqld]
+server-id=2
+log_bin=/var/lib/mysql/binlog
+```
+
+- `server-id` - 服务器 ID 号。在主从架构中，每台机器的 ID 必须唯一。
+- `log_bin` - 同步的日志路径及文件名，一定注意这个目录要是 mysql 有权限写入的；
+
+修改后，重启 mysql 使配置生效：
+
+```bash
+$ systemctl restart mysql
+```
+
+（2）导入 sql
+
+```bash
+$ mysql -u root -p < /home/dbdump.sql
+```
+
+（3）在从节点上建立与主节点的连接
+
+进入 mysql 命令控制台：
+
+```
+$ mysql -u root -p
+Password:
+```
+
+执行以下 SQL：
+
+```sql
+-- 停止从节点服务
+mysql> STOP SLAVE;
+
+mysql> CHANGE MASTER TO
+    -> MASTER_HOST='192.168.8.10',
+    -> MASTER_USER='slave1',
+    -> MASTER_PASSWORD='密码6',
+    -> MASTER_LOG_FILE='binlog.000001',
+    -> MASTER_LOG_POS=4202;
+```
+
+`MASTER_LOG_FILE` 和 `MASTER_LOG_POS` 参数要分别与 `show master status` 指令获得的 `File` 和 `Position` 属性值对应。
+
+（4）启动 slave 进程
+
+```sql
+mysql> start slave;
+```
+
+（5）查看主从同步状态
+
+```sql
+mysql> show slave status\G;
+```
+
+说明：如果以下两项参数均为 YES，说明配置正确。
+
+- `Slave_IO_Running`
+- `Slave_SQL_Running`
+
+（6）将从节点设为只读
+
+```sql
+mysql> set global read_only=1;
+mysql> set global super_read_only=1;
+mysql> show global variables like "%read_only%";
++-----------------------+-------+
+| Variable_name         | Value |
++-----------------------+-------+
+| innodb_read_only      | OFF   |
+| read_only             | ON    |
+| super_read_only       | ON    |
+| transaction_read_only | OFF   |
++-----------------------+-------+
+```
+
+> 注：设置 slave 服务器为只读，并不影响主从同步。
+
+## 3. 配置
+
+> `my.cnf` 配置详情可以参考
+>
+> - [配置文档官方说明](https://www.jianshu.com/p/5f39c486561b)
+> - [Mysql 配置文件/etc/my.cnf 解析](https://www.jianshu.com/p/5f39c486561b)
+
+常用配置及说明：
+
+```ini
+# 客户端设置
+[client]
+port = 3306
+# 默认情况下，socket文件应为/usr/local/mysql/mysql.socket,所以可以ln -s xx  /tmp/mysql.sock
+socket = /tmp/mysql.sock
+
+# 服务端设置
+[mysqld]
+
+# 基本配置
+# -------------------------------------------------------------------------------
+# mysql 服务的 id，必须保证唯一
+server-id = 1
+# 服务端口号（默认为3306）
+port = 3306
+# 启动 mysql 服务进程的用户
+user = mysql
+# mysql 的安装目录
+basedir = /usr/share/mysql-8.0
+# mysql 的数据目录
+datadir = /var/lib/mysql
+# socket 文件
+socket  = /tmp/mysql.sock
+# 事务隔离级别，默认为可重复读（REPEATABLE-READ）。（建议不要修改）
+# 隔离级别可选项目：READ-UNCOMMITTED  READ-COMMITTED  REPEATABLE-READ  SERIALIZABLE
+transaction_isolation = REPEATABLE-READ
+
+# 设置时区
+default-time_zone = '+8:00'
+# 数据库默认字符集
+character-set-server = utf8
+# 数据库字符集对应一些排序等规则，注意要和 character-set-server 对应
+collation-server = utf8_general_ci
+# 设置client连接mysql时的字符集,防止乱码
+# init_connect='SET NAMES utf8'
+# 是否对sql语句大小写敏感，默认值为0，1表示不敏感
+lower_case_table_names = 1
+
+# 数据库连接相关设置
+# -------------------------------------------------------------------------------
+# 最大连接数，可设最大值16384，建议直接设10000
+max_connections = 10000
+# 默认值100，最大错误连接数，如果有超出该参数值个数的中断错误连接，则该主机将被禁止连接。如需对该主机进行解禁，执行：FLUSH HOST
+max_connect_errors = 10000
+# MySQL打开的文件描述符限制，默认最小1024;
+# 当open_files_limit没有被配置的时候，比较max_connections*5和ulimit -n的值，哪个大用哪个，
+# 当open_file_limit被配置的时候，比较open_files_limit和max_connections*5的值，哪个大用哪个。
+open_files_limit = 65535
+# 注意：仍然可能出现报错信息Can't create a new thread；此时观察系统cat /proc/mysql进程号/limits，观察进程ulimit限制情况
+# 过小的话，考虑修改系统配置表，/etc/security/limits.conf和/etc/security/limits.d/90-nproc.conf
+
+# MySQL默认的wait_timeout  值为8个小时, interactive_timeout参数需要同时配置才能生效
+# MySQL连接闲置超过一定时间后(单位：秒，此处为1800秒)将会被强行关闭
+interactive_timeout = 1800
+wait_timeout = 1800
+
+# 在MySQL暂时停止响应新请求之前的短时间内多少个请求可以被存在堆栈中
+# 官方建议back_log = 50 + (max_connections / 5),封顶数为900
+back_log = 900
+
+# 数据库数据交换设置
+# -------------------------------------------------------------------------------
+# 该参数限制服务器端，接受的数据包大小，如果有BLOB子段，建议增大此值，避免写入或者更新出错。有BLOB子段，建议改为1024M
+max_allowed_packet = 128M
+
+# 内存，cache与buffer设置
+# -------------------------------------------------------------------------------
+# 内存临时表的最大值,默认16M，此处设置成128M
+tmp_table_size = 128M
+# 用户创建的内存表的大小，默认16M，往往和tmp_table_size一起设置，限制用户临师表大小。
+# 超限的话，MySQL就会自动地把它转化为基于磁盘的MyISAM表，存储在指定的tmpdir目录下，增大IO压力，建议内存大，增大该数值。
+max_heap_table_size = 128M
+# 表示这个mysql版本是否支持查询缓存。ps：SHOW STATUS LIKE 'qcache%'，与缓存相关的状态变量。
+# have_query_cache
+# 这个系统变量控制着查询缓存工能的开启的关闭，0时表示关闭，1时表示打开，2表示只要select 中明确指定SQL_CACHE才缓存。
+# 看业务场景决定是否使用缓存，不使用，下面就不用配置了。
+query_cache_type = 0
+# 默认值1M，优点是查询缓冲可以极大的提高服务器速度, 如果你有大量的相同的查询并且很少修改表。
+# 缺点：在你表经常变化的情况下或者如果你的查询原文每次都不同,查询缓冲也许引起性能下降而不是性能提升。
+query_cache_size = 64M
+# 只有小于此设定值的结果才会被缓冲，保护查询缓冲,防止一个极大的结果集将其他所有的查询结果都覆盖。
+query_cache_limit = 2M
+# 每个被缓存的结果集要占用的最小内存,默认值4kb，一般不怎么调整。
+# 如果Qcache_free_blocks值过大，可能是query_cache_min_res_unit值过大，应该调小些
+# query_cache_min_res_unit的估计值：(query_cache_size - Qcache_free_memory) / Qcache_queries_in_cache
+query_cache_min_res_unit = 4kb
+# 在一个事务中binlog为了记录SQL状态所持有的cache大小
+# 如果你经常使用大的,多声明的事务,你可以增加此值来获取更大的性能.
+# 所有从事务来的状态都将被缓冲在binlog缓冲中然后在提交后一次性写入到binlog中
+# 如果事务比此值大, 会使用磁盘上的临时文件来替代.
+# 此缓冲在每个连接的事务第一次更新状态时被创建
+binlog_cache_size = 1M
+
+# 日志文件相关设置，一般只开启三种日志，错误日志，慢查询日志，二进制日志。普通查询日志不开启。
+# -------------------------------------------------------------------------------
+# 普通查询日志，默认值off，不开启
+general_log = 0
+# 普通查询日志存放地址
+general_log_file = /usr/local/mysql-5.7.21/log/mysql-general.log
+# 全局动态变量，默认3，范围：1～3
+# 表示错误日志记录的信息，1：只记录error信息；2：记录error和warnings信息；3：记录error、warnings和普通的notes信息。
+log_error_verbosity = 2
+# 错误日志文件地址
+log_error = /usr/local/mysql-5.7.21/log/mysql-error.log
+# 开启慢查询
+slow_query_log = 1
+# 开启慢查询时间，此处为1秒，达到此值才记录数据
+long_query_time = 3
+# 检索行数达到此数值，才记录慢查询日志中
+min_examined_row_limit = 100
+# mysql 5.6.5新增，用来表示每分钟允许记录到slow log的且未使用索引的SQL语句次数，默认值为0，不限制。
+log_throttle_queries_not_using_indexes = 0
+# 慢查询日志文件地址
+slow_query_log_file = /usr/local/mysql-5.7.21/log/mysql-slow.log
+# 开启记录没有使用索引查询语句
+log-queries-not-using-indexes = 1
+# 开启二进制日志
+log_bin = /usr/local/mysql-5.7.21/log/mysql-bin.log
+# mysql清除过期日志的时间，默认值0，不自动清理，而是使用滚动循环的方式。
+expire_logs_days = 0
+# 如果二进制日志写入的内容超出给定值，日志就会发生滚动。你不能将该变量设置为大于1GB或小于4096字节。 默认值是1GB。
+max_binlog_size = 1000M
+# binlog的格式也有三种：STATEMENT，ROW，MIXED。mysql 5.7.7后，默认值从 MIXED 改为 ROW
+# 关于binlog日志格式问题，请查阅网络资料
+binlog_format = row
+# 默认值N=1，使binlog在每N次binlog写入后与硬盘同步，ps：1最慢
+# sync_binlog = 1
+
+[mysqldump]
+# quick选项强制 mysqldump 从服务器查询取得记录直接输出而不是取得所有记录后将它们缓存到内存中
+quick
+max_allowed_packet = 16M
+
+[mysql]
+# mysql命令行工具不使用自动补全功能，建议还是改为
+# no-auto-rehash
+auto-rehash
+socket = /tmp/mysql.sock
+```
+
+## 4. 常见问题
+
+### 4.1. Too many connections
+
+**现象**
+
+尝试连接 Mysql 时，遇到 `Too many connections` 错误。
+
+**原因**
+
+数据库连接线程数超过最大值，访问被拒绝。
+
+**解决方案**
+
+如果实际连接线程数过大，可以考虑增加服务器节点来分流；如果实际线程数并不算过大，那么可以配置 `max_connections` 来增加允许的最大连接数。
+
+（1）查看最大连接数
+
+```sql
+mysql> show variables like '%max_connections%';
++------------------------+-------+
+| Variable_name          | Value |
++------------------------+-------+
+| max_connections        | 151   |
+| mysqlx_max_connections | 100   |
++------------------------+-------+
+```
+
+（2）查看服务器响应的最大连接数
+
+```sql
+mysql> show global status like 'Max_used_connections';
++----------------------+-------+
+| Variable_name        | Value |
++----------------------+-------+
+| Max_used_connections | 142   |
++----------------------+-------+
+1 row in set (0.00 sec)
+```
+
+（3）临时设置最大连接数
+
+```sql
+set GLOBAL max_connections=256;
+```
+
+注意：当服务器重启时，最大连接数会被重置。
+
+（4）永久设置最大连接数
+
+修改 `/etc/my.cnf` 配置文件，在 `[mysqld]` 添加以下配置：
+
+```sql
+max_connections=256
+```
+
+重启 mysql 以生效
+
+（5）修改 Linux 最大文件数限制
+
+设置了最大连接数，如果还是没有生效，考虑检查一下 Linux 最大文件数
+
+Mysql 最大连接数会受到最大文件数限制，`vim /etc/security/limits.conf`，添加 mysql 用户配置
+
+```
+mysql hard nofile 65535
+mysql soft nofile 65535
+```
+
+（6）检查 LimitNOFILE
+
+如果是使用 rpm 方式安装 mysql，检查 **mysqld.service** 文件中的 `LimitNOFILE` 是否配置的太小。
+
+### 4.2. 时区（time_zone）偏差
 
 **现象**
 
@@ -467,25 +712,25 @@ $ yum remove mysql-community-server.x86_64
 - 当 JDBC 与 MySQL 开始建立连接时，会获取服务器参数。
 - 当 MySQL 的 `time_zone` 值为 `SYSTEM` 时，会取 `system_time_zone` 值作为协调时区，若得到的是 `CST` 那么 Java 会误以为这是 `CST -0500` ，因此会给出错误的时区信息（国内一般是`CST +0800`，即东八区）。
 
-> 查看时区方法：
->
-> 通过 `show variables like '%time_zone%';` 命令查看 Mysql 时区配置：
->
-> ```
-> mysql> show variables like '%time_zone%';
-> +------------------+--------+
-> | Variable_name    | Value  |
-> +------------------+--------+
-> | system_time_zone | CST    |
-> | time_zone        | SYSTEM |
-> +------------------+--------+
-> ```
+查看时区方法：
+
+通过 `show variables like '%time_zone%';` 命令查看 Mysql 时区配置：
+
+```sql
+mysql> show variables like '%time_zone%';
++------------------+--------+
+| Variable_name    | Value  |
++------------------+--------+
+| system_time_zone | CST    |
+| time_zone        | SYSTEM |
++------------------+--------+
+```
 
 **解决方案**
 
 方案一
 
-```
+```sql
 mysql> set global time_zone = '+08:00';
 Query OK, 0 rows affected (0.00 sec)
 
@@ -495,17 +740,27 @@ Query OK, 0 rows affected (0.00 sec)
 
 方案二
 
-修改 `my.cnf` 文件，在 `[mysqld]` 节下增加 `default-time-zone = '+08:00'` ，然后重启。
+修改 `my.cnf` 文件，在 `[mysqld]` 节下增加 `default-time-zone='+08:00'` ，然后重启。
 
-## 参考资料
+## 5. 脚本
+
+这里推荐我写的几个一键运维脚本：
+
+- [Mysql 安装脚本](https://github.com/dunwu/linux-tutorial/tree/master/codes/linux/soft/mysql-install.sh)
+- [Mysql 备份脚本](https://github.com/dunwu/linux-tutorial/tree/master/codes/linux/soft/mysql-backup.sh)
+
+## 6. 参考资料
 
 - https://www.cnblogs.com/xiaopotian/p/8196464.html
 - https://www.cnblogs.com/bigbrotherer/p/7241845.html
 - https://blog.csdn.net/managementandjava/article/details/80039650
 - http://www.manongjc.com/article/6996.html
 - https://www.cnblogs.com/xyabk/p/8967990.html
-- [MySQL 8.0主从（Master-Slave）配置](https://blog.csdn.net/zyhlwzy/article/details/80569422)
+- [MySQL 8.0 主从（Master-Slave）配置](https://blog.csdn.net/zyhlwzy/article/details/80569422)
+- [Mysql 配置文件/etc/my.cnf 解析](https://www.jianshu.com/p/5f39c486561b)
+- [Mysql 主从同步实战](https://juejin.im/post/58eb5d162f301e00624f014a)
+- [MySQL 备份和恢复机制](https://juejin.im/entry/5a0aa2026fb9a045132a369f)
 
-## :door: 传送门
+## 7. 传送门
 
 | [我的 Github 博客](https://github.com/dunwu/blog) | [db-tutorial 首页](https://github.com/dunwu/db-tutorial) |

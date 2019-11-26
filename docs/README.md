@@ -18,7 +18,7 @@
 - 2️⃣ [Nosql](nosql/README.md)
 - 3️⃣ [Mysql](sql/mysql/README.md)
   - [Mysql 命令](sql/mysql/mysql-cli.md)
-  - [Mysql 维护](sql/mysql/mysql-ops.md)
+  - [Mysql 运维](sql/mysql/mysql-ops.md)
   - [Mysql 原理](sql/mysql/mysql-theory.md)
 - 4️⃣ Redis
   - [Redis 入门指南](nosql/redis/redis.md)
