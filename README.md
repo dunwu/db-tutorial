@@ -1,11 +1,11 @@
 # 数据库教程
 
-> :1234: 数据库经验总结
+> 数据库经验总结
 >
 > - 🔁 项目同步维护：[Github](https://github.com/dunwu/db-tutorial/) | [Gitee](https://gitee.com/turnon/db-tutorial/)
 > - 📖 电子书阅读：[Github Pages](https://dunwu.github.io/db-tutorial/) | [Gitee Pages](https://turnon.gitee.io/db-tutorial/)
 
-## :memo: 知识点
+## 知识点
 
 - 1️⃣ [关系型数据库](docs/sql/README.md)
   - [关系型数据库面试题](docs/sql/sql-interview.md)
@@ -17,9 +17,9 @@
   - [数据库中间件 flyway](docs/sql/middleware/flyway.md)
 - 2️⃣ [Nosql](docs/nosql/README.md)
 - 3️⃣ [Mysql](docs/sql/mysql/README.md)
-  - [Mysql 命令](docs/sql/mysql/mysql-cli.md)
-  - [Mysql 维护](docs/sql/mysql/mysql-ops.md)
   - [Mysql 原理](docs/sql/mysql/mysql-theory.md)
+  - [Mysql 维护](docs/sql/mysql/mysql-ops.md)
+  - [Mysql 配置](docs/sql/mysql/mysql-config.md)
 - 4️⃣ [Redis](docs/nosql/redis/README.md)
   - [Redis 快速入门](docs/nosql/redis/redis.md)
   - [Redis 持久化](docs/nosql/redis/redis-persistence.md)

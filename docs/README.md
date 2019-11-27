@@ -1,6 +1,6 @@
 # 数据库教程
 
-> :1234: 数据库经验总结
+> 数据库经验总结
 >
 > - 🔁 项目同步维护：[Github](https://github.com/dunwu/db-tutorial/) | [Gitee](https://gitee.com/turnon/db-tutorial/)
 > - 📖 电子书阅读：[Github Pages](https://dunwu.github.io/db-tutorial/) | [Gitee Pages](https://turnon.gitee.io/db-tutorial/)
@@ -17,17 +17,13 @@
   - [数据库中间件 flyway](sql/middleware/flyway.md)
 - 2️⃣ [Nosql](nosql/README.md)
 - 3️⃣ [Mysql](sql/mysql/README.md)
-  - [Mysql 命令](sql/mysql/mysql-cli.md)
-  - [Mysql 运维](sql/mysql/mysql-ops.md)
   - [Mysql 原理](sql/mysql/mysql-theory.md)
-- 4️⃣ Redis
-  - [Redis 入门指南](nosql/redis/redis.md)
+  - [Mysql 维护](sql/mysql/mysql-ops.md)
+  - [Mysql 配置](sql/mysql/mysql-config.md)
+- 4️⃣ [Redis](nosql/redis/README.md)
+  - [Redis 快速入门](nosql/redis/redis.md)
   - [Redis 持久化](nosql/redis/redis-persistence.md)
   - [Redis 复制](nosql/redis/redis-replication.md)
   - [Redis 哨兵](nosql/redis/redis-sentinel.md)
   - [Redis 集群](nosql/redis/redis-cluster.md)
   - [Redis 运维](nosql/redis/redis-ops.md)
-
-## 传送门
-
-| [我的 Github 博客](https://github.com/dunwu/blog) | [db-tutorial 首页](https://github.com/dunwu/db-tutorial) |

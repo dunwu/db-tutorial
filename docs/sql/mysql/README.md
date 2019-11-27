@@ -2,9 +2,9 @@
 
 ## :memo: 知识点
 
-- [mysql 维护](mysql-ops.md)
-- [mysql 命令](mysql-cli.md)
 - [mysql 原理](mysql-theory.md)
+- [mysql 维护](mysql-ops.md)
+- [mysql 配置](mysql-config.md)
 
 ## 📚 学习资源
 

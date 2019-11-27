@@ -480,153 +480,134 @@ mysql> show global variables like "%read_only%";
 
 ## 3. 配置
 
-> `my.cnf` 配置详情可以参考
->
-> - [配置文档官方说明](https://www.jianshu.com/p/5f39c486561b)
-> - [Mysql 配置文件/etc/my.cnf 解析](https://www.jianshu.com/p/5f39c486561b)
+> **_大部分情况下，默认的基本配置已经足够应付大多数场景，不要轻易修改 Mysql 服务器配置，除非你明确知道修改项是有益的。_**
 
-常用配置及说明：
+### 3.1. 配置文件路径
+
+配置 Mysql 首先要确定配置文件在哪儿。
+
+不同 Linux 操作系统上，Mysql 配置文件路径可能不同。通常的路径为 /etc/my.cnf 或 /etc/mysql/my.cnf 。
+
+如果不知道配置文件路径，可以尝试以下操作：
+
+```bash
+# which mysqld
+/usr/sbin/mysqld
+# /usr/sbin/mysqld --verbose --help | grep -A 1 'Default options'
+Default options are read from the following files in the given order:
+/etc/my.cnf /etc/mysql/my.cnf /usr/etc/my.cnf ~/.my.cnf
+```
+
+### 3.2. 配置项语法
+
+**Mysql 配置项设置都使用小写，单词之间用下划线或横线隔开（二者是等价的）。**
+
+建议使用固定的风格，这样检索配置项时较为方便。
+
+```bash
+# 这两种格式等价
+/usr/sbin/mysqld --auto-increment-offset=5
+/usr/sbin/mysqld --auto_increment_offset=5
+```
+
+### 3.3. 常用配置项说明
+
+> 这里介绍比较常用的基本配置，更多配置项说明可以参考：[Mysql 服务器配置说明](mysql-config.md)
+
+先给出一份常用配置模板，内容如下：
 
 ```ini
-# 客户端设置
-[client]
-port = 3306
-# 默认情况下，socket文件应为/usr/local/mysql/mysql.socket,所以可以ln -s xx  /tmp/mysql.sock
-socket = /tmp/mysql.sock
-
-# 服务端设置
 [mysqld]
-
-# 基本配置
+# GENERAL
 # -------------------------------------------------------------------------------
-# mysql 服务的 id，必须保证唯一
-server-id = 1
-# 服务端口号（默认为3306）
-port = 3306
-# 启动 mysql 服务进程的用户
-user = mysql
-# mysql 的安装目录
-basedir = /usr/share/mysql-8.0
-# mysql 的数据目录
 datadir = /var/lib/mysql
-# socket 文件
-socket  = /tmp/mysql.sock
-# 事务隔离级别，默认为可重复读（REPEATABLE-READ）。（建议不要修改）
-# 隔离级别可选项目：READ-UNCOMMITTED  READ-COMMITTED  REPEATABLE-READ  SERIALIZABLE
-transaction_isolation = REPEATABLE-READ
+socket  = /var/lib/mysql/mysql.sock
+pid_file = /var/lib/mysql/mysql.pid
+user = mysql
+port = 3306
+default_storage_engine = InnoDB
+default_time_zone = '+8:00'
+character_set_server = utf8mb4
+collation_server = utf8mb4_0900_ai_ci
 
-# 设置时区
-default-time_zone = '+8:00'
-# 数据库默认字符集
-character-set-server = utf8
-# 数据库字符集对应一些排序等规则，注意要和 character-set-server 对应
-collation-server = utf8_general_ci
-# 设置client连接mysql时的字符集,防止乱码
-# init_connect='SET NAMES utf8'
-# 是否对sql语句大小写敏感，默认值为0，1表示不敏感
-lower_case_table_names = 1
-
-# 数据库连接相关设置
+# LOG
 # -------------------------------------------------------------------------------
-# 最大连接数，可设最大值16384，建议直接设10000
-max_connections = 10000
-# 默认值100，最大错误连接数，如果有超出该参数值个数的中断错误连接，则该主机将被禁止连接。如需对该主机进行解禁，执行：FLUSH HOST
-max_connect_errors = 10000
-# MySQL打开的文件描述符限制，默认最小1024;
-# 当open_files_limit没有被配置的时候，比较max_connections*5和ulimit -n的值，哪个大用哪个，
-# 当open_file_limit被配置的时候，比较open_files_limit和max_connections*5的值，哪个大用哪个。
-open_files_limit = 65535
-# 注意：仍然可能出现报错信息Can't create a new thread；此时观察系统cat /proc/mysql进程号/limits，观察进程ulimit限制情况
-# 过小的话，考虑修改系统配置表，/etc/security/limits.conf和/etc/security/limits.d/90-nproc.conf
-
-# MySQL默认的wait_timeout  值为8个小时, interactive_timeout参数需要同时配置才能生效
-# MySQL连接闲置超过一定时间后(单位：秒，此处为1800秒)将会被强行关闭
-interactive_timeout = 1800
-wait_timeout = 1800
-
-# 在MySQL暂时停止响应新请求之前的短时间内多少个请求可以被存在堆栈中
-# 官方建议back_log = 50 + (max_connections / 5),封顶数为900
-back_log = 900
-
-# 数据库数据交换设置
-# -------------------------------------------------------------------------------
-# 该参数限制服务器端，接受的数据包大小，如果有BLOB子段，建议增大此值，避免写入或者更新出错。有BLOB子段，建议改为1024M
-max_allowed_packet = 128M
-
-# 内存，cache与buffer设置
-# -------------------------------------------------------------------------------
-# 内存临时表的最大值,默认16M，此处设置成128M
-tmp_table_size = 128M
-# 用户创建的内存表的大小，默认16M，往往和tmp_table_size一起设置，限制用户临师表大小。
-# 超限的话，MySQL就会自动地把它转化为基于磁盘的MyISAM表，存储在指定的tmpdir目录下，增大IO压力，建议内存大，增大该数值。
-max_heap_table_size = 128M
-# 表示这个mysql版本是否支持查询缓存。ps：SHOW STATUS LIKE 'qcache%'，与缓存相关的状态变量。
-# have_query_cache
-# 这个系统变量控制着查询缓存工能的开启的关闭，0时表示关闭，1时表示打开，2表示只要select 中明确指定SQL_CACHE才缓存。
-# 看业务场景决定是否使用缓存，不使用，下面就不用配置了。
-query_cache_type = 0
-# 默认值1M，优点是查询缓冲可以极大的提高服务器速度, 如果你有大量的相同的查询并且很少修改表。
-# 缺点：在你表经常变化的情况下或者如果你的查询原文每次都不同,查询缓冲也许引起性能下降而不是性能提升。
-query_cache_size = 64M
-# 只有小于此设定值的结果才会被缓冲，保护查询缓冲,防止一个极大的结果集将其他所有的查询结果都覆盖。
-query_cache_limit = 2M
-# 每个被缓存的结果集要占用的最小内存,默认值4kb，一般不怎么调整。
-# 如果Qcache_free_blocks值过大，可能是query_cache_min_res_unit值过大，应该调小些
-# query_cache_min_res_unit的估计值：(query_cache_size - Qcache_free_memory) / Qcache_queries_in_cache
-query_cache_min_res_unit = 4kb
-# 在一个事务中binlog为了记录SQL状态所持有的cache大小
-# 如果你经常使用大的,多声明的事务,你可以增加此值来获取更大的性能.
-# 所有从事务来的状态都将被缓冲在binlog缓冲中然后在提交后一次性写入到binlog中
-# 如果事务比此值大, 会使用磁盘上的临时文件来替代.
-# 此缓冲在每个连接的事务第一次更新状态时被创建
-binlog_cache_size = 1M
-
-# 日志文件相关设置，一般只开启三种日志，错误日志，慢查询日志，二进制日志。普通查询日志不开启。
-# -------------------------------------------------------------------------------
-# 普通查询日志，默认值off，不开启
-general_log = 0
-# 普通查询日志存放地址
-general_log_file = /usr/local/mysql-5.7.21/log/mysql-general.log
-# 全局动态变量，默认3，范围：1～3
-# 表示错误日志记录的信息，1：只记录error信息；2：记录error和warnings信息；3：记录error、warnings和普通的notes信息。
-log_error_verbosity = 2
-# 错误日志文件地址
-log_error = /usr/local/mysql-5.7.21/log/mysql-error.log
-# 开启慢查询
+log_error = /var/log/mysql/mysql-error.log
 slow_query_log = 1
-# 开启慢查询时间，此处为1秒，达到此值才记录数据
-long_query_time = 3
-# 检索行数达到此数值，才记录慢查询日志中
-min_examined_row_limit = 100
-# mysql 5.6.5新增，用来表示每分钟允许记录到slow log的且未使用索引的SQL语句次数，默认值为0，不限制。
-log_throttle_queries_not_using_indexes = 0
-# 慢查询日志文件地址
-slow_query_log_file = /usr/local/mysql-5.7.21/log/mysql-slow.log
-# 开启记录没有使用索引查询语句
-log-queries-not-using-indexes = 1
-# 开启二进制日志
-log_bin = /usr/local/mysql-5.7.21/log/mysql-bin.log
-# mysql清除过期日志的时间，默认值0，不自动清理，而是使用滚动循环的方式。
-expire_logs_days = 0
-# 如果二进制日志写入的内容超出给定值，日志就会发生滚动。你不能将该变量设置为大于1GB或小于4096字节。 默认值是1GB。
-max_binlog_size = 1000M
-# binlog的格式也有三种：STATEMENT，ROW，MIXED。mysql 5.7.7后，默认值从 MIXED 改为 ROW
-# 关于binlog日志格式问题，请查阅网络资料
-binlog_format = row
-# 默认值N=1，使binlog在每N次binlog写入后与硬盘同步，ps：1最慢
-# sync_binlog = 1
+slow_query_log_file = /var/log/mysql/mysql-slow.log
 
-[mysqldump]
-# quick选项强制 mysqldump 从服务器查询取得记录直接输出而不是取得所有记录后将它们缓存到内存中
-quick
-max_allowed_packet = 16M
+# InnoDB
+# -------------------------------------------------------------------------------
+innodb_buffer_pool_size = <value>
+innodb_log_file_size = <value>
+innodb_file_per_table = 1
+innodb_flush_method = O_DIRECT
 
-[mysql]
-# mysql命令行工具不使用自动补全功能，建议还是改为
-# no-auto-rehash
-auto-rehash
-socket = /tmp/mysql.sock
+# MyIsam
+# -------------------------------------------------------------------------------
+key_buffer_size = <value>
+
+# OTHER
+# -------------------------------------------------------------------------------
+tmp_table_size = 32M
+max_heap_table_size = 32M
+query_cache_type = 0
+query_cache_size = 0
+max_connections = <value>
+thread_cache = <value>
+open_files_limit = 65535
+
+[client]
+socket  = /var/lib/mysql/mysql.sock
+port = 3306
 ```
+
+- GENERAL
+  - `datadir` - mysql 数据文件所在目录
+  - `socket` - scoket 文件
+  - `pid_file` - PID 文件
+  - `user` - 启动 mysql 服务进程的用户
+  - `port` - 服务端口号，默认 `3306`
+  - `default_storage_engine` - mysql 5.1 之后，默认引擎是 InnoDB
+  - `default_time_zone` - 默认时区。中国大部分地区在东八区，即 `+8:00`
+  - `character_set_server` - 数据库默认字符集
+  - `collation_server` - 数据库字符集对应一些排序等规则，注意要和 character_set_server 对应
+- LOG
+  - `log_error` - 错误日志文件地址
+  - `slow_query_log` - 错误日志文件地址
+- InnoDB
+  - `innodb_buffer_pool_size` - InnoDB 使用一个缓冲池来保存索引和原始数据，不像 MyISAM。这里你设置越大，你在存取表里面数据时所需要的磁盘 I/O 越少。
+    - 在一个独立使用的数据库服务器上,你可以设置这个变量到服务器物理内存大小的 60%-80%
+    - 注意别设置的过大，会导致 system 的 swap 空间被占用，导致操作系统变慢，从而减低 sql 查询的效率
+    - 默认值：128M，建议值：物理内存的 60%-80%
+  * `innodb_log_file_size` - 日志文件的大小。默认值：48M，建议值：根据你系统的磁盘空间和日志增长情况调整大小
+  * `innodb_file_per_table` - 说明：mysql5.7 之后默认开启，意思是，每张表一个独立表空间。默认值 1，开启。
+  * `innodb_flush_method` - 说明：控制着 innodb 数据文件及 redo log 的打开、刷写模式，三种模式：fdatasync(默认)，O_DSYNC，O_DIRECT。默认值为空，建议值：使用 SAN 或者 raid，建议用 O_DIRECT，不懂测试的话，默认生产上使用 O_DIRECT
+    - `fdatasync`：数据文件，buffer pool->os buffer->磁盘；日志文件，buffer pool->os buffer->磁盘；
+    - `O_DSYNC`： 数据文件，buffer pool->os buffer->磁盘；日志文件，buffer pool->磁盘；
+    - `O_DIRECT`： 数据文件，buffer pool->磁盘； 日志文件，buffer pool->os buffer->磁盘；
+- MyIsam
+
+  - `key_buffer_size` - 指定索引缓冲区的大小，为 MYISAM 数据表开启供线程共享的索引缓存，对 INNODB 引擎无效。相当影响 MyISAM 的性能。
+    - 不要将其设置大于你可用内存的 30%，因为一部分内存同样被 OS 用来缓冲行数据
+    - 甚至在你并不使用 MyISAM 表的情况下，你也需要仍旧设置起 8-64M 内存由于它同样会被内部临时磁盘表使用。
+    - 默认值 8M，建议值：对于内存在 4GB 左右的服务器该参数可设置为 256M 或 384M。
+    - 注意：该参数值设置的过大反而会是服务器整体效率降低！
+
+- OTHER
+  - `tmp_table_size` - 内存临时表的最大值，默认 16M，此处设置成 128M
+  - `max_heap_table_size` - 用户创建的内存表的大小，默认 16M，往往和 `tmp_table_size` 一起设置，限制用户临时表大小。超限的话，MySQL 就会自动地把它转化为基于磁盘的 MyISAM 表，存储在指定的 tmpdir 目录下，增大 IO 压力，建议内存大，增大该数值。
+  - `query_cache_type` - 这个系统变量控制着查询缓存功能的开启和关闭，0 表示关闭，1 表示打开，2 表示只要 `select` 中明确指定 `SQL_CACHE` 才缓存。
+  - `query_cache_size` - 默认值 1M，优点是查询缓存可以极大的提高服务器速度，如果你有大量的相同的查询并且很少修改表。缺点：在你表经常变化的情况下或者如果你的查询原文每次都不同，查询缓存也许引起性能下降而不是性能提升。
+  - `max_connections` - 最大连接数，可设最大值 16384，一般考虑根据同时在线人数设置一个比较综合的数字，鉴于该数值增大并不太消耗系统资源，建议直接设 10000。如果在访问时经常出现 Too Many Connections 的错误提示，则需要增大该参数值
+  - `thread_cache` - 当客户端断开之后，服务器处理此客户的线程将会缓存起来以响应下一个客户而不是销毁。可重用，减小了系统开销。默认值为 9，建议值：两种取值方式，
+    - 方式一，根据物理内存，1G —> 8；2G —> 16； 3G —> 32； >3G —> 64；
+    - 方式二，根据 show status like 'threads%'，查看 Threads_connected 值。
+  - `open_files_limit` - MySQL 打开的文件描述符限制，默认最小 1024;
+    - 当 open_files_limit 没有被配置的时候，比较 max_connections\*5 和 ulimit -n 的值，哪个大用哪个，
+    - 当 open_file_limit 被配置的时候，比较 open_files_limit 和 max_connections\*5 的值，哪个大用哪个
+    - 注意：仍然可能出现报错信息 Can't create a new thread；此时观察系统 cat /proc/mysql 进程号/limits，观察进程 ulimit 限制情况
+    - 过小的话，考虑修改系统配置表，`/etc/security/limits.conf` 和 `/etc/security/limits.d/90-nproc.conf`
 
 ## 4. 常见问题
 
@@ -751,13 +732,13 @@ Query OK, 0 rows affected (0.00 sec)
 
 ## 6. 参考资料
 
+- [高性能 MySQL](https://book.douban.com/subject/23008813/)
 - https://www.cnblogs.com/xiaopotian/p/8196464.html
 - https://www.cnblogs.com/bigbrotherer/p/7241845.html
 - https://blog.csdn.net/managementandjava/article/details/80039650
 - http://www.manongjc.com/article/6996.html
 - https://www.cnblogs.com/xyabk/p/8967990.html
 - [MySQL 8.0 主从（Master-Slave）配置](https://blog.csdn.net/zyhlwzy/article/details/80569422)
-- [Mysql 配置文件/etc/my.cnf 解析](https://www.jianshu.com/p/5f39c486561b)
 - [Mysql 主从同步实战](https://juejin.im/post/58eb5d162f301e00624f014a)
 - [MySQL 备份和恢复机制](https://juejin.im/entry/5a0aa2026fb9a045132a369f)
 
