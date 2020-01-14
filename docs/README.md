@@ -1,6 +1,6 @@
 # 数据库教程
 
-> 数据库经验总结
+> 💾 **db-tutorial** 是一个数据库教程。
 >
 > - 🔁 项目同步维护：[Github](https://github.com/dunwu/db-tutorial/) | [Gitee](https://gitee.com/turnon/db-tutorial/)
 > - 📖 电子书阅读：[Github Pages](https://dunwu.github.io/db-tutorial/) | [Gitee Pages](https://turnon.gitee.io/db-tutorial/)
