@@ -1,8 +1,8 @@
 # Mysql 服务器配置说明
 
-> 版本：![mysql](https：//img.shields.io/badge/mysql-8.0-blue)
+> 版本：![mysql](https://img.shields.io/badge/mysql-8.0-blue)
 
-## 1. 基本配置
+## 一、基本配置
 
 ```ini
 [mysqld]
@@ -47,7 +47,7 @@ socket  = /var/lib/mysql/mysql.sock
 port = 3306
 ```
 
-## 2. 配置项说明
+## 二、配置项说明
 
 ```ini
 [client]
@@ -469,7 +469,7 @@ auto-rehash
 socket = /var/lib/mysql/mysql.sock
 ```
 
-## 3. 参考资料
+## 参考资料
 
 - [高性能 MySQL](https：//book.douban.com/subject/23008813/)
 - [Mysql 配置文件/etc/my.cnf 解析](https：//www.jianshu.com/p/5f39c486561b)

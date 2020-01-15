@@ -1,14 +1,45 @@
 # Mysql 运维
 
+> 如果你的公司有 DBA，那么我恭喜你，你可以无视 Mysql 运维。如果你的公司没有 DBA，那你就好好学两手 Mysql 基本运维操作，行走江湖，防身必备。
+>
 > 环境：CentOS7
 >
 > 版本：![mysql](https://img.shields.io/badge/mysql-8.0-blue)
 
-## 1. 部署
+<!-- TOC depthFrom:2 depthTo:3 -->
+
+- [一、虚拟机部署](#一虚拟机部署)
+  - [安装 mysql yum 源](#安装-mysql-yum-源)
+  - [mysql 服务管理](#mysql-服务管理)
+  - [初始化数据库密码](#初始化数据库密码)
+  - [配置远程访问](#配置远程访问)
+  - [跳过登录认证](#跳过登录认证)
+- [二、基本运维](#二基本运维)
+  - [创建用户](#创建用户)
+  - [授权](#授权)
+  - [撤销授权](#撤销授权)
+  - [更改用户密码](#更改用户密码)
+  - [备份与恢复](#备份与恢复)
+  - [卸载](#卸载)
+  - [主从节点部署](#主从节点部署)
+- [三、配置](#三配置)
+  - [配置文件路径](#配置文件路径)
+  - [配置项语法](#配置项语法)
+  - [常用配置项说明](#常用配置项说明)
+- [四、常见问题](#四常见问题)
+  - [Too many connections](#too-many-connections)
+  - [时区（time_zone）偏差](#时区time_zone偏差)
+  - [数据表损坏如何修复](#数据表损坏如何修复)
+- [五、脚本](#五脚本)
+- [参考资料](#参考资料)
+
+<!-- /TOC -->
+
+## 一、虚拟机部署
 
 > 本文仅介绍 rpm 安装方式
 
-### 1.1. 安装 mysql yum 源
+### 安装 mysql yum 源
 
 官方下载地址：https://dev.mysql.com/downloads/repo/yum/
 
@@ -73,7 +104,7 @@ mysql-community-server.x86_64 : A very fast and reliable SQL database server
 $ yum install mysql-community-server
 ```
 
-### 1.2. mysql 服务管理
+### mysql 服务管理
 
 通过 yum 方式安装 mysql 后，本地会有一个名为 `mysqld` 的 systemd 服务。
 
@@ -94,7 +125,7 @@ systemctl restart mysqld
 systemctl stop mysqld
 ```
 
-### 1.3. 初始化数据库密码
+### 初始化数据库密码
 
 查看一下初始密码
 
@@ -117,7 +148,7 @@ ALTER user 'root'@'localhost' IDENTIFIED BY '你的密码';
 
 注：密码强度默认为中等，大小写字母、数字、特殊符号，只有修改成功后才能修改配置再设置更简单的密码
 
-### 1.4. 配置远程访问
+### 配置远程访问
 
 ```sql
 CREATE USER 'root'@'%' IDENTIFIED BY '你的密码';
@@ -126,7 +157,7 @@ ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '你的密码';
 FLUSH PRIVILEGES;
 ```
 
-### 1.5. 跳过登录认证
+### 跳过登录认证
 
 ```bash
 vim /etc/my.cnf
@@ -138,9 +169,9 @@ vim /etc/my.cnf
 
 执行 `systemctl restart mysqld`，重启 mysql
 
-## 2. 运维
+## 二、基本运维
 
-### 2.1. 创建用户
+### 创建用户
 
 ```sql
 CREATE USER 'username'@'host' IDENTIFIED BY 'password';
@@ -162,7 +193,7 @@ CREATE USER 'pig'@'%' IDENTIFIED BY '';
 CREATE USER 'pig'@'%';
 ```
 
-### 2.2. 授权
+### 授权
 
 命令：
 
@@ -192,7 +223,7 @@ GRANT ALL ON maindataplus.* TO 'pig'@'%';
 GRANT privileges ON databasename.tablename TO 'username'@'host' WITH GRANT OPTION;
 ```
 
-### 2.3. 撤销授权
+### 撤销授权
 
 命令:
 
@@ -216,7 +247,7 @@ REVOKE SELECT ON *.* FROM 'pig'@'%';
 
 具体信息可以用命令`SHOW GRANTS FOR 'pig'@'%';` 查看。
 
-### 2.4. 更改用户密码
+### 更改用户密码
 
 ```sql
 SET PASSWORD FOR 'username'@'host' = PASSWORD('newpassword');
@@ -234,7 +265,7 @@ SET PASSWORD = PASSWORD("newpassword");
 SET PASSWORD FOR 'pig'@'%' = PASSWORD("123456");
 ```
 
-### 2.5. 备份与恢复
+### 备份与恢复
 
 Mysql 备份数据使用 mysqldump 命令。
 
@@ -242,7 +273,7 @@ mysqldump 将数据库中的数据备份成一个文本文件，表的结构和�
 
 备份：
 
-#### 2.5.1. 备份一个数据库
+#### 备份一个数据库
 
 语法：
 
@@ -255,19 +286,19 @@ mysqldump -u <username> -p <database> [<table1> <table2> ...] > backup.sql
 - table1 和 table2 参数表示需要备份的表的名称，为空则整个数据库备份；
 - BackupName.sql 参数表设计备份文件的名称，文件名前面可以加上一个绝对路径。通常将数据库被分成一个后缀名为 sql 的文件
 
-#### 2.5.2. 备份多个数据库
+#### 备份多个数据库
 
 ```sql
 mysqldump -u <username> -p --databases <database1> <database2> ... > backup.sql
 ```
 
-#### 2.5.3. 备份所有数据库
+#### 备份所有数据库
 
 ```sql
 mysqldump -u <username> -p --all-databases > backup.sql
 ```
 
-#### 2.5.4. 恢复一个数据库
+#### 恢复一个数据库
 
 Mysql 恢复数据使用 mysqldump 命令。
 
@@ -277,13 +308,13 @@ Mysql 恢复数据使用 mysqldump 命令。
 mysql -u <username> -p <database> < backup.sql
 ```
 
-#### 2.5.5. 恢复所有数据库
+#### 恢复所有数据库
 
 ```sql
 mysql -u <username> -p --all-databases < backup.sql
 ```
 
-### 2.6. 卸载
+### 卸载
 
 （1）查看已安装的 mysql
 
@@ -303,14 +334,14 @@ mysql-community-libs-8.0.12-1.el7.x86_64
 $ yum remove mysql-community-server.x86_64
 ```
 
-### 2.7. 主从节点部署
+### 主从节点部署
 
 假设需要配置一个主从 Mysql 服务器环境
 
 - master 节点：192.168.8.10
 - slave 节点：192.168.8.11
 
-#### 2.7.1. 主节点上的操作
+#### 主节点上的操作
 
 （1）修改配置并重启
 
@@ -391,7 +422,7 @@ mysql> UNLOCK TABLES;
 $ scp dbdump.sql root@192.168.8.11:/home
 ```
 
-#### 2.7.2. 从节点上的操作
+#### 从节点上的操作
 
 （1）修改配置并重启
 
@@ -478,11 +509,11 @@ mysql> show global variables like "%read_only%";
 
 > 注：设置 slave 服务器为只读，并不影响主从同步。
 
-## 3. 配置
+## 三、配置
 
 > **_大部分情况下，默认的基本配置已经足够应付大多数场景，不要轻易修改 Mysql 服务器配置，除非你明确知道修改项是有益的。_**
 
-### 3.1. 配置文件路径
+### 配置文件路径
 
 配置 Mysql 首先要确定配置文件在哪儿。
 
@@ -498,7 +529,7 @@ Default options are read from the following files in the given order:
 /etc/my.cnf /etc/mysql/my.cnf /usr/etc/my.cnf ~/.my.cnf
 ```
 
-### 3.2. 配置项语法
+### 配置项语法
 
 **Mysql 配置项设置都使用小写，单词之间用下划线或横线隔开（二者是等价的）。**
 
@@ -510,7 +541,7 @@ Default options are read from the following files in the given order:
 /usr/sbin/mysqld --auto_increment_offset=5
 ```
 
-### 3.3. 常用配置项说明
+### 常用配置项说明
 
 > 这里介绍比较常用的基本配置，更多配置项说明可以参考：[Mysql 服务器配置说明](mysql-config.md)
 
@@ -609,9 +640,9 @@ port = 3306
     - 注意：仍然可能出现报错信息 Can't create a new thread；此时观察系统 cat /proc/mysql 进程号/limits，观察进程 ulimit 限制情况
     - 过小的话，考虑修改系统配置表，`/etc/security/limits.conf` 和 `/etc/security/limits.d/90-nproc.conf`
 
-## 4. 常见问题
+## 四、常见问题
 
-### 4.1. Too many connections
+### Too many connections
 
 **现象**
 
@@ -623,7 +654,7 @@ port = 3306
 
 **解决方案**
 
-如果实际连接线程数过大，可以考虑增加服务器节点来分流；如果实际线程数并不算过大，那么可以配置 `max_connections` 来增加允许的最大连接数。
+如果实际连接线程数过大，可以考虑增加服务器节点来分流；如果实际线程数并不算过大，那么可以配置 `max_connections` 来增加允许的最大连接数。需要注意的是，连接数不宜过大，一般来说，单库每秒有 2000 个并发连接时，就可以考虑扩容了，健康的状态应该维持在每秒 1000 个并发连接左右。
 
 （1）查看最大连接数
 
@@ -682,7 +713,7 @@ mysql soft nofile 65535
 
 如果是使用 rpm 方式安装 mysql，检查 **mysqld.service** 文件中的 `LimitNOFILE` 是否配置的太小。
 
-### 4.2. 时区（time_zone）偏差
+### 时区（time_zone）偏差
 
 **现象**
 
@@ -723,16 +754,26 @@ Query OK, 0 rows affected (0.00 sec)
 
 修改 `my.cnf` 文件，在 `[mysqld]` 节下增加 `default-time-zone='+08:00'` ，然后重启。
 
-## 5. 脚本
+### 数据表损坏如何修复
 
-这里推荐我写的几个一键运维脚本：
+使用 myisamchk 来修复，具体步骤：
+
+1. 修复前将 mysql 服务停止。
+2. 打开命令行方式，然后进入到 mysql 的 `bin` 目录。
+3. 执行 myisamchk –recover 数据库所在路 /\*.MYI
+
+使用 repair table 或者 OPTIMIZE table 命令来修复，REPAIR TABLE table_name 修复表 OPTIMIZE TABLE table_name 优化表 REPAIR TABLE 用于修复被破坏的表。 OPTIMIZE TABLE 用于回收闲置的数据库空间，当表上的数据行被删除时，所占据的磁盘空间并没有立即被回收，使用了 OPTIMIZE TABLE 命令后这些空间将被回收，并且对磁盘上的数据行进行重排（注意：是磁盘上，而非数据库）
+
+## 五、脚本
+
+这里推荐我写的几个一键运维脚本，非常方便，欢迎使用：
 
 - [Mysql 安装脚本](https://github.com/dunwu/linux-tutorial/tree/master/codes/linux/soft/mysql-install.sh)
 - [Mysql 备份脚本](https://github.com/dunwu/linux-tutorial/tree/master/codes/linux/soft/mysql-backup.sh)
 
-## 6. 参考资料
+## 参考资料
 
-- [高性能 MySQL](https://book.douban.com/subject/23008813/)
+- [《高性能 MySQL》](https://book.douban.com/subject/23008813/)
 - https://www.cnblogs.com/xiaopotian/p/8196464.html
 - https://www.cnblogs.com/bigbrotherer/p/7241845.html
 - https://blog.csdn.net/managementandjava/article/details/80039650
@@ -741,7 +782,3 @@ Query OK, 0 rows affected (0.00 sec)
 - [MySQL 8.0 主从（Master-Slave）配置](https://blog.csdn.net/zyhlwzy/article/details/80569422)
 - [Mysql 主从同步实战](https://juejin.im/post/58eb5d162f301e00624f014a)
 - [MySQL 备份和恢复机制](https://juejin.im/entry/5a0aa2026fb9a045132a369f)
-
-## 7. 传送门
-
-| [我的 Github 博客](https://github.com/dunwu/blog) | [db-tutorial 首页](https://github.com/dunwu/db-tutorial) |

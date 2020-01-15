@@ -2,6 +2,6 @@
 
 # DB Tutorial
 
-> **db-tutorial** 是一个数据库教程。
+> 💾 **db-tutorial** 是一个数据库教程。
 
 [开始阅读](README.md)
