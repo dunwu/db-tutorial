@@ -25,7 +25,7 @@
 > [Nosql 数据库](docs/nosql/README.md)
 
 - [Redis](docs/nosql/redis/README.md)
-  - [Redis 快速入门](docs/nosql/redis/redis.md)
+  - [Redis 快速入门](docs/nosql/redis/redis-cheat-sheet.md)
   - [Redis 持久化](docs/nosql/redis/redis-persistence.md)
   - [Redis 复制](docs/nosql/redis/redis-replication.md)
   - [Redis 哨兵](docs/nosql/redis/redis-sentinel.md)

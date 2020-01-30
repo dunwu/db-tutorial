@@ -13,7 +13,7 @@
     - [Mysql 服务器配置详解](sql/mysql/mysql-config.md)
 - [Nosql 数据库](nosql/README.md)
   - [Redis](nosql/redis/README.md)
-    - [Redis 快速入门](nosql/redis/redis.md)
+    - [Redis 快速入门](nosql/redis/redis-cheat-sheet.md)
     - [Redis 持久化](nosql/redis/redis-persistence.md)
     - [Redis 复制](nosql/redis/redis-replication.md)
     - [Redis 哨兵](nosql/redis/redis-sentinel.md)
