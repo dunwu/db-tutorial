@@ -29,9 +29,6 @@ Redis 提供了两种持久化方式：
   - [如何选择持久化](#如何选择持久化)
   - [RDB 切换为 AOF](#rdb-切换为-aof)
   - [AOF 和 RDB 的相互作用](#aof-和-rdb-的相互作用)
-- [备份](#备份)
-  - [容灾备份](#容灾备份)
-  - [Redis 复制的启动过程](#redis-复制的启动过程)
 - [参考资料](#参考资料)
 
 <!-- /TOC -->
@@ -272,7 +269,7 @@ AOF 持久化通过在 `redis.conf` 中的 `appendonly yes` 配置选项来开�
 
 `BGSAVE` 和 `BGREWRITEAOF` 命令不可以同时执行。这是为了避免两个 Redis 后台进程同时对磁盘进行大量的 I/O 操作。
 
-如果 `BGSAVE` 正在执行，并且用户显示地调用 `BGREWRITEAOF` 命令，那么服务器将向用户回复一个 OK 状态，并告知用户，`BGREWRITEAOF` 已经被预定执行。一旦 `BGSAVE` 执行完毕， `BGREWRITEAOF` 就会正式开始。 
+如果 `BGSAVE` 正在执行，并且用户显示地调用 `BGREWRITEAOF` 命令，那么服务器将向用户回复一个 OK 状态，并告知用户，`BGREWRITEAOF` 已经被预定执行。一旦 `BGSAVE` 执行完毕， `BGREWRITEAOF` 就会正式开始。
 
 ## 参考资料
 

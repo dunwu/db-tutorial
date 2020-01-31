@@ -17,17 +17,17 @@
 - [数据库中间件 flyway](sql/middleware/flyway.md)
 - [Mysql](sql/mysql/README.md)
   - [Mysql 原理](sql/mysql/mysql-theory.md)
-  - [Mysql 运维](sql/mysql/mysql-ops.md)
-  - [Mysql 服务器配置详解](sql/mysql/mysql-config.md)
+  - [Mysql 运维 🔨](sql/mysql/mysql-ops.md)
+  - [Mysql 配置](sql/mysql/mysql-config.md)
 
 ## Nosql 数据库
 
 > [Nosql 数据库](nosql/README.md)
 
 - [Redis](nosql/redis/README.md)
-  - [Redis 快速入门](nosql/redis/redis-cheat-sheet.md)
+  - [Redis 入门指南 ⚡](nosql/redis/redis-quickstart.md)
   - [Redis 持久化](nosql/redis/redis-persistence.md)
   - [Redis 复制](nosql/redis/redis-replication.md)
   - [Redis 哨兵](nosql/redis/redis-sentinel.md)
   - [Redis 集群](nosql/redis/redis-cluster.md)
-  - [Redis 运维](nosql/redis/redis-ops.md)
+  - [Redis 运维 🔨](nosql/redis/redis-ops.md)

@@ -3,7 +3,7 @@
 ## :memo: 知识点
 
 - [Mysql 原理](mysql-theory.md)
-- [Mysql 运维](mysql-ops.md)
+- [Mysql 运维 🔨](mysql-ops.md)
 - [Mysql 服务器配置说明](mysql-config.md)
 
 ## 📚 资源
