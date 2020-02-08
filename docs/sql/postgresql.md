@@ -38,25 +38,25 @@
 
 （4）安装 PostgreSQL 的 rpm 仓库（为了识别下载源）
 
-```sh
+```shell
 yum install https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-centos10-10-2.noarch.rpm
 ```
 
 （5）安装客户端
 
-```sh
+```shell
 yum install postgresql10
 ```
 
 （6）安装服务端（可选的）
 
-```sh
+```shell
 yum install postgresql10-server
 ```
 
 （7）设置开机启动（可选的）
 
-```sh
+```shell
 /usr/pgsql-10/bin/postgresql-10-setup initdb
 systemctl enable postgresql-10
 systemctl start postgresql-10
@@ -182,7 +182,7 @@ DROP TABLE IF EXISTS backup_tbl;
 
 ## 备份和恢复
 
-```sh
+```shell
 $ pg_dump --format=t -d db_name -U user_name -h 127.0.0.1 -O -W  > dump.sql
 $ psql -h 127.0.0.1 -U user_name db_name < dump.sql
 ```

@@ -10,20 +10,20 @@
 > [关系型数据库](docs/sql/README.md)
 
 - [关系型数据库面试题 💯](docs/sql/sql-interview.md)
-- [SQL 语法速成手册](docs/sql/sql-grammar.md)
-- [H2 快速指南](docs/sql/h2.md)
-- [SqLite 快速指南](docs/sql/sqlite.md)
-- [PostgreSQL 快速指南](docs/sql/postgresql.md)
-- [数据库中间件 flyway](docs/sql/middleware/flyway.md)
+- [SQL Cheat Sheet](docs/sql/sql-cheat-sheet.md)
 - [Mysql](docs/sql/mysql/README.md)
   - [Mysql 原理](docs/sql/mysql/mysql-theory.md)
   - [Mysql 运维 🔨](docs/sql/mysql/mysql-ops.md)
   - [Mysql 配置](docs/sql/mysql/mysql-config.md)
+- [H2 快速指南](docs/sql/h2.md)
+- [SqLite 快速指南](docs/sql/sqlite.md)
+- [PostgreSQL 快速指南](docs/sql/postgresql.md)
 
 ## Nosql 数据库
 
 > [Nosql 数据库](docs/nosql/README.md)
 
+- [Nosql 技术选型](docs/nosql/nosql-selection.md)
 - [Redis](docs/nosql/redis/README.md)
   - [Redis 入门指南 ⚡](docs/nosql/redis/redis-quickstart.md)
   - [Redis 持久化](docs/nosql/redis/redis-persistence.md)
@@ -31,3 +31,7 @@
   - [Redis 哨兵](docs/nosql/redis/redis-sentinel.md)
   - [Redis 集群](docs/nosql/redis/redis-cluster.md)
   - [Redis 运维 🔨](docs/nosql/redis/redis-ops.md)
+
+## 中间件
+
+- [数据库中间件 flyway](docs/sql/middleware/flyway.md)

@@ -4,7 +4,7 @@
 
 - [关系型数据库面试题](sql-interview.md)
 - [关系型数据库基本原理](sql-theory.md)
-- [SQL 基本语法](sql-grammar.md)
+- [SQL 基本语法](sql-cheat-sheet.md)
 - [H2 快速指南](h2.md)
 - [PostgreSQL 快速指南](postgresql.md)
 - [数据库中间件 flyway](middleware/flyway.md)

@@ -454,7 +454,7 @@ GET: 508388.41 requests per second
 
 - 默认安装 - 执行以下任意命令即可：
 
-```sh
+```shell
 curl -o- https://gitee.com/turnon/linux-tutorial/raw/master/codes/linux/soft/redis-install.sh | bash
 wget -qO- https://gitee.com/turnon/linux-tutorial/raw/master/codes/linux/soft/redis-install.sh | bash
 ```
@@ -462,7 +462,7 @@ wget -qO- https://gitee.com/turnon/linux-tutorial/raw/master/codes/linux/soft/re
 - 自定义安装 - 下载脚本到本地，并按照以下格式执行：
 
 
-```sh
+```shell
 sh redis-install.sh [version] [port] [password]
 ```
 
