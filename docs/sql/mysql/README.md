@@ -1,12 +1,12 @@
 # Mysql 教程
 
-## :memo: 知识点
+## 📖 内容
 
 - [Mysql 原理](mysql-theory.md)
 - [Mysql 运维 🔨](mysql-ops.md)
 - [Mysql 服务器配置说明](mysql-config.md)
 
-## 📚 资源
+## 📚 资料
 
 - **官方**
   - [Mysql 官网](https://www.mysql.com/)
@@ -21,6 +21,6 @@
 - **更多资源**
   - [awesome-mysql](https://github.com/jobbole/awesome-mysql-cn)
 
-## :door: 传送门
+## 🚪 传送门
 
-| [我的 Github 博客](https://github.com/dunwu/blog) | [db-tutorial 首页](https://github.com/dunwu/db-tutorial) |
+◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

@@ -7,7 +7,7 @@
 
 ## 关系型数据库
 
-> [关系型数据库](docs/sql/README.md)
+> [关系型数据库](docs/sql) 整理主流关系型数据库知识点。
 
 - [关系型数据库面试题 💯](docs/sql/sql-interview.md)
 - [SQL Cheat Sheet](docs/sql/sql-cheat-sheet.md)
@@ -15,13 +15,13 @@
   - [Mysql 原理](docs/sql/mysql/mysql-theory.md)
   - [Mysql 运维 🔨](docs/sql/mysql/mysql-ops.md)
   - [Mysql 配置](docs/sql/mysql/mysql-config.md)
-- [H2 快速指南](docs/sql/h2.md)
-- [SqLite 快速指南](docs/sql/sqlite.md)
-- [PostgreSQL 快速指南](docs/sql/postgresql.md)
+- [H2 入门指南](docs/sql/h2.md)
+- [SqLite 入门指南](docs/sql/sqlite.md)
+- [PostgreSQL 入门指南](docs/sql/postgresql.md)
 
 ## Nosql 数据库
 
-> [Nosql 数据库](docs/nosql/README.md)
+> [Nosql 数据库](docs/nosql) 整理主流 Nosql 数据库知识点。
 
 - [Nosql 技术选型](docs/nosql/nosql-selection.md)
 - [Redis](docs/nosql/redis/README.md)
@@ -34,4 +34,5 @@
 
 ## 中间件
 
-- [数据库中间件 flyway](docs/sql/middleware/flyway.md)
+- [版本管理中间件 flyway](docs/middleware/flyway.md)
+- [分库分表中间件 ShardingSphere](docs/middleware/shardingsphere.md)

@@ -14,9 +14,9 @@
 
 （1）下载并解压到本地
 
-进入官网下载地址：https://www.mongodb.com/download-center#community ，选择合适的版本下载。
+进入官网下载地址：[官方下载地址](https://www.mongodb.com/download-center#community) ，选择合适的版本下载。
 
-我选择的是最新稳定版本 3.6.3：https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.3.tgz
+我选择的是最新稳定版本 3.6.3：[下载地址](https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.6.3.tgz)
 
 我个人喜欢存放在：`/opt/mongodb`
 
@@ -46,4 +46,4 @@ cd /opt/mongodb/mongodb-3.6.3/bin
 
 ## 脚本
 
-| [安装脚本](https://github.com/dunwu/linux-tutorial/tree/master/codes/linux/soft) |
+- [安装脚本](https://github.com/dunwu/linux-tutorial/tree/master/codes/linux/soft)

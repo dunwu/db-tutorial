@@ -16,7 +16,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 ## 关系型数据库
 
-> [关系型数据库](sql/README.md)
+> [关系型数据库](sql) 整理主流关系型数据库知识点。
 
 - [关系型数据库面试题 💯](sql/sql-interview.md)
 - [SQL Cheat Sheet](sql/sql-cheat-sheet.md)
@@ -24,13 +24,13 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
   - [Mysql 原理](sql/mysql/mysql-theory.md)
   - [Mysql 运维 🔨](sql/mysql/mysql-ops.md)
   - [Mysql 配置](sql/mysql/mysql-config.md)
-- [H2 快速指南](sql/h2.md)
-- [SqLite 快速指南](sql/sqlite.md)
-- [PostgreSQL 快速指南](sql/postgresql.md)
+- [H2 入门指南](sql/h2.md)
+- [SqLite 入门指南](sql/sqlite.md)
+- [PostgreSQL 入门指南](sql/postgresql.md)
 
 ## Nosql 数据库
 
-> [Nosql 数据库](nosql/README.md)
+> [Nosql 数据库](nosql) 整理主流 Nosql 数据库知识点。
 
 - [Nosql 技术选型](nosql/nosql-selection.md)
 - [Redis](nosql/redis/README.md)
@@ -43,4 +43,5 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 ## 中间件
 
-- [数据库中间件 flyway](sql/middleware/flyway.md)
+- [版本管理中间件 flyway](middleware/flyway.md)
+- [分库分表中间件 ShardingSphere](middleware/shardingsphere.md)

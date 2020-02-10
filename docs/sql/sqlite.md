@@ -3,40 +3,6 @@
 > SQLite 是一个实现了自给自足的、无服务器的、零配置的、事务性的 SQL 数据库引擎。
 > :point_right: [完整示例源码](https://github.com/dunwu/db-tutorial/tree/master/codes/javadb/javadb-sqlite)
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [简介](#简介)
-    - [优点](#优点)
-    - [局限](#局限)
-    - [安装](#安装)
-- [语法](#语法)
-    - [大小写敏感](#大小写敏感)
-    - [注释](#注释)
-    - [创建数据库](#创建数据库)
-    - [查看数据库](#查看数据库)
-    - [退出数据库](#退出数据库)
-    - [附加数据库](#附加数据库)
-    - [分离数据库](#分离数据库)
-    - [备份数据库](#备份数据库)
-    - [恢复数据库](#恢复数据库)
-- [数据类型](#数据类型)
-    - [SQLite 存储类](#sqlite-存储类)
-    - [SQLite 亲和(Affinity)类型](#sqlite-亲和affinity类型)
-    - [SQLite 亲和类型(Affinity)及类型名称](#sqlite-亲和类型affinity及类型名称)
-    - [Boolean 数据类型](#boolean-数据类型)
-    - [Date 与 Time 数据类型](#date-与-time-数据类型)
-- [SQLite 命令](#sqlite-命令)
-    - [快速开始](#快速开始)
-    - [常用命令清单](#常用命令清单)
-    - [实战](#实战)
-- [JAVA Client](#java-client)
-    - [如何指定数据库文件](#如何指定数据库文件)
-    - [如何使用内存数据库](#如何使用内存数据库)
-- [参考资料](#参考资料)
-- [:door: 传送门](#door-传送门)
-
-<!-- /TOC -->
-
 ## 简介
 
 ### 优点
@@ -91,7 +57,7 @@ SQLite 是**不区分大小写**的，但也有一些命令是大小写敏感的
 
 如下，创建一个名为 test 的数据库：
 
-```bash
+```shell
 $ sqlite3 test.db
 SQLite version 3.7.17 2013-05-20 00:56:22
 Enter ".help" for instructions
@@ -100,7 +66,7 @@ Enter SQL statements terminated with a ";"
 
 ### 查看数据库
 
-```bash
+```shell
 sqlite> .databases
 seq  name             file
 ---  ---------------  ----------------------------------------------------------
@@ -109,7 +75,7 @@ seq  name             file
 
 ### 退出数据库
 
-```
+```shell
 sqlite> .quit
 ```
 
@@ -119,7 +85,7 @@ sqlite> .quit
 
 SQLite 的 **`ATTACH DATABASE`** 语句是用来选择一个特定的数据库，使用该命令后，所有的 SQLite 语句将在附加的数据库下执行。
 
-```bash
+```shell
 sqlite> ATTACH DATABASE 'test.db' AS 'test';
 sqlite> .databases
 seq  name             file
@@ -134,7 +100,7 @@ seq  name             file
 
 SQLite 的 **`DETACH DATABASE`** 语句是用来把命名数据库从一个数据库连接分离和游离出来，连接是之前使用 **`ATTACH`** 语句附加的。
 
-```bash
+```shell
 sqlite> .databases
 seq  name             file
 ---  ---------------  ----------------------------------------------------------
@@ -151,16 +117,16 @@ seq  name             file
 
 如下，备份 test 数据库到 `/home/test.sql`
 
-```bash
-$ sqlite3 test.db .dump > /home/test.sql
+```shell
+sqlite3 test.db .dump > /home/test.sql
 ```
 
 ### 恢复数据库
 
 如下，根据 `/home/test.sql` 恢复 test 数据库
 
-```bash
-$ sqlite3 test.db < test.sql
+```shell
+sqlite3 test.db < test.sql
 ```
 
 ## 数据类型
@@ -227,7 +193,7 @@ SQLite 没有一个单独的用于存储日期和/或时间的存储类，但 SQ
 
 #### 进入 SQLite 控制台
 
-```bash
+```shell
 $ sqlite3
 SQLite version 3.7.17 2013-05-20 00:56:22
 Enter ".help" for instructions
@@ -237,7 +203,7 @@ sqlite>
 
 #### 进入 SQLite 控制台并指定数据库
 
-```bash
+```shell
 $ sqlite3 test.db
 SQLite version 3.7.17 2013-05-20 00:56:22
 Enter ".help" for instructions
@@ -247,13 +213,13 @@ sqlite>
 
 #### 退出 SQLite 控制台
 
-```bash
+```shell
 sqlite>.quit
 ```
 
 #### 查看命令帮助
 
-```bash
+```shell
 sqlite>.help
 ```
 
@@ -304,7 +270,7 @@ sqlite>
 
 #### 输出结果到文件
 
-```bash
+```shell
 sqlite> .mode list
 sqlite> .separator |
 sqlite> .output teyptest_file_1.txt
@@ -324,7 +290,7 @@ $
 
 执行方法：
 
-```
+```shell
 > javac Sample.java
 > java -classpath ".;sqlite-jdbc-(VERSION).jar" Sample   # in Windows
 or
@@ -378,19 +344,19 @@ public class Sample {
 
 Windows
 
-```
+```properties
 Connection connection = DriverManager.getConnection("jdbc:sqlite:C:/work/mydatabase.db");
 ```
 
 Unix (Linux, Mac OS X, etc)
 
-```
+```properties
 Connection connection = DriverManager.getConnection("jdbc:sqlite:/home/leo/work/mydatabase.db");
 ```
 
 ### 如何使用内存数据库
 
-```
+```properties
 Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
 ```
 
@@ -406,4 +372,3 @@ Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
 ## :door: 传送门
 
 | [我的 Github 博客](https://github.com/dunwu/blog) | [db-tutorial 首页](https://github.com/dunwu/db-tutorial) |
-

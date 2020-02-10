@@ -1,5 +1,7 @@
 # Redis 教程
 
+## 📖 内容
+
 - [Redis 入门指南 ⚡](redis-quickstart.md)
 - [Redis 持久化](redis-persistence.md)
 - [Redis 复制](redis-replication.md)
@@ -9,7 +11,7 @@
 - Redis 事务
 - [Redis 运维 🔨](redis-ops.md)
 
-## 参考资料
+## 📚 资料
 
 - **官网**
   - [Redis 官网](https://redis.io/)
@@ -27,3 +29,7 @@
   - [redisson 官方文档(英文)](https://github.com/redisson/redisson/wiki/Table-of-Content)
   - [CRUG | Redisson PRO vs. Jedis: Which Is Faster? 翻译](https://www.jianshu.com/p/82f0d5abb002)
   - [redis 分布锁 Redisson 性能测试](https://blog.csdn.net/everlasting_188/article/details/51073505)
+
+## 🚪 传送门
+
+◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

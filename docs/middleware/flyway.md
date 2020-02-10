@@ -4,33 +4,13 @@
 >
 > 关键词：
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [简介](#简介)
-    - [什么是 Flyway？](#什么是-flyway)
-    - [为什么要使用数据迁移？](#为什么要使用数据迁移)
-    - [Flyway 如何工作？](#flyway-如何工作)
-- [快速上手](#快速上手)
-    - [命令行](#命令行)
-    - [JAVA API](#java-api)
-    - [Maven](#maven)
-    - [Gradle](#gradle)
-- [入门篇](#入门篇)
-    - [概念](#概念)
-    - [命令](#命令)
-    - [支持的数据库](#支持的数据库)
-- [资料](#资料)
-- [:door: 传送门](#door-传送门)
-
-<!-- /TOC -->
-
 ## 简介
 
-### 什么是 Flyway？
+### 什么是 Flyway
 
 **Flyway 是一个开源的数据库迁移工具。**
 
-### 为什么要使用数据迁移？
+### 为什么要使用数据迁移
 
 为了说明数据迁移的作用，我们来举一个示例：
 
@@ -38,7 +18,7 @@
 
 （2）对于大多数项目而言，最简单的持续集成场景如下所示：
 
-<br>![img](https://flywaydb.org/assets/balsamiq/Environments.png)<br>
+![img](https://flywaydb.org/assets/balsamiq/Environments.png)
 
 这意味着，我们不仅仅要处理一份环境中的修改，由此会引入一些版本冲突问题：
 
@@ -69,13 +49,13 @@
 
 最简单的场景是指定 Flyway 迁移到一个空的数据库。
 
-<br>![img](http://upload-images.jianshu.io/upload_images/3101171-bb6e9f39e56ebbda.png)<br>
+![img](http://upload-images.jianshu.io/upload_images/3101171-bb6e9f39e56ebbda.png)
 
 Flyway 会尝试查找它的 schema 历史表，如果数据库是空的，Flyway 就不再查找，而是直接创建数据库。
 
 现再你就有了一个仅包含一张空表的数据库，默认情况下，这张表叫 _flyway_schema_history_。
 
-<br>![img](http://upload-images.jianshu.io/upload_images/3101171-410eb31c6313b389.png)<br>
+![img](http://upload-images.jianshu.io/upload_images/3101171-410eb31c6313b389.png)
 
 这张表将被用于追踪数据库的状态。
 
@@ -83,17 +63,17 @@ Flyway 会尝试查找它的 schema 历史表，如果数据库是空的，Flywa
 
 这些 **migrations** 将根据他们的版本号进行排序。
 
-<br>![img](http://upload-images.jianshu.io/upload_images/3101171-d36ee07ada4efbcd.png)<br>
+![img](http://upload-images.jianshu.io/upload_images/3101171-d36ee07ada4efbcd.png)
 
 任意 migration 应用后，schema 历史表将更新。当元数据和初始状态替换后，可以称之为：迁移到新版本。
 
 Flyway 一旦扫描了文件系统或应用 classpath 下的 migrations，这些 migrations 会检查 schema 历史表。如果它们的版本号低于或等于当前的版本，将被忽略。保留下来的 migrations 是等待的 migrations，有效但没有应用。
 
-<br>![img](http://upload-images.jianshu.io/upload_images/3101171-99a88fea7a31a070.png)<br>
+![img](http://upload-images.jianshu.io/upload_images/3101171-99a88fea7a31a070.png)
 
 migrations 将根据版本号排序并按序执行。
 
-<br>![img](http://upload-images.jianshu.io/upload_images/3101171-b444fef6e5c13b71.png)<br>
+![img](http://upload-images.jianshu.io/upload_images/3101171-b444fef6e5c13b71.png)
 
 ## 快速上手
 
@@ -406,7 +386,7 @@ migrations 最常用的编写形式就是 SQL。
 
 为了被 Flyway 自动识别，SQL migrations 的文件命名必须遵循规定的模式：
 
-<br>![img](http://dunwu.test.upcdn.net/cs/database/flyway/sql-migrations.png!zp)<br>
+![img](http://dunwu.test.upcdn.net/cs/database/flyway/sql-migrations.png!zp)
 
 - **Prefix** - `V` 代表 versioned migrations (可配置), `U` 代表 undo migrations (可配置)、 `R` 代表 repeatable migrations (可配置)
 - **Version** - 版本号通过`.`(点)或`_`(下划线)分隔 (repeatable migrations 不需要)
@@ -425,7 +405,7 @@ migrations 最常用的编写形式就是 SQL。
 
 为了被 Flyway 自动识别，JAVA migrations 的文件命名必须遵循规定的模式：
 
-<br>![img](http://dunwu.test.upcdn.net/cs/database/flyway/java-migrations.png!zp)<br>
+![img](http://dunwu.test.upcdn.net/cs/database/flyway/java-migrations.png!zp)
 
 - **Prefix** - `V` 代表 versioned migrations (可配置), `U` 代表 undo migrations (可配置)、 `R` 代表 repeatable migrations (可配置)
 - **Version** - 版本号通过`.`(点)或`_`(下划线)分隔 (repeatable migrations 不需要)

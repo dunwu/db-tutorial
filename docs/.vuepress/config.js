@@ -15,7 +15,7 @@ module.exports = {
     }
   },
   themeConfig: {
-    logo: `images/dunwu-logo-100.png`,
+    logo: "images/dunwu-logo-100.png",
     repo: "dunwu/db-tutorial",
     repoLabel: "Github",
     editLinks: true,

@@ -1,10 +1,10 @@
-# PostgreSQL 快速指南
+# PostgreSQL 入门指南
 
 > [PostgreSQL](https://www.postgresql.org/) 是一个关系型数据库（RDBM）。
 >
 > 关键词：Database, RDBM, psql
 
-<br>![img](http://dunwu.test.upcdn.net/snap/20180920181010182614.png!zp)<br>
+![img](http://dunwu.test.upcdn.net/snap/20180920181010182614.png!zp)
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
@@ -15,6 +15,7 @@
 - [数据库操作](#数据库操作)
 - [备份和恢复](#备份和恢复)
 - [参考资料](#参考资料)
+- [:door: 传送门](#door-传送门)
 
 <!-- /TOC -->
 
@@ -26,7 +27,7 @@
 
 官方下载页面要求用户选择相应版本，然后动态的给出安装提示，如下图所示：
 
-<br>![img](http://dunwu.test.upcdn.net/snap/20180920181010174348.png!zp)<br>
+![img](http://dunwu.test.upcdn.net/snap/20180920181010174348.png!zp)
 
 前 3 步要求用户选择，后 4 步是根据选择动态提示的安装步骤
 
@@ -183,8 +184,8 @@ DROP TABLE IF EXISTS backup_tbl;
 ## 备份和恢复
 
 ```shell
-$ pg_dump --format=t -d db_name -U user_name -h 127.0.0.1 -O -W  > dump.sql
-$ psql -h 127.0.0.1 -U user_name db_name < dump.sql
+pg_dump --format=t -d db_name -U user_name -h 127.0.0.1 -O -W  > dump.sql
+psql -h 127.0.0.1 -U user_name db_name < dump.sql
 ```
 
 ## 参考资料

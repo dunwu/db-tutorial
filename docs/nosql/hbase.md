@@ -140,4 +140,4 @@ HBase 命令行可以参考这里：[HBase 命令行](hbase-cli.md)
 #### 文章
 
 - [Bigtable: A Distributed Storage System for Structured Data](https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/bigtable-osdi06.pdf)
-- https://mapr.com/blog/in-depth-look-hbase-architecture/
+- [An In-Depth Look at the HBase Architecture](https://mapr.com/blog/in-depth-look-hbase-architecture)

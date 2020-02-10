@@ -1,22 +1,28 @@
-# 非关系型数据库
+# Nosql 数据库
 
-## :memo: 知识点
+## 📖 内容
 
-### 非关系型数据库
+### 列式数据库
+
+- [HBase](hbase.md)
+
+### K-V 数据库
 
 - [Redis](redis/README.md)
+- [Cassandra](cassandra.md)
+
+### 文档数据库
+
 - [MongoDB](mongodb)
-- [Cassandra](Cassandra.md)
 
-### 非关系型数据库对比
+### 搜索引擎数据库
 
-| 名称    | 类型                         | 数据类型                                                     | 查询类型                                           | 附加功能                                    |
-| ------- | ---------------------------- | ------------------------------------------------------------ | -------------------------------------------------- | ------------------------------------------- |
-| Redis   | 基于内存存储的非关系型数据库 | String、List、Set、Hash、Sorted Set                          | 每种数据类型都有自己的专属操作和不完全的事务支持。 | 发布订阅、主从复制、持久化、脚本。          |
-| MongoDB | 基于硬盘存储的文档数据库     | 每个数据库可以包含多个表，每个表可以包含多个无 schema 的 BSON 文档。 | 创建、读取、更新、删除、条件查询命令等。           | map-reduce 操作、主从复制、分片、空间索引。 |
+- [Elasticsearch](elasticsearch.md)
 
-## 📚 学习资源
+### 图数据库
 
-## :door: 传送门
+TODO: 待补充
 
-| [我的 Github 博客](https://github.com/dunwu/blog) | [db-tutorial 首页](https://github.com/dunwu/db-tutorial) |
+## 🚪 传送门
+
+◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

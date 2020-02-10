@@ -10,7 +10,7 @@
 
 #### 1.1.1. Mysql 内置的存储引擎
 
-```
+```shell
 mysql> SHOW ENGINES;
 +--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
 | Engine             | Support | Comment                                                        | Transactions | XA   | Savepoints |
@@ -34,7 +34,7 @@ mysql> SHOW ENGINES;
 - **Memory** - 适合快速访问数据，且数据不会被修改，重启丢失也没有关系。
 - **NDB** - 用于 Mysql 集群场景。
 
-#### 1.1.2. 如何选择合适的存储引擎？
+#### 1.1.2. 如何选择合适的存储引擎
 
 大多数情况下，InnoDB 都是正确的选择，除非需要用到 InnoDB 不具备的特性。
 
@@ -392,7 +392,7 @@ COUNT(*)
 FROM payment;
 ```
 
-```
+```batch
    staff_id_selectivity: 0.0001
 customer_id_selectivity: 0.0373
                COUNT(*): 16049
@@ -408,7 +408,7 @@ customer_id_selectivity: 0.0373
 
 例如下面的查询不能使用 actor_id 列的索引：
 
-```
+```sql
 SELECT actor_id FROM sakila.actor WHERE actor_id + 1 = 5;
 ```
 
@@ -420,7 +420,7 @@ SELECT actor_id FROM sakila.actor WHERE actor_id + 1 = 5;
 
 在需要使用多个列作为条件进行查询时，使用多列索引比使用多个单列索引性能更好。例如下面的语句中，最好把 actor_id 和 film_id 设置为多列索引。
 
-```
+```sql
 SELECT film_id, actor_ id FROM sakila.film_actor
 WhERE actor_id = 1 AND film_id = 1;
 ```
@@ -461,7 +461,7 @@ Explain 用来分析 SELECT 查询语句，开发人员可以通过分析 Explai
 
 （一）只返回必要的列
 
-最好不要使用 SELECT \* 语句。
+最好不要使用 `SELECT *` 语句。
 
 （二）只返回必要的行
 
@@ -481,11 +481,11 @@ Explain 用来分析 SELECT 查询语句，开发人员可以通过分析 Explai
 
 一个大查询如果一次性执行的话，可能一次锁住很多数据、占满整个事务日志、耗尽系统资源、阻塞很多小的但重要的查询。
 
-```
+```sql
 DELEFT FROM messages WHERE create < DATE_SUB(NOW(), INTERVAL 3 MONTH);
 ```
 
-```
+```sql
 rows_affected = 0
 do {
     rows_affected = do_query(
@@ -503,14 +503,14 @@ do {
 - 在应用层进行连接，可以更容易对数据库进行拆分，从而更容易做到高性能和可扩展。
 - 查询本身效率也可能会有所提升。例如下面的例子中，使用 IN() 代替连接查询，可以让 MySQL 按照 ID 顺序进行查询，这可能比随机的连接要更高效。
 
-```
+```sql
 SELECT * FROM tag
 JOIN tag_post ON tag_post.tag_id=tag.id
 JOIN post ON tag_post.post_id=post.id
 WHERE tag.tag='mysql';
 ```
 
-```
+```sql
 SELECT * FROM tag WHERE tag='mysql';
 SELECT * FROM tag_post WHERE tag_id=1234;
 SELECT * FROM post WHERE post.id IN (123,456,567,9098,8904);
