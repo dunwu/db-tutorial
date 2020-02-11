@@ -18,12 +18,15 @@ module.exports = {
     logo: "images/dunwu-logo-100.png",
     repo: "dunwu/db-tutorial",
     repoLabel: "Github",
+    docsDir: 'docs',
+    docsBranch: 'master',
     editLinks: true,
     smoothScroll: true,
     locales: {
       "/": {
         label: "简体中文",
         selectText: "Languages",
+
         editLinkText: "帮助我们改善此页面！",
         lastUpdated: "上次更新",
         nav: [

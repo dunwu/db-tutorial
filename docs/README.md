@@ -18,11 +18,11 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 > [关系型数据库](sql) 整理主流关系型数据库知识点。
 
-- [关系型数据库面试题 💯](sql/sql-interview.md)
+- [关系型数据库面试题](sql/sql-interview.md) 💯
 - [SQL Cheat Sheet](sql/sql-cheat-sheet.md)
-- [Mysql](sql/mysql/README.md)
+- [Mysql](sql/mysql) 📚
   - [Mysql 原理](sql/mysql/mysql-theory.md)
-  - [Mysql 运维 🔨](sql/mysql/mysql-ops.md)
+  - [Mysql 运维](sql/mysql/mysql-ops.md) 🔨
   - [Mysql 配置](sql/mysql/mysql-config.md)
 - [H2 入门指南](sql/h2.md)
 - [SqLite 入门指南](sql/sqlite.md)
@@ -33,13 +33,13 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 > [Nosql 数据库](nosql) 整理主流 Nosql 数据库知识点。
 
 - [Nosql 技术选型](nosql/nosql-selection.md)
-- [Redis](nosql/redis/README.md)
-  - [Redis 入门指南 ⚡](nosql/redis/redis-quickstart.md)
+- [Redis](nosql/redis) 📚
+  - [Redis 入门指南](nosql/redis/redis-quickstart.md) ⚡
   - [Redis 持久化](nosql/redis/redis-persistence.md)
   - [Redis 复制](nosql/redis/redis-replication.md)
   - [Redis 哨兵](nosql/redis/redis-sentinel.md)
   - [Redis 集群](nosql/redis/redis-cluster.md)
-  - [Redis 运维 🔨](nosql/redis/redis-ops.md)
+  - [Redis 运维](nosql/redis/redis-ops.md) 🔨
 
 ## 中间件
 
