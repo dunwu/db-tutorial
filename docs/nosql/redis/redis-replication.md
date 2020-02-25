@@ -2,36 +2,13 @@
 
 > 在 Redis 中，可以通过执行 `SLAVEOF` 命令或设置 `slaveof` 选项，让一个服务器去复制（replicate）另一个服务器，其中，后者叫主服务器（master），前者叫从服务器（slave）。
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [一、复制简介](#一复制简介)
-- [二、旧版复制](#二旧版复制)
-  - [同步](#同步)
-  - [命令传播](#命令传播)
-  - [旧版复制的缺陷](#旧版复制的缺陷)
-- [三、新版复制](#三新版复制)
-  - [部分重同步](#部分重同步)
-  - [PSYNC 命令](#psync-命令)
-- [四、心跳检测](#四心跳检测)
-  - [检测主从服务器的网络连接状态](#检测主从服务器的网络连接状态)
-  - [辅助实现 min-slaves 选项](#辅助实现-min-slaves-选项)
-- [五、复制的实现](#五复制的实现)
-  - [步骤 1. 设置主从服务器](#步骤-1-设置主从服务器)
-  - [步骤 2. 主从服务器建立 TCP 连接。](#步骤-2-主从服务器建立-tcp-连接)
-  - [步骤 3. 发送 PING 检查通信状态。](#步骤-3-发送-ping-检查通信状态)
-  - [步骤 4. 身份验证。](#步骤-4-身份验证)
-  - [步骤 5. 发送端口信息。](#步骤-5-发送端口信息)
-  - [步骤 6. 同步。](#步骤-6-同步)
-  - [步骤 7. 命令传播。](#步骤-7-命令传播)
-- [六、复制的配置项](#六复制的配置项)
-  - [限制有 N 个以上从服务器才允许写入](#限制有-n-个以上从服务器才允许写入)
-- [参考资料](#参考资料)
-
-<!-- /TOC -->
-
 ## 一、复制简介
 
-一个主服务器可以有多个从服务器。不仅主服务器可以有从服务器，从服务器也可以有自己的从服务器， 多个从服务器之间可以构成一个图状结构。
+Redis 通过 `slaveof host port` 命令来让一个服务器成为另一个服务器的从服务器。
+
+**一个主服务器可以有多个从服务器**。不仅主服务器可以有从服务器，从服务器也可以有自己的从服务器， 多个从服务器之间可以构成一个主从链。
+
+**一个从服务器只能有一个主服务器，并且不支持主主复制**。
 
 可以通过复制功能来让主服务器免于执行持久化操作： 只要关闭主服务器的持久化功能， 然后由从服务器去执行持久化操作即可。
 
@@ -60,7 +37,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 3. 主服务器执行 `BGSAVE` 完毕后，主服务器会将生成的 RDB 文件发送给从服务器。从服务器接收并载入 RDB 文件，更新自己的数据库状态。
 4. 主服务器将记录在缓冲区中的所有写命令发送给从服务器，从服务器执行这些写命令，更新自己的数据库状态。
 
-![image-20200130231411916](D:\Codes\ZPTutorial\images\snap\image-20200130231411916.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224220353.png)
 
 ### 命令传播
 
@@ -105,7 +82,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 - 如果主从服务器的复制偏移量相同，则说明二者的数据库状态一致；
 - 反之，则说明二者的数据库状态不一致。
 
-![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-replication-offset.png!zp)
+![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-replication-offset.png)
 
 #### 复制积压缓冲区
 
@@ -152,7 +129,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 - 假如主从服务器的 **master run id 相同**，并且**指定的偏移量（offset）在内存缓冲区中还有效**，复制就会从上次中断的点开始继续。
 - 如果其中一个条件不满足，就会进行完全重新同步（在 2.8 版本之前就是直接进行完全重新同步）。
 
-![](http://dunwu.test.upcdn.net/cs/database/redis/redis-psync-workflow.png!zp)
+![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-psync-workflow.png)
 
 ## 四、心跳检测
 
@@ -183,7 +160,7 @@ min-slaves-to-write 3
 min-slaves-max-lag
 ```
 
-## 五、复制的实现
+## 五、复制的流程
 
 通过向从服务器发送如下 SLAVEOF 命令，可以让一个从服务器去复制一个主服务器。
 
@@ -280,6 +257,10 @@ REPLCONF ACK <replication_coffset>
 - `min-slaves-max-lag <number of seconds>`
 
 详细的信息可以参考 Redis 源码中附带的 `redis.conf` 示例文件。
+
+## 七、要点总结
+
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224220328.png)
 
 ## 参考资料
 

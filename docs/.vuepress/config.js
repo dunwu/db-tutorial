@@ -26,7 +26,6 @@ module.exports = {
       "/": {
         label: "简体中文",
         selectText: "Languages",
-
         editLinkText: "帮助我们改善此页面！",
         lastUpdated: "上次更新",
         nav: [
@@ -51,7 +50,7 @@ module.exports = {
             ]
           },
           {
-            text: "博客",
+            text: "🎯 博客",
             link: "https://github.com/dunwu/blog",
             target: "_blank",
             rel: ""

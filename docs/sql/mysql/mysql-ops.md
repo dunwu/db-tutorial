@@ -278,11 +278,13 @@ mysqldump 将数据库中的数据备份成一个文本文件，表的结构和�
 语法：
 
 ```sql
-mysqldump -u <username> -p <database> [<table1> <table2> ...] > backup.sql
+mysqldump -h <host> -P<port> -u<username> -p<database> [<table1> <table2> ...] > backup.sql
 ```
 
-- username 数据库用户
-- dbname 数据库名称
+- **`host`** - Mysql Server 的 host
+- **`port`** - Mysql Server 的端口
+- **`username`** - 数据库用户
+- **`dbname`** - 数据库名称
 - table1 和 table2 参数表示需要备份的表的名称，为空则整个数据库备份；
 - BackupName.sql 参数表设计备份文件的名称，文件名前面可以加上一个绝对路径。通常将数据库被分成一个后缀名为 sql 的文件
 
@@ -305,13 +307,13 @@ Mysql 恢复数据使用 mysqldump 命令。
 语法：
 
 ```sql
-mysql -u <username> -p <database> < backup.sql
+mysql -h <host> -P<port> -u<username> -p<database> < backup.sql
 ```
 
 #### 恢复所有数据库
 
 ```sql
-mysql -u <username> -p --all-databases < backup.sql
+mysql -u<username> -p --all-databases < backup.sql
 ```
 
 ### 卸载
@@ -511,7 +513,7 @@ mysql> show global variables like "%read_only%";
 
 ## 三、配置
 
-> **_大部分情况下，默认的基本配置已经足够应付大多数场景，不要轻易修改 Mysql 服务器配置，除非你明确知道修改项是有益的。_**
+> ***大部分情况下，默认的基本配置已经足够应付大多数场景，不要轻易修改 Mysql 服务器配置，除非你明确知道修改项是有益的。***
 
 ### 配置文件路径
 
@@ -763,6 +765,14 @@ Query OK, 0 rows affected (0.00 sec)
 3. 执行 myisamchk –recover 数据库所在路 /\*.MYI
 
 使用 repair table 或者 OPTIMIZE table 命令来修复，REPAIR TABLE table_name 修复表 OPTIMIZE TABLE table_name 优化表 REPAIR TABLE 用于修复被破坏的表。 OPTIMIZE TABLE 用于回收闲置的数据库空间，当表上的数据行被删除时，所占据的磁盘空间并没有立即被回收，使用了 OPTIMIZE TABLE 命令后这些空间将被回收，并且对磁盘上的数据行进行重排（注意：是磁盘上，而非数据库）
+
+### 数据结构
+
+> 问题现象：ERROR 1071: Specified key was too long; max key length is 767 bytes
+
+问题原因：Mysql 默认情况下单个列的索引不能超过767位（不同版本可能存在差异） 。
+
+解决方法：优化索引结构，索引字段不宜过长。
 
 ## 五、脚本
 

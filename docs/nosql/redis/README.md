@@ -2,14 +2,23 @@
 
 ## 📖 内容
 
-- [Redis 入门指南 ⚡](redis-quickstart.md)
-- [Redis 持久化](redis-persistence.md)
-- [Redis 复制](redis-replication.md)
-- [Redis 哨兵](redis-sentinel.md)
-- [Redis 集群](redis-cluster.md)
-- Redis 发布与订阅
-- Redis 事务
-- [Redis 运维 🔨](redis-ops.md)
+### [Redis 入门指南 ⚡](redis-quickstart.md)
+
+### [Redis 持久化](redis-persistence.md)
+
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224214047.png)
+
+### [Redis 复制](redis-replication.md)
+
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224220328.png)
+
+### [Redis 哨兵](redis-sentinel.md)
+
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224221812.png)
+
+### [Redis 集群](redis-cluster.md)
+
+### [Redis 运维 🔨](redis-ops.md)
 
 ## 📚 资料
 
@@ -17,10 +26,12 @@
   - [Redis 官网](https://redis.io/)
   - [Redis github](https://github.com/antirez/redis)
   - [Redis 官方文档中文版](http://redis.cn/)
-  - [官方文档翻译版本](http://redisdoc.com/topic/sentinel.html) 翻译有段时间了,但主要部分都包含,排版好
+  - [Redis 官方文档翻译版本](http://redisdoc.com/topic/sentinel.html)
 - **书籍**
   - [《Redis 实战》](https://item.jd.com/11791607.html)
   - [《Redis 设计与实现》](https://item.jd.com/11486101.html)
+- 源码
+  - [《Redis 实战》配套 Python 源码](https://github.com/josiahcarlson/redis-in-action)
 - **资源汇总**
   - [awesome-redis](https://github.com/JamzyWang/awesome-redis)
 - **Redis Client**

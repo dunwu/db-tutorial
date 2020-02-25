@@ -1,5 +1,6 @@
 # 数据库教程
 
+![license](https://badgen.net/github/license/dunwu/db-tutorial)
 ![build](https://api.travis-ci.com/dunwu/db-tutorial.svg?branch=master)
 
 > 💾 **db-tutorial** 是一个数据库教程。

@@ -7,7 +7,10 @@ actionLink: /
 footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 ---
 
-# 数据库教程
+# DB-TUTORIAL
+
+![license](https://badgen.net/github/license/dunwu/db-tutorial)
+![build](https://api.travis-ci.com/dunwu/db-tutorial.svg?branch=master)
 
 > 💾 **db-tutorial** 是一个数据库教程。
 >
@@ -35,6 +38,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 - [Nosql 技术选型](nosql/nosql-selection.md)
 - [Redis](nosql/redis) 📚
   - [Redis 入门指南](nosql/redis/redis-quickstart.md) ⚡
+  - [Redis 数据类型](nosql/redis/redis-datatype.md)
   - [Redis 持久化](nosql/redis/redis-persistence.md)
   - [Redis 复制](nosql/redis/redis-replication.md)
   - [Redis 哨兵](nosql/redis/redis-sentinel.md)

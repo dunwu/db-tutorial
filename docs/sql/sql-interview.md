@@ -280,7 +280,7 @@ MySQL 会一直向右匹配直到遇到范围查询 `(>,<,BETWEEN,LIKE)` 就停�
 
 > 事务简单来说：**一个 Session 中所进行所有的操作，要么同时成功，要么同时失败**。具体来说，事务指的是满足 ACID 特性的一组操作，可以通过 `Commit` 提交一个事务，也可以使用 `Rollback` 进行回滚。
 
-![](http://dunwu.test.upcdn.net/cs/database/RDB/数据库事务.png)
+![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库事务.png)
 
 ### ACID
 
@@ -305,7 +305,7 @@ ACID — 数据库事务正确执行的四个基本要素\*\*
 - 在并发的情况下，多个事务并行执行，事务不仅要满足原子性，还需要满足隔离性，才能满足一致性。
 - 事务满足持久化是为了能应对系统崩溃的情况。
 
-![](http://dunwu.test.upcdn.net/cs/database/RDB/数据库ACID.png)
+![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库ACID.png)
 
 > MySQL 默认采用自动提交模式（AUTO COMMIT）。也就是说，如果不显式使用`START TRANSACTION`语句来开始一个事务，那么每个查询操作都会被当做一个事务并自动提交。
 
@@ -317,25 +317,25 @@ ACID — 数据库事务正确执行的四个基本要素\*\*
 
 T<sub>1</sub> 和 T<sub>2</sub> 两个事务都对一个数据进行修改，T<sub>1</sub> 先修改，T<sub>2</sub> 随后修改，T<sub>2</sub> 的修改覆盖了 T<sub>1</sub> 的修改。
 
-![](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-丢失修改.png)
+![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-丢失修改.png)
 
 - **脏数据**
 
 T<sub>1</sub> 修改一个数据，T<sub>2</sub> 随后读取这个数据。如果 T<sub>1</sub> 撤销了这次修改，那么 T<sub>2</sub> 读取的数据是脏数据。
 
-![](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-脏数据.png)
+![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-脏数据.png)
 
 - **不可重复读**
 
 T<sub>2</sub> 读取一个数据，T<sub>1</sub> 对该数据做了修改。如果 T<sub>2</sub> 再次读取这个数据，此时读取的结果和第一次读取的结果不同。
 
-![](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-不可重复读.png)
+![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-不可重复读.png)
 
 - **幻读**
 
 T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插入新的数据，T<sub>1</sub> 再次读取这个范围的数据，此时读取的结果和和第一次读取的结果不同。
 
-![](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-幻读.png)
+![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-幻读.png)
 
 并发一致性解决方案：
 

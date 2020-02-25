@@ -11,28 +11,6 @@ Redis 提供了两种持久化方式：
 
 将内存中的数据存储到硬盘的一个主要原因是为了在之后重用数据，或者是为了防止系统故障而将数据备份到一个远程位置。另外，存储在 Redis 里面的数据有可能是经过长时间计算得出的，或者有程序正在使用 Redis 存储的数据进行计算，所以用户会希望自己可以将这些数据存储起来以便之后使用，这样就不必重新计算了。
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [一、RDB](#一rdb)
-  - [RDB 简介](#rdb-简介)
-  - [RDB 的创建](#rdb-的创建)
-  - [RDB 的载入](#rdb-的载入)
-  - [RDB 的文件结构](#rdb-的文件结构)
-  - [RDB 的配置](#rdb-的配置)
-- [二、AOF](#二aof)
-  - [AOF 简介](#aof-简介)
-  - [AOF 的创建](#aof-的创建)
-  - [AOF 的载入](#aof-的载入)
-  - [AOF 的重写](#aof-的重写)
-  - [AOF 的配置](#aof-的配置)
-- [三、RDB 和 AOF](#三rdb-和-aof)
-  - [如何选择持久化](#如何选择持久化)
-  - [RDB 切换为 AOF](#rdb-切换为-aof)
-  - [AOF 和 RDB 的相互作用](#aof-和-rdb-的相互作用)
-- [参考资料](#参考资料)
-
-<!-- /TOC -->
-
 Redis 提供了两种持久方式：RDB 和 AOF。你可以同时开启两种持久化方式。在这种情况下, 当 redis 重启的时候会优先载入 AOF 文件来恢复原始的数据，因为在通常情况下 AOF 文件保存的数据集要比 RDB 文件保存的数据集要完整。
 
 ## 一、RDB
@@ -97,7 +75,7 @@ RDB 文件是一个经过压缩的二进制文件，由多个部分组成。
 
 对于不同类型（STRING、HASH、LIST、SET、SORTED SET）的键值对，RDB 文件会使用不同的方式来保存它们。
 
-![](http://dunwu.test.upcdn.net/cs/database/redis/redis-rdb-structure.png!zp)
+![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-rdb-structure.png)
 
 Redis 本身提供了一个 RDB 文件检查工具 redis-check-dump。
 
@@ -177,7 +155,7 @@ AOF 载入过程如下：
 6. 载入完毕。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-aof-flow.png!zp" />
+<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-aof-flow.png" />
 </div>
 
 ### AOF 的重写
@@ -199,7 +177,7 @@ AOF 重写并非读取和分析现有 AOF 文件的内容，而是直接从数�
 - 由于彼此不是在同一个进程中工作，AOF 重写不影响 AOF 写入和同步。当子进程完成创建新 AOF 文件的工作之后，服务器会将重写缓冲区中的所有内容追加到新 AOF 文件的末尾，使得新旧两个 AOF 文件所保存的数据库状态一致。
 - 最后，服务器用新的 AOF 文件替换就的 AOF 文件，以此来完成 AOF 重写操作。
 
-![](https://raw.githubusercontent.com/dunwu/images/master/snap/20200130153716.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200130153716.png)
 
 可以通过设置 `auto-aof-rewrite-percentage` 和 `auto-aof-rewrite-min-size`，使得 Redis 在满足条件时，自动执行 `BGREWRITEAOF`。
 
@@ -243,9 +221,9 @@ AOF 持久化通过在 `redis.conf` 中的 `appendonly yes` 配置选项来开�
 
 ### 如何选择持久化
 
-- 如果你只希望你的数据在服务器运行的时候存在，你可以不使用任何持久化方式。
-- 如果你非常关心你的数据，但仍然可以承受数分钟以内的数据丢失，那么你可以只使用 RDB 持久化。
-- 如果你不能承受数分钟以内的数据丢失，那么你可以同时使用 RDB 和 AOF 持久化。
+- 如果不关心数据丢失，可以不持久化。
+- 如果可以承受数分钟以内的数据丢失，可以只使用 RDB。
+- 如果不能承受数分钟以内的数据丢失，可以同时使用 RDB 和 AOF。
 
 有很多用户都只使用 AOF 持久化， 但并不推荐这种方式： 因为定时生成 RDB 快照（snapshot）非常便于进行数据库备份，并且快照恢复数据集的速度也要比 AOF 恢复的速度要快，除此之外，使用快照还可以避免之前提到的 AOF 程序的 bug 。
 
@@ -270,6 +248,28 @@ AOF 持久化通过在 `redis.conf` 中的 `appendonly yes` 配置选项来开�
 `BGSAVE` 和 `BGREWRITEAOF` 命令不可以同时执行。这是为了避免两个 Redis 后台进程同时对磁盘进行大量的 I/O 操作。
 
 如果 `BGSAVE` 正在执行，并且用户显示地调用 `BGREWRITEAOF` 命令，那么服务器将向用户回复一个 OK 状态，并告知用户，`BGREWRITEAOF` 已经被预定执行。一旦 `BGSAVE` 执行完毕， `BGREWRITEAOF` 就会正式开始。
+
+## 四、Redis 备份
+
+应该确保 Redis 数据有完整的备份。
+
+备份 Redis 数据建议采用 RDB。
+
+### 备份过程
+
+1. 创建一个定期任务（cron job），每小时将一个 RDB 文件备份到一个文件夹，并且每天将一个 RDB 文件备份到另一个文件夹。
+2. 确保快照的备份都带有相应的日期和时间信息，每次执行定期任务脚本时，使用 find 命令来删除过期的快照：比如说，你可以保留最近 48 小时内的每小时快照，还可以保留最近一两个月的每日快照。
+3. 至少每天一次，将 RDB 备份到你的数据中心之外，或者至少是备份到你运行 Redis 服务器的物理机器之外。
+
+### 容灾备份
+
+Redis 的容灾备份基本上就是对数据进行备份，并将这些备份传送到多个不同的外部数据中心。
+
+容灾备份可以在 Redis 运行并产生快照的主数据中心发生严重的问题时，仍然让数据处于安全状态。
+
+## 五、要点总结
+
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224214047.png)
 
 ## 参考资料
 

@@ -1,0 +1,18 @@
+{
+  "default": true,
+  "MD002": false,
+  "MD004": { "style": "dash" },
+  "ul-indent": { "indent": 2 },
+  "MD013": { "line_length": 600 },
+  "MD024": false,
+  "MD025": false,
+  "MD026": false,
+  "MD029": { "style": "ordered" },
+  "MD033": false,
+  "MD034": false,
+  "MD036": false,
+  "fenced-code-language": false,
+  "no-hard-tabs": false,
+  "whitespace": false,
+  "emphasis-style": { "style": "consistent" }
+}

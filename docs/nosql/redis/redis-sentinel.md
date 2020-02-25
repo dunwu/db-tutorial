@@ -1,12 +1,12 @@
-# v Redis 哨兵
+# Redis 哨兵
 
 Redis 哨兵（Sentinel）是 Redis 的**高可用性**（Hight Availability）解决方案：由一个或多个 Sentinel 实例组成的 Sentinel 系统可以监视任意多个主服务器，以及这些主服务器的所有从服务器，并在被监视的主服务器进入下线状态时，自动将下线主服务器的某个从服务器升级为新的主服务器，然后由新的主服务器代替已下线的主服务器继续处理命令请求。
 
 **Sentinel 本质上是一个运行在特殊状模式下的 Redis 服务器**。
 
-![](https://raw.githubusercontent.com/dunwu/images/master/snap/20200131135847.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200131135847.png)
 
-## 一、简介
+## 一、哨兵简介
 
 Sentinel 的主要功能如下：
 
@@ -15,11 +15,11 @@ Sentinel 的主要功能如下：
 - **`自动故障转移（Automatic Failover）`** - 如果一个主服务器下线，Sentinel 会开始自动故障转移：把一个从节点提升为主节点，并重新配置其他的从节点使用新的主节点，使用 Redis 服务的应用程序在连接的时候也被通知新的地址。
 - **`配置提供者（Configuration provider）`** - Sentinel 给客户端的服务发现提供来源：对于一个给定的服务，客户端连接到 Sentinels 来寻找当前主节点的地址。当故障转移发生的时候，Sentinel 将报告新的地址。
 
-## 二、启动
+## 二、启动哨兵
 
 启动一个 Sentinel 可以使用下面任意一条命令，两条命令效果完全相同。
 
-```
+```shell
 redis-sentinel /path/to/sentinel.conf
 redis-server /path/to/sentinel.conf --sentinel
 ```
@@ -66,7 +66,7 @@ Sentinel 模式下 Redis 服务器主要功能的使用情况：
 
 ### 获取服务器信息
 
-> Sentinel 向主服务器发送 `INFO` 命令，获取主服务器及它的从服务器信息。
+> **Sentinel 向主服务器发送 `INFO` 命令，获取主服务器及它的从服务器信息**。
 
 - **获取主服务器信息** - Sentinel 默认会以每十秒一次的频率，通过命令连接向被监视的主服务器发送 `INFO` 命令，并通过分析 `INFO` 命令的回复来获取主服务器的当前信息。
 - **获取从服务器信息** - 当 Sentinel 发现主服务器有新的从服务器出现时，Sentinel 除了会为这个新的从服务器创建相应的实例结构之外，Sentinel 还会创建连接到从服务器的命令连接和订阅连接。
@@ -75,7 +75,7 @@ Sentinel 模式下 Redis 服务器主要功能的使用情况：
 
 对于每个与 Sentinel 连接的服务器，Sentinel 既会向服务器的 `__sentinel__:hello` 频道发送消息，也会订阅服务器的 `__sentinel__:hello` 频道的消息。
 
-![](https://raw.githubusercontent.com/dunwu/images/master/snap/20200131153842.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200131153842.png)
 
 ### 向服务器发送消息
 
@@ -170,6 +170,10 @@ Sentinel 对 `__sentinel__:hello` 频道的订阅会一直持续到 Sentinel 与
 1. 选出新的主服务器
 2. 修改从服务器的复制目标
 3. 将旧的主服务器变为从服务器
+
+## 七、要点总结
+
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224221812.png)
 
 ## 参考资料
 

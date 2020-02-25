@@ -4,7 +4,7 @@
 >
 > [Elasticsearch](https://github.com/elastic/elasticsearch) 基于搜索库 [Lucene](https://github.com/apache/lucene-solr) 开发。ElasticSearch 隐藏了 Lucene 的复杂性，提供了简单易用的 REST API / Java API 接口（另外还有其他语言的 API 接口）。
 >
-> _以下简称 ES。_
+> *以下简称 ES*。
 
 ## 一、Elasticsearch 简介
 
