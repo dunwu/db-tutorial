@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Chapter02 {
 
-    public static final void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         new Chapter02().run();
     }
 
@@ -163,7 +163,7 @@ public class Chapter02 {
     }
 
     /**
-     * 代码清单 2-1
+     * 代码清单 2-1 管理令牌-查询令牌
      */
     public String checkToken(Jedis conn, String token) {
         // 尝试获取并返回令牌对应的用户。
@@ -171,7 +171,7 @@ public class Chapter02 {
     }
 
     /**
-     * 代码清单 2-2 代码清单 2-9
+     * 代码清单 2-2、2-9 管理令牌-更新令牌
      */
     public void updateToken(Jedis conn, String token, String user, String item) {
         // 获取当前时间戳。
@@ -190,6 +190,62 @@ public class Chapter02 {
     }
 
     /**
+     * 代码清单 2-3 管理令牌-清理令牌
+     */
+    public static class CleanSessionsThread extends Thread {
+
+        private Jedis conn;
+
+        private int limit;
+
+        private volatile boolean quit;
+
+        public CleanSessionsThread(int limit) {
+            this.conn = new Jedis("localhost");
+            this.conn.select(15);
+            this.limit = limit;
+        }
+
+        public void quit() {
+            quit = true;
+        }
+
+        @Override
+        public void run() {
+            while (!quit) {
+                // 找出目前已有令牌的数量。
+                long size = conn.zcard("recent:");
+                // 令牌数量未超过限制，休眠并在之后重新检查。
+                if (size <= limit) {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                    continue;
+                }
+
+                // 获取需要移除的令牌ID。
+                long endIndex = Math.min(size - limit, 100);
+                Set<String> tokenSet = conn.zrange("recent:", 0, endIndex - 1);
+                String[] tokens = tokenSet.toArray(new String[tokenSet.size()]);
+
+                // 为那些将要被删除的令牌构建键名。
+                ArrayList<String> sessionKeys = new ArrayList<String>();
+                for (String token : tokens) {
+                    sessionKeys.add("viewed:" + token);
+                }
+
+                // 移除最旧的那些令牌。
+                conn.del(sessionKeys.toArray(new String[sessionKeys.size()]));
+                conn.hdel("login:", tokens);
+                conn.zrem("recent:", tokens);
+            }
+        }
+
+    }
+
+    /**
      * 代码清单 2-4
      */
     public void addToCart(Jedis conn, String session, String item, int count) {
@@ -203,17 +259,60 @@ public class Chapter02 {
     }
 
     /**
-     * 代码清单 2-7
+     * 代码清单 2-5
      */
-    public void scheduleRowCache(Jedis conn, String rowId, int delay) {
-        // 先设置数据行的延迟值。
-        conn.zadd("delay:", delay, rowId);
-        // 立即缓存数据行。
-        conn.zadd("schedule:", System.currentTimeMillis() / 1000, rowId);
+    public static class CleanFullSessionsThread extends Thread {
+
+        private Jedis conn;
+
+        private int limit;
+
+        private boolean quit;
+
+        public CleanFullSessionsThread(int limit) {
+            this.conn = new Jedis("localhost");
+            this.conn.select(15);
+            this.limit = limit;
+        }
+
+        public void quit() {
+            quit = true;
+        }
+
+        @Override
+        public void run() {
+            while (!quit) {
+                long size = conn.zcard("recent:");
+                if (size <= limit) {
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                    continue;
+                }
+
+                long endIndex = Math.min(size - limit, 100);
+                Set<String> sessionSet = conn.zrange("recent:", 0, endIndex - 1);
+                String[] sessions = sessionSet.toArray(new String[sessionSet.size()]);
+
+                ArrayList<String> sessionKeys = new ArrayList<String>();
+                for (String sess : sessions) {
+                    sessionKeys.add("viewed:" + sess);
+                    // 新增加的这行代码用于删除旧会话对应用户的购物车。
+                    sessionKeys.add("cart:" + sess);
+                }
+
+                conn.del(sessionKeys.toArray(new String[sessionKeys.size()]));
+                conn.hdel("login:", sessions);
+                conn.zrem("recent:", sessions);
+            }
+        }
+
     }
 
     /**
-     * 代码清单 2-6
+     * 代码清单 2-6 页面缓存
      */
     public String cacheRequest(Jedis conn, String request, Callback callback) {
         // 对于不能被缓存的请求，直接调用回调函数。
@@ -235,6 +334,74 @@ public class Chapter02 {
 
         // 返回页面。
         return content;
+    }
+
+    /**
+     * 代码清单 2-7 数据行缓存-记录缓存时机
+     */
+    public void scheduleRowCache(Jedis conn, String rowId, int delay) {
+        // 先设置数据行的延迟值。
+        conn.zadd("delay:", delay, rowId);
+        // 立即缓存数据行。
+        conn.zadd("schedule:", System.currentTimeMillis() / 1000, rowId);
+    }
+
+    /**
+     * 代码清单 2-8 数据行缓存-定时更新数据行缓存
+     */
+    public static class CacheRowsThread extends Thread {
+
+        private Jedis conn;
+
+        private boolean quit;
+
+        public CacheRowsThread() {
+            this.conn = new Jedis("localhost");
+            this.conn.select(15);
+        }
+
+        public void quit() {
+            quit = true;
+        }
+
+        @Override
+        public void run() {
+            Gson gson = new Gson();
+            while (!quit) {
+                // 尝试获取下一个需要被缓存的数据行以及该行的调度时间戳，
+                // 命令会返回一个包含零个或一个元组（tuple）的列表。
+                Set<Tuple> range = conn.zrangeWithScores("schedule:", 0, 0);
+                Tuple next = range.size() > 0 ? range.iterator().next() : null;
+                long now = System.currentTimeMillis() / 1000;
+                if (next == null || next.getScore() > now) {
+                    try {
+                        // 暂时没有行需要被缓存，休眠50毫秒后重试。
+                        sleep(50);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                    continue;
+                }
+
+                String rowId = next.getElement();
+                // 获取下一次调度前的延迟时间。
+                double delay = conn.zscore("delay:", rowId);
+                if (delay <= 0) {
+                    // 不必再缓存这个行，将它从缓存中移除。
+                    conn.zrem("delay:", rowId);
+                    conn.zrem("schedule:", rowId);
+                    conn.del("inv:" + rowId);
+                    continue;
+                }
+
+                // 读取数据行。
+                Inventory row = Inventory.get(rowId);
+                // 更新调度时间并设置缓存值。
+                conn.zadd("schedule:", now + delay, rowId);
+                conn.set("inv:" + rowId, gson.toJson(row));
+            }
+        }
+
     }
 
     /**
@@ -300,173 +467,6 @@ public class Chapter02 {
 
         public static Inventory get(String id) {
             return new Inventory(id);
-        }
-
-    }
-
-    /**
-     * 代码清单 2-3
-     */
-    public static class CleanSessionsThread extends Thread {
-
-        private Jedis conn;
-
-        private int limit;
-
-        private boolean quit;
-
-        public CleanSessionsThread(int limit) {
-            this.conn = new Jedis("localhost");
-            this.conn.select(15);
-            this.limit = limit;
-        }
-
-        public void quit() {
-            quit = true;
-        }
-
-        @Override
-        public void run() {
-            while (!quit) {
-                // 找出目前已有令牌的数量。
-                long size = conn.zcard("recent:");
-                // 令牌数量未超过限制，休眠并在之后重新检查。
-                if (size <= limit) {
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                    }
-                    continue;
-                }
-
-                // 获取需要移除的令牌ID。
-                long endIndex = Math.min(size - limit, 100);
-                Set<String> tokenSet = conn.zrange("recent:", 0, endIndex - 1);
-                String[] tokens = tokenSet.toArray(new String[tokenSet.size()]);
-
-                // 为那些将要被删除的令牌构建键名。
-                ArrayList<String> sessionKeys = new ArrayList<String>();
-                for (String token : tokens) {
-                    sessionKeys.add("viewed:" + token);
-                }
-
-                // 移除最旧的那些令牌。
-                conn.del(sessionKeys.toArray(new String[sessionKeys.size()]));
-                conn.hdel("login:", tokens);
-                conn.zrem("recent:", tokens);
-            }
-        }
-
-    }
-
-    /**
-     * 代码清单 2-5
-     */
-    public class CleanFullSessionsThread extends Thread {
-
-        private Jedis conn;
-
-        private int limit;
-
-        private boolean quit;
-
-        public CleanFullSessionsThread(int limit) {
-            this.conn = new Jedis("localhost");
-            this.conn.select(15);
-            this.limit = limit;
-        }
-
-        public void quit() {
-            quit = true;
-        }
-
-        @Override
-        public void run() {
-            while (!quit) {
-                long size = conn.zcard("recent:");
-                if (size <= limit) {
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                    }
-                    continue;
-                }
-
-                long endIndex = Math.min(size - limit, 100);
-                Set<String> sessionSet = conn.zrange("recent:", 0, endIndex - 1);
-                String[] sessions = sessionSet.toArray(new String[sessionSet.size()]);
-
-                ArrayList<String> sessionKeys = new ArrayList<String>();
-                for (String sess : sessions) {
-                    sessionKeys.add("viewed:" + sess);
-                    // 新增加的这行代码用于删除旧会话对应用户的购物车。
-                    sessionKeys.add("cart:" + sess);
-                }
-
-                conn.del(sessionKeys.toArray(new String[sessionKeys.size()]));
-                conn.hdel("login:", sessions);
-                conn.zrem("recent:", sessions);
-            }
-        }
-
-    }
-
-    /**
-     * 代码清单 2-8
-     */
-    public class CacheRowsThread extends Thread {
-
-        private Jedis conn;
-
-        private boolean quit;
-
-        public CacheRowsThread() {
-            this.conn = new Jedis("localhost");
-            this.conn.select(15);
-        }
-
-        public void quit() {
-            quit = true;
-        }
-
-        @Override
-        public void run() {
-            Gson gson = new Gson();
-            while (!quit) {
-                // 尝试获取下一个需要被缓存的数据行以及该行的调度时间戳，
-                // 命令会返回一个包含零个或一个元组（tuple）的列表。
-                Set<Tuple> range = conn.zrangeWithScores("schedule:", 0, 0);
-                Tuple next = range.size() > 0 ? range.iterator().next() : null;
-                long now = System.currentTimeMillis() / 1000;
-                if (next == null || next.getScore() > now) {
-                    try {
-                        // 暂时没有行需要被缓存，休眠50毫秒后重试。
-                        sleep(50);
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                    }
-                    continue;
-                }
-
-                String rowId = next.getElement();
-                // 获取下一次调度前的延迟时间。
-                double delay = conn.zscore("delay:", rowId);
-                if (delay <= 0) {
-                    // 不必再缓存这个行，将它从缓存中移除。
-                    conn.zrem("delay:", rowId);
-                    conn.zrem("schedule:", rowId);
-                    conn.del("inv:" + rowId);
-                    continue;
-                }
-
-                // 读取数据行。
-                Inventory row = Inventory.get(rowId);
-                // 更新调度时间并设置缓存值。
-                conn.zadd("schedule:", now + delay, rowId);
-                conn.set("inv:" + rowId, gson.toJson(row));
-            }
         }
 
     }

@@ -29,10 +29,13 @@
 - [Nosql 技术选型](docs/nosql/nosql-selection.md)
 - [Redis](docs/nosql/redis) 📚
   - [Redis 入门指南](docs/nosql/redis/redis-quickstart.md) ⚡
+  - [Redis 数据类型](docs/nosql/redis/redis-datatype.md)
   - [Redis 持久化](docs/nosql/redis/redis-persistence.md)
   - [Redis 复制](docs/nosql/redis/redis-replication.md)
   - [Redis 哨兵](docs/nosql/redis/redis-sentinel.md)
   - [Redis 集群](docs/nosql/redis/redis-cluster.md)
+  - [Redis 事务](docs/nosql/redis/redis-transaction.md)
+  - [Redis 发布与订阅](docs/nosql/redis/redis-pub-sub.md)
   - [Redis 运维](docs/nosql/redis/redis-ops.md) 🔨
 
 ## 中间件

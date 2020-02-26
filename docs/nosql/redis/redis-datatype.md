@@ -4,7 +4,9 @@
 >
 > 使用 Redis ，不仅要了解其数据类型的特性，还需要根据业务场景，灵活的、高效的使用其数据类型来建模。
 
-## Redis 数据类型简介
+## Redis 基本数据类型
+
+![Redis 数据类型](https://raw.githubusercontent.com/dunwu/images/master/snap/20200226113813.png)
 
 | 数据类型 | 可以存储的值           | 操作                                                                                                             |
 | -------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -229,7 +231,79 @@ OK
 2) "982"
 ```
 
-## Redis 数据类型应用
+## Redis 数据类型通用命令
+
+### 排序
+
+Redis 的 `SORT` 命令可以对 `LIST`、`SET`、`ZSET` 进行排序。
+
+| 命令   | 描述                                                                                                                                                                                                    |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SORT` | `SORT source-key [BY pattern] [LIMIT offset count] [GET pattern [GET pattern ...]] [ASC|DESC] [ALPHA] [STORE dest-key]`—根据给定选项，对输入 `LIST`、`SET`、`ZSET` 进行排序，然后返回或存储排序的结果。 |
+
+示例：
+
+```shell
+127.0.0.1:6379[15]> RPUSH 'sort-input' 23 15 110 7
+(integer) 4
+127.0.0.1:6379[15]> SORT 'sort-input'
+1) "7"
+2) "15"
+3) "23"
+4) "110"
+127.0.0.1:6379[15]> SORT 'sort-input' alpha
+1) "110"
+2) "15"
+3) "23"
+4) "7"
+127.0.0.1:6379[15]> HSET 'd-7' 'field' 5
+(integer) 1
+127.0.0.1:6379[15]> HSET 'd-15' 'field' 1
+(integer) 1
+127.0.0.1:6379[15]> HSET 'd-23' 'field' 9
+(integer) 1
+127.0.0.1:6379[15]> HSET 'd-110' 'field' 3
+(integer) 1
+127.0.0.1:6379[15]> SORT 'sort-input' by 'd-*->field'
+1) "15"
+2) "110"
+3) "7"
+4) "23"
+127.0.0.1:6379[15]> SORT 'sort-input' by 'd-*->field' get 'd-*->field'
+1) "1"
+2) "3"
+3) "5"
+4) "9"
+```
+
+### 键的过期时间
+
+Redis 的 `EXPIRE` 命令可以指定一个键的过期时间，当达到过期时间后，Redis 会自动删除该键。
+
+| 命令        | 描述                                                                                                                                    |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `PERSIST`   | `PERSIST key-name`—移除键的过期时间                                                                                                     |
+| `TTL`       | `TTL key-name`—查看给定键距离过期还有多少秒                                                                                             |
+| `EXPIRE`    | `EXPIRE key-name seconds`—让给定键在指定的秒数之后过期                                                                                  |
+| `EXPIREAT`  | `EXPIREAT key-name timestamp`—将给定键的过期时间设置为给定的 UNIX 时间戳                                                                |
+| `PTTL`      | `PTTL key-name`—查看给定键距离过期时间还有多少毫秒（这个命令在 Redis 2.6 或以上版本可用）                                               |
+| `PEXPIRE`   | `PEXPIRE key-name milliseconds`—让给定键在指定的毫秒数之后过期（这个命令在 Redis 2.6 或以上版本可用）                                   |
+| `PEXPIREAT` | `PEXPIREAT key-name timestamp-milliseconds`—将一个毫秒级精度的 UNIX 时间戳设置为给定键的过期时间（这个命令在 Redis 2.6 或以上版本可用） |
+
+示例：
+
+```shell
+127.0.0.1:6379[15]> SET key value
+OK
+127.0.0.1:6379[15]> GET key
+"value"
+127.0.0.1:6379[15]> EXPIRE key 2
+(integer) 1
+127.0.0.1:6379[15]> GET key
+(nil)
+```
+
+## Redis 数据建模
 
 ### 案例-最受欢迎文章
 
@@ -457,35 +531,58 @@ OK
 比如：最多允许存储 1000 万条令牌信息，周期性检查，一旦发现记录数超出 1000 万条，将 ZSET 从新到老排序，将超出 1000 万条的记录清除。
 
 ```java
-    while (!quit) {
-        // 找出目前已有令牌的数量。
-        long size = conn.zcard("recent:");
-        // 令牌数量未超过限制，休眠并在之后重新检查。
-        if (size <= limit) {
-            try {
-                sleep(1000);
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-            }
-            continue;
-        }
+public static class CleanSessionsThread extends Thread {
 
-        // 获取需要移除的令牌ID。
-        long endIndex = Math.min(size - limit, 100);
-        Set<String> tokenSet = conn.zrange("recent:", 0, endIndex - 1);
-        String[] tokens = tokenSet.toArray(new String[tokenSet.size()]);
+    private Jedis conn;
 
-        // 为那些将要被删除的令牌构建键名。
-        ArrayList<String> sessionKeys = new ArrayList<String>();
-        for (String token : tokens) {
-            sessionKeys.add("viewed:" + token);
-        }
+    private int limit;
 
-        // 移除最旧的那些令牌。
-        conn.del(sessionKeys.toArray(new String[sessionKeys.size()]));
-        conn.hdel("login:", tokens);
-        conn.zrem("recent:", tokens);
+    private volatile boolean quit;
+
+    public CleanSessionsThread(int limit) {
+        this.conn = new Jedis("localhost");
+        this.conn.select(15);
+        this.limit = limit;
     }
+
+    public void quit() {
+        quit = true;
+    }
+
+    @Override
+    public void run() {
+        while (!quit) {
+            // 找出目前已有令牌的数量。
+            long size = conn.zcard("recent:");
+            // 令牌数量未超过限制，休眠并在之后重新检查。
+            if (size <= limit) {
+                try {
+                    sleep(1000);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+                continue;
+            }
+
+            // 获取需要移除的令牌ID。
+            long endIndex = Math.min(size - limit, 100);
+            Set<String> tokenSet = conn.zrange("recent:", 0, endIndex - 1);
+            String[] tokens = tokenSet.toArray(new String[tokenSet.size()]);
+
+            // 为那些将要被删除的令牌构建键名。
+            ArrayList<String> sessionKeys = new ArrayList<String>();
+            for (String token : tokens) {
+                sessionKeys.add("viewed:" + token);
+            }
+
+            // 移除最旧的那些令牌。
+            conn.del(sessionKeys.toArray(new String[sessionKeys.size()]));
+            conn.hdel("login:", tokens);
+            conn.zrem("recent:", tokens);
+        }
+    }
+
+}
 ```
 
 ### 案例-购物车
@@ -543,9 +640,330 @@ OK
 
 ### 案例-页面缓存
 
+大部分网页内容并不会经常改变，但是访问时，后台需要动态计算，这可能耗时较多，此时可以使用 `STRING` 结构存储页面缓存，
+
+```java
+    public String cacheRequest(Jedis conn, String request, Callback callback) {
+        // 对于不能被缓存的请求，直接调用回调函数。
+        if (!canCache(conn, request)) {
+            return callback != null ? callback.call(request) : null;
+        }
+
+        // 将请求转换成一个简单的字符串键，方便之后进行查找。
+        String pageKey = "cache:" + hashRequest(request);
+        // 尝试查找被缓存的页面。
+        String content = conn.get(pageKey);
+
+        if (content == null && callback != null) {
+            // 如果页面还没有被缓存，那么生成页面。
+            content = callback.call(request);
+            // 将新生成的页面放到缓存里面。
+            conn.setex(pageKey, 300, content);
+        }
+
+        // 返回页面。
+        return content;
+    }
 ```
-SETEX page_key context 300
+
+### 案例-数据行缓存
+
+电商网站可能会有促销、特卖、抽奖等活动，这些活动页面只需要从数据库中加载几行数据，如：用户信息、商品信息。
+
+可以使用 `STRING` 结构来缓存这些数据，使用 JSON 存储结构化的信息。
+
+此外，需要有两个 `ZSET` 结构来记录更新缓存的时机：
+
+- 第一个为调度有序集合；
+- 第二个为延时有序集合。
+
+记录缓存时机：
+
+```java
+    public void scheduleRowCache(Jedis conn, String rowId, int delay) {
+        // 先设置数据行的延迟值。
+        conn.zadd("delay:", delay, rowId);
+        // 立即缓存数据行。
+        conn.zadd("schedule:", System.currentTimeMillis() / 1000, rowId);
+    }
 ```
+
+定时更新数据行缓存：
+
+```java
+public class CacheRowsThread extends Thread {
+
+    private Jedis conn;
+
+    private boolean quit;
+
+    public CacheRowsThread() {
+        this.conn = new Jedis("localhost");
+        this.conn.select(15);
+    }
+
+    public void quit() {
+        quit = true;
+    }
+
+    @Override
+    public void run() {
+        Gson gson = new Gson();
+        while (!quit) {
+            // 尝试获取下一个需要被缓存的数据行以及该行的调度时间戳，
+            // 命令会返回一个包含零个或一个元组（tuple）的列表。
+            Set<Tuple> range = conn.zrangeWithScores("schedule:", 0, 0);
+            Tuple next = range.size() > 0 ? range.iterator().next() : null;
+            long now = System.currentTimeMillis() / 1000;
+            if (next == null || next.getScore() > now) {
+                try {
+                    // 暂时没有行需要被缓存，休眠50毫秒后重试。
+                    sleep(50);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+                continue;
+            }
+
+            String rowId = next.getElement();
+            // 获取下一次调度前的延迟时间。
+            double delay = conn.zscore("delay:", rowId);
+            if (delay <= 0) {
+                // 不必再缓存这个行，将它从缓存中移除。
+                conn.zrem("delay:", rowId);
+                conn.zrem("schedule:", rowId);
+                conn.del("inv:" + rowId);
+                continue;
+            }
+
+            // 读取数据行。
+            Inventory row = Inventory.get(rowId);
+            // 更新调度时间并设置缓存值。
+            conn.zadd("schedule:", now + delay, rowId);
+            conn.set("inv:" + rowId, gson.toJson(row));
+        }
+    }
+
+}
+```
+
+### 案例-网页分析
+
+网站可以采集用户的访问、交互、购买行为，再分析用户习惯、喜好，从而判断市场行情和潜在商机等。
+
+那么，简单的，如何记录用户在一定时间内访问的商品页面呢？
+
+参考 [更新令牌](#更新令牌) 代码示例，记录用户访问不同商品的浏览次数，并排序。
+
+判断页面是否需要缓存，根据评分判断商品页面是否热门：
+
+```java
+    public boolean canCache(Jedis conn, String request) {
+        try {
+            URL url = new URL(request);
+            HashMap<String, String> params = new HashMap<>();
+            if (url.getQuery() != null) {
+                for (String param : url.getQuery().split("&")) {
+                    String[] pair = param.split("=", 2);
+                    params.put(pair[0], pair.length == 2 ? pair[1] : null);
+                }
+            }
+
+            // 尝试从页面里面取出商品ID。
+            String itemId = extractItemId(params);
+            // 检查这个页面能否被缓存以及这个页面是否为商品页面。
+            if (itemId == null || isDynamic(params)) {
+                return false;
+            }
+            // 取得商品的浏览次数排名。
+            Long rank = conn.zrank("viewed:", itemId);
+            // 根据商品的浏览次数排名来判断是否需要缓存这个页面。
+            return rank != null && rank < 10000;
+        } catch (MalformedURLException mue) {
+            return false;
+        }
+    }
+```
+
+### 案例-记录日志
+
+可用使用 `LIST` 结构存储日志数据。
+
+```java
+    public void logRecent(Jedis conn, String name, String message, String severity) {
+        String destination = "recent:" + name + ':' + severity;
+        Pipeline pipe = conn.pipelined();
+        pipe.lpush(destination, TIMESTAMP.format(new Date()) + ' ' + message);
+        pipe.ltrim(destination, 0, 99);
+        pipe.sync();
+    }
+```
+
+### 案例-统计数据
+
+更新计数器：
+
+```java
+    public static final int[] PRECISION = new int[] { 1, 5, 60, 300, 3600, 18000, 86400 };
+
+    public void updateCounter(Jedis conn, String name, int count, long now) {
+        Transaction trans = conn.multi();
+        for (int prec : PRECISION) {
+            long pnow = (now / prec) * prec;
+            String hash = String.valueOf(prec) + ':' + name;
+            trans.zadd("known:", 0, hash);
+            trans.hincrBy("count:" + hash, String.valueOf(pnow), count);
+        }
+        trans.exec();
+    }
+```
+
+查看计数器数据：
+
+```java
+    public List<Pair<Integer>> getCounter(
+        Jedis conn, String name, int precision) {
+        String hash = String.valueOf(precision) + ':' + name;
+        Map<String, String> data = conn.hgetAll("count:" + hash);
+        List<Pair<Integer>> results = new ArrayList<>();
+        for (Map.Entry<String, String> entry : data.entrySet()) {
+            results.add(new Pair<>(
+                entry.getKey(),
+                Integer.parseInt(entry.getValue())));
+        }
+        Collections.sort(results);
+        return results;
+    }
+```
+
+### 案例-查找IP所属地
+
+Redis 实现的 IP 所属地查找比关系型数据实现方式更快。
+
+#### 载入 IP 数据
+
+IP 地址转为整数值：
+
+```java
+    public int ipToScore(String ipAddress) {
+        int score = 0;
+        for (String v : ipAddress.split("\\.")) {
+            score = score * 256 + Integer.parseInt(v, 10);
+        }
+        return score;
+    }
+```
+
+创建 IP 地址与城市 ID 之间的映射：
+
+```java
+    public void importIpsToRedis(Jedis conn, File file) {
+        FileReader reader = null;
+        try {
+            // 载入 csv 文件数据
+            reader = new FileReader(file);
+            CSVFormat csvFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
+            CSVParser csvParser = csvFormat.parse(reader);
+            int count = 0;
+            List<CSVRecord> records = csvParser.getRecords();
+            for (CSVRecord line : records) {
+                String startIp = line.get(0);
+                if (startIp.toLowerCase().indexOf('i') != -1) {
+                    continue;
+                }
+                // 将 IP 地址转为整数值
+                int score = 0;
+                if (startIp.indexOf('.') != -1) {
+                    score = ipToScore(startIp);
+                } else {
+                    try {
+                        score = Integer.parseInt(startIp, 10);
+                    } catch (NumberFormatException nfe) {
+                        // 略过文件的第一行以及格式不正确的条目
+                        continue;
+                    }
+                }
+
+                // 构建唯一的城市 ID
+                String cityId = line.get(2) + '_' + count;
+                // 将城市 ID 及其对应的 IP 地址整数值添加到 ZSET
+                conn.zadd("ip2cityid:", score, cityId);
+                count++;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                reader.close();
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+    }
+```
+
+存储城市信息：
+
+```java
+    public void importCitiesToRedis(Jedis conn, File file) {
+        Gson gson = new Gson();
+        FileReader reader = null;
+        try {
+            // 加载 csv 信息
+            reader = new FileReader(file);
+            CSVFormat csvFormat = CSVFormat.DEFAULT.withRecordSeparator("\n");
+            CSVParser parser = new CSVParser(reader, csvFormat);
+            // String[] line;
+            List<CSVRecord> records = parser.getRecords();
+            for (CSVRecord record : records) {
+
+                if (record.size() < 4 || !Character.isDigit(record.get(0).charAt(0))) {
+                    continue;
+                }
+
+                // 将城市地理信息转为 json 结构，存入 HASH 结构中
+                String cityId = record.get(0);
+                String country = record.get(1);
+                String region = record.get(2);
+                String city = record.get(3);
+                String json = gson.toJson(new String[] { city, region, country });
+                conn.hset("cityid2city:", cityId, json);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                reader.close();
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+    }
+```
+
+#### 查找 IP 所属城市
+
+操作步骤：
+
+1. 将要查找的 IP 地址转为整数值；
+2. 查找所有分值小于等于要查找的 IP 地址的地址，取出其中最大分值的那个记录；
+3. 用找到的记录所对应的城市 ID 去检索城市信息。
+
+```java
+    public String[] findCityByIp(Jedis conn, String ipAddress) {
+        int score = ipToScore(ipAddress);
+        Set<String> results = conn.zrevrangeByScore("ip2cityid:", score, 0, 0, 1);
+        if (results.size() == 0) {
+            return null;
+        }
+
+        String cityId = results.iterator().next();
+        cityId = cityId.substring(0, cityId.indexOf('_'));
+        return new Gson().fromJson(conn.hget("cityid2city:", cityId), String[].class);
+    }
+```
+
+### 案例-服务的发现与配置
 
 ### 案例-自动补全
 
@@ -561,6 +979,8 @@ SETEX page_key context 300
 - 如果指定联系人已经存在于最近联系人列表里，那么从列表里移除他。对应 `LREM` 命令。
 - 将指定联系人添加到最近联系人列表的最前面。对应 `LPUSH` 命令。
 - 添加操作完成后，如果联系人列表中的数量超过 100 个，进行裁剪操作。对应 `LTRIM` 命令。
+
+### 案例-广告定向
 
 ### 案例-职位搜索
 

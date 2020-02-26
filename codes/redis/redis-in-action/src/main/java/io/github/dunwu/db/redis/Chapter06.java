@@ -699,9 +699,9 @@ public class Chapter06 {
 
     }
 
-    public class TestCallback implements Callback {
+    public static class TestCallback implements Callback {
 
-        public List<Integer> counts = new ArrayList<Integer>();
+        public List<Integer> counts = new ArrayList<>();
 
         private int index;
 
@@ -719,7 +719,7 @@ public class Chapter06 {
 
     }
 
-    public class RedisInputStream extends InputStream {
+    public static class RedisInputStream extends InputStream {
 
         private Jedis conn;
 
@@ -733,13 +733,13 @@ public class Chapter06 {
         }
 
         @Override
-        public int available() throws IOException {
+        public int available() {
             long len = conn.strlen(key);
             return (int) (len - pos);
         }
 
         @Override
-        public int read() throws IOException {
+        public int read() {
             byte[] block = conn.substr(key.getBytes(), pos, pos);
             if (block == null || block.length == 0) {
                 return -1;
@@ -749,7 +749,7 @@ public class Chapter06 {
         }
 
         @Override
-        public int read(byte[] buf, int off, int len) throws IOException {
+        public int read(byte[] buf, int off, int len) {
             byte[] block = conn.substr(key.getBytes(), pos, pos + (len - off - 1));
             if (block == null || block.length == 0) {
                 return -1;
@@ -766,7 +766,7 @@ public class Chapter06 {
 
     }
 
-    public class ChatMessages {
+    public static class ChatMessages {
 
         public String chatId;
 
@@ -860,6 +860,7 @@ public class Chapter06 {
             this.limit = limit;
         }
 
+        @Override
         public void run() {
             Deque<File> waiting = new ArrayDeque<File>();
             long bytesInRedis = 0;
@@ -869,11 +870,7 @@ public class Chapter06 {
                 recipients.add(String.valueOf(i));
             }
             createChat(conn, "source", recipients, "", channel);
-            File[] logFiles = path.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String name) {
-                    return name.startsWith("temp_redis");
-                }
-            });
+            File[] logFiles = path.listFiles((dir, name) -> name.startsWith("temp_redis"));
             Arrays.sort(logFiles);
             for (File logFile : logFiles) {
                 long fsize = logFile.length();
