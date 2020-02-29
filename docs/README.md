@@ -12,7 +12,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 ![license](https://badgen.net/github/license/dunwu/db-tutorial)
 ![build](https://api.travis-ci.com/dunwu/db-tutorial.svg?branch=master)
 
-> 💾 **db-tutorial** 是一个数据库教程。
+> 💾 db-tutorial 是一个数据库教程。
 >
 > - 🔁 项目同步维护：[Github](https://github.com/dunwu/db-tutorial/) | [Gitee](https://gitee.com/turnon/db-tutorial/)
 > - 📖 电子书阅读：[Github Pages](https://dunwu.github.io/db-tutorial/) | [Gitee Pages](https://turnon.gitee.io/db-tutorial/)
@@ -25,6 +25,10 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 - [SQL Cheat Sheet](sql/sql-cheat-sheet.md)
 - [Mysql](sql/mysql) 📚
   - [Mysql 原理](sql/mysql/mysql-theory.md)
+  - [Mysql 索引](sql/mysql/mysql-index.md)
+  - [Mysql 并发控制](sql/mysql/mysql-concurrency-control.md)
+  - [Mysql 事务](sql/mysql/mysql-transaction.md)
+  - [Mysql 优化](sql/mysql/mysql-optimization.md)
   - [Mysql 运维](sql/mysql/mysql-ops.md) 🔨
   - [Mysql 配置](sql/mysql/mysql-config.md)
 - [H2 入门指南](sql/h2.md)
@@ -43,6 +47,8 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
   - [Redis 复制](nosql/redis/redis-replication.md)
   - [Redis 哨兵](nosql/redis/redis-sentinel.md)
   - [Redis 集群](nosql/redis/redis-cluster.md)
+  - [Redis 事务](nosql/redis/redis-transaction.md)
+  - [Redis 发布与订阅](nosql/redis/redis-pub-sub.md)
   - [Redis 运维](nosql/redis/redis-ops.md) 🔨
 
 ## 中间件

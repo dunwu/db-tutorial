@@ -3,7 +3,7 @@
 ![license](https://badgen.net/github/license/dunwu/db-tutorial)
 ![build](https://api.travis-ci.com/dunwu/db-tutorial.svg?branch=master)
 
-> 💾 **db-tutorial** 是一个数据库教程。
+> 💾 db-tutorial 是一个数据库教程。
 >
 > - 🔁 项目同步维护：[Github](https://github.com/dunwu/db-tutorial/) | [Gitee](https://gitee.com/turnon/db-tutorial/)
 > - 📖 电子书阅读：[Github Pages](https://dunwu.github.io/db-tutorial/) | [Gitee Pages](https://turnon.gitee.io/db-tutorial/)
@@ -16,6 +16,10 @@
 - [SQL Cheat Sheet](docs/sql/sql-cheat-sheet.md)
 - [Mysql](docs/sql/mysql) 📚
   - [Mysql 原理](docs/sql/mysql/mysql-theory.md)
+  - [Mysql 索引](docs/sql/mysql/mysql-index.md)
+  - [Mysql 并发控制](docs/sql/mysql/mysql-concurrency-control.md)
+  - [Mysql 事务](docs/sql/mysql/mysql-transaction.md)
+  - [Mysql 优化](docs/sql/mysql/mysql-optimization.md)
   - [Mysql 运维](docs/sql/mysql/mysql-ops.md) 🔨
   - [Mysql 配置](docs/sql/mysql/mysql-config.md)
 - [H2 入门指南](docs/sql/h2.md)

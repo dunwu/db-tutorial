@@ -6,35 +6,6 @@
 >
 > 版本：![mysql](https://img.shields.io/badge/mysql-8.0-blue)
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [一、虚拟机部署](#一虚拟机部署)
-  - [安装 mysql yum 源](#安装-mysql-yum-源)
-  - [mysql 服务管理](#mysql-服务管理)
-  - [初始化数据库密码](#初始化数据库密码)
-  - [配置远程访问](#配置远程访问)
-  - [跳过登录认证](#跳过登录认证)
-- [二、基本运维](#二基本运维)
-  - [创建用户](#创建用户)
-  - [授权](#授权)
-  - [撤销授权](#撤销授权)
-  - [更改用户密码](#更改用户密码)
-  - [备份与恢复](#备份与恢复)
-  - [卸载](#卸载)
-  - [主从节点部署](#主从节点部署)
-- [三、配置](#三配置)
-  - [配置文件路径](#配置文件路径)
-  - [配置项语法](#配置项语法)
-  - [常用配置项说明](#常用配置项说明)
-- [四、常见问题](#四常见问题)
-  - [Too many connections](#too-many-connections)
-  - [时区（time_zone）偏差](#时区time_zone偏差)
-  - [数据表损坏如何修复](#数据表损坏如何修复)
-- [五、脚本](#五脚本)
-- [参考资料](#参考资料)
-
-<!-- /TOC -->
-
 ## 一、虚拟机部署
 
 > 本文仅介绍 rpm 安装方式
@@ -45,21 +16,21 @@
 
 （1）下载 yum 源
 
-```bash
-$ wget https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+```shell
+wget https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
 ```
 
 （2）安装 yum repo 文件并更新 yum 缓存
 
-```bash
-$ rpm -ivh mysql80-community-release-el7-1.noarch.rpm
+```shell
+rpm -ivh mysql80-community-release-el7-1.noarch.rpm
 ```
 
 执行结果：
 
 会在 /etc/yum.repos.d/ 目录下生成两个 repo 文件
 
-```bash
+```shell
 $ ls | grep mysql
 mysql-community.repo
 mysql-community-source.repo
@@ -67,14 +38,14 @@ mysql-community-source.repo
 
 更新 yum：
 
-```bash
-$ yum clean all
-$ yum makecache
+```shell
+yum clean all
+yum makecache
 ```
 
 （3）查看 rpm 安装状态
 
-```bash
+```shell
 $ yum search mysql | grep server
 mysql-community-common.i686 : MySQL database common files for server and client
 mysql-community-common.x86_64 : MySQL database common files for server and
@@ -100,8 +71,8 @@ mysql-community-server.x86_64 : A very fast and reliable SQL database server
 
 （4）安装 mysql 服务器
 
-```bash
-$ yum install mysql-community-server
+```shell
+yum install mysql-community-server
 ```
 
 ### mysql 服务管理
@@ -110,7 +81,7 @@ $ yum install mysql-community-server
 
 其服务管理十分简便：
 
-```bash
+```shell
 # 查看状态
 systemctl status mysqld
 # 启用服务
@@ -129,20 +100,20 @@ systemctl stop mysqld
 
 查看一下初始密码
 
-```bash
+```shell
 $ grep "password" /var/log/mysqld.log
 2018-09-30T03:13:41.727736Z 5 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: %:lt+srWu4k1
 ```
 
 执行命令：
 
-```bash
+```shell
 mysql -uroot -p<临时密码>
 ```
 
 输入临时密码，进入 mysql，如果要修改密码，执行以下指令：
 
-```bash
+```shell
 ALTER user 'root'@'localhost' IDENTIFIED BY '你的密码';
 ```
 
@@ -159,7 +130,7 @@ FLUSH PRIVILEGES;
 
 ### 跳过登录认证
 
-```bash
+```shell
 vim /etc/my.cnf
 ```
 
@@ -320,7 +291,7 @@ mysql -u<username> -p --all-databases < backup.sql
 
 （1）查看已安装的 mysql
 
-```bash
+```shell
 $ rpm -qa | grep -i mysql
 perl-DBD-MySQL-4.023-6.el7.x86_64
 mysql80-community-release-el7-1.noarch
@@ -332,8 +303,8 @@ mysql-community-libs-8.0.12-1.el7.x86_64
 
 （2）卸载 mysql
 
-```bash
-$ yum remove mysql-community-server.x86_64
+```shell
+yum remove mysql-community-server.x86_64
 ```
 
 ### 主从节点部署
@@ -361,7 +332,7 @@ log_bin=/var/lib/mysql/binlog
 修改后，重启 mysql 使配置生效：
 
 ```sql
-$ systemctl restart mysql
+systemctl restart mysql
 ```
 
 （2）创建用于同步的用户
@@ -408,8 +379,8 @@ mysql> show master status;
 
 （5）导出 sql
 
-```bash
-$ mysqldump -u root -p --all-databases --master-data > dbdump.sql
+```shell
+mysqldump -u root -p --all-databases --master-data > dbdump.sql
 ```
 
 （6）解除读锁
@@ -421,7 +392,7 @@ mysql> UNLOCK TABLES;
 （7）将 sql 远程传送到从节点上
 
 ```
-$ scp dbdump.sql root@192.168.8.11:/home
+scp dbdump.sql root@192.168.8.11:/home
 ```
 
 #### 从节点上的操作
@@ -441,14 +412,14 @@ log_bin=/var/lib/mysql/binlog
 
 修改后，重启 mysql 使配置生效：
 
-```bash
-$ systemctl restart mysql
+```shell
+systemctl restart mysql
 ```
 
 （2）导入 sql
 
-```bash
-$ mysql -u root -p < /home/dbdump.sql
+```shell
+mysql -u root -p < /home/dbdump.sql
 ```
 
 （3）在从节点上建立与主节点的连接
@@ -523,7 +494,7 @@ mysql> show global variables like "%read_only%";
 
 如果不知道配置文件路径，可以尝试以下操作：
 
-```bash
+```shell
 # which mysqld
 /usr/sbin/mysqld
 # /usr/sbin/mysqld --verbose --help | grep -A 1 'Default options'
@@ -537,7 +508,7 @@ Default options are read from the following files in the given order:
 
 建议使用固定的风格，这样检索配置项时较为方便。
 
-```bash
+```shell
 # 这两种格式等价
 /usr/sbin/mysqld --auto-increment-offset=5
 /usr/sbin/mysqld --auto_increment_offset=5
@@ -613,9 +584,9 @@ port = 3306
     - 在一个独立使用的数据库服务器上,你可以设置这个变量到服务器物理内存大小的 60%-80%
     - 注意别设置的过大，会导致 system 的 swap 空间被占用，导致操作系统变慢，从而减低 sql 查询的效率
     - 默认值：128M，建议值：物理内存的 60%-80%
-  * `innodb_log_file_size` - 日志文件的大小。默认值：48M，建议值：根据你系统的磁盘空间和日志增长情况调整大小
-  * `innodb_file_per_table` - 说明：mysql5.7 之后默认开启，意思是，每张表一个独立表空间。默认值 1，开启。
-  * `innodb_flush_method` - 说明：控制着 innodb 数据文件及 redo log 的打开、刷写模式，三种模式：fdatasync(默认)，O_DSYNC，O_DIRECT。默认值为空，建议值：使用 SAN 或者 raid，建议用 O_DIRECT，不懂测试的话，默认生产上使用 O_DIRECT
+  - `innodb_log_file_size` - 日志文件的大小。默认值：48M，建议值：根据你系统的磁盘空间和日志增长情况调整大小
+  - `innodb_file_per_table` - 说明：mysql5.7 之后默认开启，意思是，每张表一个独立表空间。默认值 1，开启。
+  - `innodb_flush_method` - 说明：控制着 innodb 数据文件及 redo log 的打开、刷写模式，三种模式：fdatasync(默认)，O_DSYNC，O_DIRECT。默认值为空，建议值：使用 SAN 或者 raid，建议用 O_DIRECT，不懂测试的话，默认生产上使用 O_DIRECT
     - `fdatasync`：数据文件，buffer pool->os buffer->磁盘；日志文件，buffer pool->os buffer->磁盘；
     - `O_DSYNC`： 数据文件，buffer pool->os buffer->磁盘；日志文件，buffer pool->磁盘；
     - `O_DIRECT`： 数据文件，buffer pool->磁盘； 日志文件，buffer pool->os buffer->磁盘；
@@ -770,7 +741,7 @@ Query OK, 0 rows affected (0.00 sec)
 
 > 问题现象：ERROR 1071: Specified key was too long; max key length is 767 bytes
 
-问题原因：Mysql 默认情况下单个列的索引不能超过767位（不同版本可能存在差异） 。
+问题原因：Mysql 默认情况下单个列的索引不能超过 767 位（不同版本可能存在差异） 。
 
 解决方法：优化索引结构，索引字段不宜过长。
 

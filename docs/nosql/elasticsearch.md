@@ -83,8 +83,8 @@ Document 使用 JSON 格式表示，下面是一个例子。
 
 示例：直接创建索引
 
-```bash
-$ curl -X POST 'localhost:9200/user'
+```shell
+curl -X POST 'localhost:9200/user'
 ```
 
 服务器返回一个 JSON 对象，里面的 `acknowledged` 字段表示操作成功。
@@ -95,7 +95,7 @@ $ curl -X POST 'localhost:9200/user'
 
 示例：创建索引时指定配置
 
-```bash
+```shell
 $ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user'  -d '
 {
     "settings" : {
@@ -109,7 +109,7 @@ $ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user'  -d '
 
 示例：创建索引时指定 `mappings`
 
-```bash
+```shell
 $ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user'  -d '
 {
     "settings" : {
@@ -125,16 +125,16 @@ $ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user'  -d '
 
 然后，我们可以通过发送 `DELETE` 请求，删除这个 Index。
 
-```bash
-$ curl -X DELETE 'localhost:9200/user'
+```shell
+curl -X DELETE 'localhost:9200/user'
 ```
 
 #### 3.1.3. 查看索引
 
 可以通过 GET 请求查看索引信息
 
-```bash
-$ curl -X GET 'localhost:9200/user'
+```shell
+curl -X GET 'localhost:9200/user'
 ```
 
 #### 3.1.4. 打开/关闭索引
@@ -142,14 +142,14 @@ $ curl -X GET 'localhost:9200/user'
 通过在 `POST` 中添加 `_close` 或 `_open` 可以打开、关闭索引。
 关闭索引
 
-```bash
-$ curl -X POST 'localhost:9200/user/_close'
+```shell
+curl -X POST 'localhost:9200/user/_close'
 ```
 
 打开索引
 
-```bash
-$ curl -X POST 'localhost:9200/user/_open'
+```shell
+curl -X POST 'localhost:9200/user/_open'
 ```
 
 ### 3.2. 文档
@@ -158,7 +158,7 @@ $ curl -X POST 'localhost:9200/user/_open'
 
 向指定的 `/Index/type` 发送 PUT 请求，就可以在 Index 里面新增一条记录。比如，向 `/user/admin` 发送请求，就可以新增一条人员记录。
 
-```bash
+```shell
 $ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user/admin/1' -d '
 {
 "user": "张三",
@@ -186,7 +186,7 @@ $ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user/admin/1' 
 
 新增记录的时候，也可以不指定 Id，这时要改成 POST 请求。
 
-```bash
+```shell
 $ curl -X POST -H 'Content-Type: application/json' 'localhost:9200/user/admin' -d '
 {
 "user": "李四",
@@ -216,15 +216,15 @@ $ curl -X POST -H 'Content-Type: application/json' 'localhost:9200/user/admin' -
 
 删除记录就是发出 `DELETE` 请求。
 
-```bash
-$ curl -X DELETE 'localhost:9200/user/admin/2'
+```shell
+curl -X DELETE 'localhost:9200/user/admin/2'
 ```
 
 #### 3.2.3. 更新记录
 
 更新记录就是使用 `PUT` 请求，重新发送一次数据。
 
-```bash
+```shell
 $ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user/admin/1' -d '
 {
 "user": "张三",
@@ -237,8 +237,8 @@ $ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user/admin/1' 
 
 向`/Index/Type/Id`发出 GET 请求，就可以查看这条记录。
 
-```bash
-$ curl 'localhost:9200/user/admin/1?pretty'
+```shell
+curl 'localhost:9200/user/admin/1?pretty'
 ```
 
 上面代码请求查看 `/user/admin/1` 这条记录，URL 的参数 `pretty=true` 表示以易读的格式返回。
@@ -266,7 +266,7 @@ $ curl 'localhost:9200/user/admin/1?pretty'
 
 使用 `GET` 方法，直接请求 `/index/type/_search`，就会返回所有记录。
 
-```bash
+```shell
 $ curl 'localhost:9200/user/admin/_search?pretty'
 {
   "took" : 1,
@@ -320,7 +320,7 @@ $ curl 'localhost:9200/user/admin/_search?pretty'
 
 ES 的查询非常特别，使用自己的[查询语法](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/query-dsl.html)，要求 GET 请求带有数据体。
 
-```bash
+```shell
 $ curl -H 'Content-Type: application/json' 'localhost:9200/user/admin/_search?pretty'  -d '
 {
 "query" : { "match" : { "desc" : "管理" }}
@@ -372,7 +372,7 @@ $ curl -H 'Content-Type: application/json' 'localhost:9200/user/admin/_search?pr
 
 Elastic 默认一次返回 10 条结果，可以通过`size`字段改变这个设置，还可以通过`from`字段，指定位移。
 
-```bash
+```shell
 $ curl 'localhost:9200/user/admin/_search'  -d '
 {
   "query" : { "match" : { "desc" : "管理" }},
@@ -387,7 +387,7 @@ $ curl 'localhost:9200/user/admin/_search'  -d '
 
 如果有多个搜索关键字， Elastic 认为它们是`or`关系。
 
-```bash
+```shell
 $ curl 'localhost:9200/user/admin/_search'  -d '
 {
 "query" : { "match" : { "desc" : "软件 系统" }}
@@ -398,7 +398,7 @@ $ curl 'localhost:9200/user/admin/_search'  -d '
 
 如果要执行多个关键词的`and`搜索，必须使用[布尔查询](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/query-dsl-bool-query.html)。
 
-```bash
+```shell
 $ curl -H 'Content-Type: application/json' 'localhost:9200/user/admin/_search?pretty'  -d '
 {
 	"query": {

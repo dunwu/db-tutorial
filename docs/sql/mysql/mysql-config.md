@@ -1,4 +1,4 @@
-# Mysql 服务器配置说明
+# Mysql 服务器配置
 
 > 版本：![mysql](https://img.shields.io/badge/mysql-8.0-blue)
 
@@ -471,5 +471,5 @@ socket = /var/lib/mysql/mysql.sock
 
 ## 参考资料
 
-- [高性能 MySQL](https：//book.douban.com/subject/23008813/)
-- [Mysql 配置文件/etc/my.cnf 解析](https：//www.jianshu.com/p/5f39c486561b)
+- [《高性能 MySQL》](https://item.jd.com/11220393.html)
+- [Mysql 配置文件/etc/my.cnf 解析](https://www.jianshu.com/p/5f39c486561b)

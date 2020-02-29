@@ -43,11 +43,13 @@ LIMIT 2, 3;
 -- -------------------------------------------
 
 -- 默认升序
-SELECT prod_price FROM products
+SELECT prod_price
+FROM products
 ORDER BY prod_price;
 
 -- 指定多个列的排序方向
-SELECT * FROM products
+SELECT *
+FROM products
 ORDER BY prod_price DESC, prod_name ASC;
 
 
@@ -163,31 +165,31 @@ WHERE cust_id IN (SELECT cust_id
 
 -- 内连接
 SELECT vend_name, prod_name, prod_price
-FROM vendors INNER JOIN products
+FROM vendors
+         INNER JOIN products
 ON vendors.vend_id = products.vend_id;
 
 -- 自连接
 SELECT c1.cust_id, c1.cust_name, c1.cust_contact
 FROM customers c1, customers c2
-WHERE c1.cust_name = c2.cust_name
-AND c2.cust_contact = 'Jim Jones';
+WHERE c1.cust_name = c2.cust_name AND c2.cust_contact = 'Jim Jones';
 
 -- 自连接
 SELECT c.*, o.order_num, o.order_date,
-       oi.prod_id, oi.quantity, oi.item_price
+    oi.prod_id, oi.quantity, oi.item_price
 FROM customers c, orders o, orderitems oi
-WHERE c.cust_id = o.cust_id
-AND oi.order_num = o.order_num
-AND prod_id = 'RGAN01';
+WHERE c.cust_id = o.cust_id AND oi.order_num = o.order_num AND prod_id = 'RGAN01';
 
 -- 左连接
 SELECT customers.cust_id, orders.order_num
-FROM customers LEFT JOIN orders
+FROM customers
+         LEFT JOIN orders
 ON customers.cust_id = orders.cust_id;
 
 -- 右连接
 SELECT customers.cust_id, orders.order_num
-FROM customers RIGHT JOIN orders
+FROM customers
+         RIGHT JOIN orders
 ON customers.cust_id = orders.cust_id;
 
 -- 组合

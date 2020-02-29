@@ -1,52 +1,5 @@
 # 关系型数据库面试题
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [一、索引和约束](#一索引和约束)
-  - [何时使用索引](#何时使用索引)
-  - [索引的优缺点](#索引的优缺点)
-  - [索引的类型](#索引的类型)
-  - [索引的数据结构](#索引的数据结构)
-  - [索引策略](#索引策略)
-  - [约束](#约束)
-- [二、事务](#二事务)
-  - [ACID](#acid)
-  - [并发一致性问题](#并发一致性问题)
-  - [事务隔离](#事务隔离)
-  - [分布式事务](#分布式事务)
-- [三、并发控制](#三并发控制)
-  - [乐观锁和悲观锁](#乐观锁和悲观锁)
-  - [行级锁和表级锁](#行级锁和表级锁)
-  - [读写锁](#读写锁)
-  - [意向锁](#意向锁)
-  - [MVCC](#mvcc)
-  - [Next-key 锁](#next-key-锁)
-- [四、分库分表](#四分库分表)
-  - [什么是分库分表](#什么是分库分表)
-  - [分库分表中间件](#分库分表中间件)
-  - [分库分表的问题](#分库分表的问题)
-- [五、集群](#五集群)
-  - [复制机制](#复制机制)
-  - [读写分离](#读写分离)
-- [六、数据库优化](#六数据库优化)
-  - [SQL 优化](#sql-优化)
-  - [结构优化](#结构优化)
-  - [配置优化](#配置优化)
-  - [硬件优化](#硬件优化)
-- [七、数据库理论](#七数据库理论)
-  - [函数依赖](#函数依赖)
-  - [异常](#异常)
-  - [范式](#范式)
-- [八、Mysql 特性](#八mysql-特性)
-  - [存储引擎](#存储引擎)
-- [九、数据库比较](#九数据库比较)
-  - [常见数据库比较](#常见数据库比较)
-  - [Oracle vs. Mysql](#oracle-vs-mysql)
-  - [数据类型比较](#数据类型比较)
-- [参考资料](#参考资料)
-
-<!-- /TOC -->
-
 ## 一、索引和约束
 
 ### 何时使用索引
@@ -319,7 +272,7 @@ T<sub>1</sub> 和 T<sub>2</sub> 两个事务都对一个数据进行修改，T<s
 
 ![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-丢失修改.png)
 
-- **脏数据**
+- **脏读**
 
 T<sub>1</sub> 修改一个数据，T<sub>2</sub> 随后读取这个数据。如果 T<sub>1</sub> 撤销了这次修改，那么 T<sub>2</sub> 读取的数据是脏数据。
 
@@ -568,7 +521,7 @@ MVCC 不能解决幻影读问题，Next-Key 锁就是为了解决这个问题而
 
 - `Record Lock` - **行锁对索引项加锁，若没有索引则使用表锁**。
 - `Gap Lock` - 对索引项之间的间隙加锁。锁定索引之间的间隙，但是不包含索引本身。例如当一个事务执行以下语句，其它事务就不能在 t.c 中插入 15。`SELECT c FROM t WHERE c BETWEEN 10 and 20 FOR UPDATE;`
-- `Next-key lock` -它是 `Record Lock` 和 `Gap Lock` 的结合，不仅锁定一个记录上的索引，也锁定索引之间的间隙。它锁定一个前开后闭区间，例如一个索引包含以下值：10, 11, 13, and 20，那么就需要锁定以下区间：
+- `Next-key lock` -它是 `Record Lock` 和 `Gap Lock` 的结合，不仅锁定一个记录上的索引，也锁定索引之间的间隙。它锁定一个前开后闭区间。
 
 索引分为主键索引和非主键索引两种，如果一条 SQL 语句操作了主键索引，MySQL 就会锁定这条主键索引；如果一条语句操作了非主键索引，MySQL 会先锁定该非主键索引，再锁定相关的主键索引。在 `UPDATE`、`DELETE` 操作时，MySQL 不仅锁定 `WHERE` 条件扫描过的所有索引记录，而且会锁定相邻的键值，即所谓的 `next-key lock`。
 
@@ -667,7 +620,7 @@ MVCC 不能解决幻影读问题，Next-Key 锁就是为了解决这个问题而
 >
 > - 分库分表的常见问题有哪些？
 >
-> * 你是如何解决分库分表的问题的？
+> - 你是如何解决分库分表的问题的？
 >
 > 下文一一讲解常见分库分表的问题及解决方案。
 
@@ -1199,13 +1152,13 @@ where rr>5 and rr<=10;
 
 | 数据类型            | Oracle           | MySQL       | PostgreSQL       |
 | :------------------ | :--------------- | :---------- | :--------------- |
-| _boolean_           | Byte             | N/A         | Boolean          |
-| _integer_           | Number           | Int Integer | Int Integer      |
-| _float_             | Number           | Float       | Numeric          |
-| _currency_          | N/A              | N/A         | Money            |
-| _string (fixed)_    | Char             | Char        | Char             |
-| _string (variable)_ | Varchar Varchar2 | Varchar     | Varchar          |
-| _binary object_     | Long Raw         | Blob Text   | Binary Varbinary |
+| `boolean`           | Byte             | N/A         | Boolean          |
+| `integer`           | Number           | Int Integer | Int Integer      |
+| `float`             | Number           | Float       | Numeric          |
+| `currency`          | N/A              | N/A         | Money            |
+| `string (fixed)`    | Char             | Char        | Char             |
+| `string (variable)` | Varchar Varchar2 | Varchar     | Varchar          |
+| `binary object`     | Long Raw         | Blob Text   | Binary Varbinary |
 
 > 数据类型对比表摘自 [SQL 通用数据类型](https://www.runoob.com/sql/sql-datatypes-general.html)、[SQL 用于各种数据库的数据类型](https://www.runoob.com/sql/sql-datatypes.html)
 

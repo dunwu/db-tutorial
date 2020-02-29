@@ -53,7 +53,7 @@
 
 Flyway 会尝试查找它的 schema 历史表，如果数据库是空的，Flyway 就不再查找，而是直接创建数据库。
 
-现再你就有了一个仅包含一张空表的数据库，默认情况下，这张表叫 _flyway_schema_history_。
+现再你就有了一个仅包含一张空表的数据库，默认情况下，这张表叫 **flyway_schema_history**。
 
 ![img](http://upload-images.jianshu.io/upload_images/3101171-410eb31c6313b389.png)
 
@@ -121,7 +121,7 @@ create table PERSON (
 
 运行 Flyway 来迁移数据库：
 
-```bash
+```shell
 flyway-5.1.4> flyway migrate
 ```
 
@@ -148,7 +148,7 @@ insert into PERSON (ID, NAME) values (3, 'Ms. Bar');
 
 运行 Flyway
 
-```bash
+```shell
 flyway-5.1.4> flyway migrate
 ```
 
@@ -290,7 +290,7 @@ Maven 方式使用插件来集成 Flyway：
 
 因为用的是插件，所以执行方式不再是运行 Java 类，而是执行 maven 插件：
 
-```bash
+```shell
 > mvn flyway:migrate
 ```
 

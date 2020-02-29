@@ -1,60 +1,8 @@
-# SQL 语法速成手册
+# SQL Cheat Sheet
 
 > 本文针对关系型数据库的一般语法。限于篇幅，本文侧重说明用法，不会展开讲解特性、原理。
 
 ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200115160512.png)
-
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [一、基本概念](#一基本概念)
-  - [数据库术语](#数据库术语)
-  - [SQL 语法](#sql-语法)
-- [二、增删改查](#二增删改查)
-  - [插入数据](#插入数据)
-  - [更新数据](#更新数据)
-  - [删除数据](#删除数据)
-  - [查询数据](#查询数据)
-- [三、子查询](#三子查询)
-  - [WHERE](#where)
-  - [IN 和 BETWEEN](#in-和-between)
-  - [AND、OR、NOT](#andornot)
-  - [LIKE](#like)
-- [四、连接和组合](#四连接和组合)
-  - [连接（JOIN）](#连接join)
-  - [组合（UNION）](#组合union)
-  - [JOIN vs UNION](#join-vs-union)
-- [五、函数](#五函数)
-  - [文本处理](#文本处理)
-  - [日期和时间处理](#日期和时间处理)
-  - [数值处理](#数值处理)
-  - [汇总](#汇总)
-- [六、排序和分组](#六排序和分组)
-  - [ORDER BY](#order-by)
-  - [GROUP BY](#group-by)
-  - [HAVING](#having)
-- [七、数据定义](#七数据定义)
-  - [数据库（DATABASE）](#数据库database)
-  - [数据表（TABLE）](#数据表table)
-  - [视图（VIEW）](#视图view)
-  - [索引（INDEX）](#索引index)
-  - [约束](#约束)
-- [八、事务处理](#八事务处理)
-- [九、权限控制](#九权限控制)
-  - [创建账户](#创建账户)
-  - [修改账户名](#修改账户名)
-  - [删除账户](#删除账户)
-  - [查看权限](#查看权限)
-  - [授予权限](#授予权限)
-  - [删除权限](#删除权限)
-  - [更改密码](#更改密码)
-- [十、存储过程和游标](#十存储过程和游标)
-  - [存储过程优缺点](#存储过程优缺点)
-  - [使用存储过程](#使用存储过程)
-  - [游标](#游标)
-  - [触发器](#触发器)
-- [参考资料](#参考资料)
-
-<!-- /TOC -->
 
 ## 一、基本概念
 
@@ -73,7 +21,7 @@
 
 #### SQL 语法结构
 
-<img src="D:\Codes\ZPTutorial\images\snap\sql-syntax.png" style="zoom:80%;" />
+![img](https://raw.githubusercontent.com/dunwu/images/master/cs/database/mysql/sql-syntax.png)
 
 SQL 语法结构包括：
 
@@ -147,7 +95,7 @@ DCL 以**控制用户的访问权限**为主，因此其指令作法并不复杂
 
 ---
 
-_（以下为 DML 语句用法）_
+**（以下为 DML 语句用法）**
 
 ## 二、增删改查
 
@@ -671,7 +619,7 @@ HAVING COUNT(*) >= 1;
 
 ---
 
-_（以下为 DDL 语句用法）_
+**（以下为 DDL 语句用法）**
 
 ## 七、数据定义
 
@@ -846,7 +794,7 @@ CREATE TABLE Users (
 
 ---
 
-_（以下为 TCL 语句用法）_
+**（以下为 TCL 语句用法）**
 
 ## 八、事务处理
 
@@ -889,7 +837,7 @@ COMMIT;
 
 ---
 
-_（以下为 DCL 语句用法）_
+**（以下为 DCL 语句用法）**
 
 ## 九、权限控制
 
@@ -1141,13 +1089,9 @@ SHOW TRIGGERS;
 DROP TRIGGER IF EXISTS trigger_insert_user;
 ```
 
-（完）
-
----
-
 ## 参考资料
 
-- BenForta. SQL 必知必会 [M]. 人民邮电出版社, 2013.
+- [《SQL 必知必会》](https://item.jd.com/11232698.html)
 - [『浅入深出』MySQL 中事务的实现](https://draveness.me/mysql-transaction)
 - [MySQL 的学习--触发器](https://www.cnblogs.com/CraryPrimitiveMan/p/4206942.html)
 - [维基百科词条 - SQL](https://zh.wikipedia.org/wiki/SQL)
