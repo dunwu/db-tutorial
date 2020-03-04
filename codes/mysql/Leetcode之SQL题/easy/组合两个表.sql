@@ -1,5 +1,7 @@
 --    组合两个表
 --
+--    @link https://leetcode-cn.com/problems/combine-two-tables/
+--
 --    表1: Person
 --
 --    +-------------+---------+
@@ -29,7 +31,8 @@
 --
 --    FirstName, LastName, City, State
 
-SELECT Person.FirstName, Person.LastName, Address.City, Address.State
-FROM Person
-    LEFT JOIN Address
-    ON Person.PersonId = Address.PersonId;
+
+SELECT person.firstname, person.lastname, address.city, address.state
+FROM person
+         LEFT JOIN address
+ON person.personid = address.personid;

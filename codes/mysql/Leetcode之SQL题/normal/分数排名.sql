@@ -26,9 +26,30 @@
 --    | 3.50  | 4    |
 --    +-------+------+
 
-SELECT Score, (
-    SELECT COUNT(DISTINCT score)
-    FROM Scores
-    WHERE score >= s.score) AS Rank
-FROM Scores s
-ORDER BY Score DESC;
+USE db_tutorial;
+
+CREATE TABLE IF NOT EXISTS scores (
+    id    INT PRIMARY KEY AUTO_INCREMENT,
+    score DOUBLE
+);
+
+INSERT INTO scores (score)
+VALUES (3.50);
+INSERT INTO scores (score)
+VALUES (3.65);
+INSERT INTO scores (score)
+VALUES (4.00);
+INSERT INTO scores (score)
+VALUES (3.85);
+INSERT INTO scores (score)
+VALUES (4.00);
+INSERT INTO scores (score)
+VALUES (3.65);
+
+SELECT count(DISTINCT b.score)
+FROM scores b;
+
+SELECT a.score AS score,
+    (SELECT count(DISTINCT b.score) FROM scores b WHERE b.score >= a.score) AS ranking
+FROM scores a
+ORDER BY a.score DESC;

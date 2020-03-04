@@ -21,8 +21,30 @@
 --    | 1               |
 --    +-----------------+
 
-SELECT DISTINCT l1.num AS ConsecutiveNums
-FROM Logs l1
-    JOIN Logs l2 ON l1.id=l2.id-1
-    JOIN Logs l3 ON l1.id=l3.id-2
-WHERE l1.num=l2.num AND l2.num=l3.num;
+USE db_tutorial;
+
+CREATE TABLE IF NOT EXISTS logs (
+    id  INT PRIMARY KEY AUTO_INCREMENT,
+    num INT
+);
+
+INSERT INTO logs(num)
+VALUES (1);
+INSERT INTO logs(num)
+VALUES (1);
+INSERT INTO logs(num)
+VALUES (1);
+INSERT INTO logs(num)
+VALUES (2);
+INSERT INTO logs(num)
+VALUES (1);
+INSERT INTO logs(num)
+VALUES (2);
+INSERT INTO logs(num)
+VALUES (2);
+
+-- 解题
+SELECT DISTINCT (l1.num) AS consecutivenums
+FROM logs l1, logs l2, logs l3
+WHERE l1.id = l2.id + 1 AND l2.id = l3.id + 1 AND l1.num = l2.num AND l2.num = l3.num;
+

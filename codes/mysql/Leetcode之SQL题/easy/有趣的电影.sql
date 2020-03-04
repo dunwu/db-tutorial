@@ -26,7 +26,27 @@
 --    |   1     | War       |   great 3D   |   8.9     |
 --    +---------+-----------+--------------+-----------+
 
+USE db_tutorial;
+CREATE TABLE IF NOT EXISTS cinema (
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    movie       VARCHAR(20),
+    description VARCHAR(20),
+    rating      DOUBLE
+);
+
+INSERT INTO cinema(movie, description, rating)
+VALUES ('War', 'great 3D', 8.9);
+INSERT INTO cinema(movie, description, rating)
+VALUES ('Science', 'fiction', 8.5);
+INSERT INTO cinema(movie, description, rating)
+VALUES ('irish', 'boring', 6.2);
+INSERT INTO cinema(movie, description, rating)
+VALUES ('Ice song', 'Fantacy', 8.6);
+INSERT INTO cinema(movie, description, rating)
+VALUES ('House card', 'Interesting', 9.1);
+
+-- 解题
 SELECT *
-FROM CINEMA
-WHERE DESCRIPTION != 'boring' AND ID % 2 = 1
+FROM cinema
+WHERE description != 'boring' AND id % 2 = 1
 ORDER BY rating DESC;

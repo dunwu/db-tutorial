@@ -1,5 +1,7 @@
 --    第二高的薪水
 --
+--    @link https://leetcode-cn.com/problems/second-highest-salary/
+--
 --    编写一个 SQL 查询，获取 Employee 表中第二高的薪水（Salary） 。
 --
 --    +----+--------+
@@ -17,7 +19,8 @@
 --    | 200                 |
 --    +---------------------+
 
-SELECT (SELECT DISTINCT SALARY
-    FROM Employee
-    ORDER BY SALARY DESC LIMIT 1,1)
-AS SecondHighestSalary;
+SELECT (SELECT DISTINCT salary
+        FROM employee
+        ORDER BY salary DESC
+        LIMIT 1,1)
+    AS secondhighestsalary;

@@ -1,5 +1,7 @@
 --    从不订购的客户
 --
+--    @link https://leetcode-cn.com/problems/customers-who-never-order/
+--
 --    某网站包含两个表，Customers 表和 Orders 表。编写一个 SQL 查询，找出所有从不订购任何东西的客户。
 --
 --    Customers 表：
@@ -29,12 +31,30 @@
 --    | Max       |
 --    +-----------+
 
-SELECT Name AS Customers
-FROM Customers c
-WHERE c.Id NOT IN (SELECT DISTINCT CustomerId
-FROM Orders);
+CREATE TABLE IF NOT EXISTS customers (
+    id   INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(20)
+);
+INSERT INTO customers(name)
+VALUES ('Joe');
+INSERT INTO customers(name)
+VALUES ('Henry');
+INSERT INTO customers(name)
+VALUES ('Sam');
+INSERT INTO customers(name)
+VALUES ('Max');
 
-SELECT Name AS Customers
-FROM Customers
-    INNER JOIN Orders
-    ON Customers.Id != Orders.CustomerId;
+CREATE TABLE IF NOT EXISTS orders (
+    id         INT PRIMARY KEY AUTO_INCREMENT,
+    customerid INT
+);
+INSERT INTO orders(customerid)
+VALUES (3);
+INSERT INTO orders(customerid)
+VALUES (1);
+
+-- 方法一
+SELECT name AS customers
+FROM customers c
+WHERE c.id NOT IN (SELECT DISTINCT customerid
+                   FROM orders);

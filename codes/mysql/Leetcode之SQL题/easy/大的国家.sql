@@ -1,5 +1,7 @@
 --  大的国家
 --
+--  @link https://leetcode-cn.com/problems/big-countries/
+--
 --  这里有张 World 表
 --
 --  +-----------------+------------+------------+--------------+---------------+
@@ -24,7 +26,35 @@
 --  | Algeria      | 37100000    | 2381741      |
 --  +--------------+-------------+--------------+
 
-SELECT NAME, POPULATION, AREA
-FROM World
-WHERE AREA > 3000000 OR POPULATION > 25000000;
+CREATE TABLE world (
+    name       VARCHAR(32) PRIMARY KEY,
+    continent  VARCHAR(32),
+    area       INT(10),
+    population INT(20),
+    gdp        INT(20)
+);
 
+INSERT INTO world
+VALUES ('Afghanistan', 'Asia', 652230, 25500100, 20343000);
+INSERT INTO world
+VALUES ('Albania', 'Europe', 28748, 2831741, 12960000);
+INSERT INTO world
+VALUES ('Algeria', 'Africa', 2381741, 37100000, 188681000);
+INSERT INTO world
+VALUES ('Andorra', 'Europe', 468, 78115, 3712000);
+INSERT INTO world
+VALUES ('Angola', 'Africa', 1246700, 20609294, 100990000);
+
+-- 方法一
+SELECT name, population, area
+FROM world
+WHERE area > 3000000 OR population > 25000000;
+
+-- 方法二
+SELECT name, population, area
+FROM world
+WHERE area > 3000000
+UNION
+SELECT name, population, area
+FROM world
+WHERE population > 25000000;

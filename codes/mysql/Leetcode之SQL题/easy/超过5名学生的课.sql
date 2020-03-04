@@ -29,7 +29,34 @@
 --    Note:
 --    学生在每个课中不应被重复计算。
 
-SELECT CLASS
-FROM COURSES
-GROUP BY CLASS
-HAVING COUNT(DISTINCT STUDENT)>4;
+USE db_tutorial;
+
+CREATE TABLE courses (
+    student VARCHAR(10) PRIMARY KEY,
+    class   VARCHAR(10)
+);
+
+INSERT INTO courses
+VALUES ('A', 'Math');
+INSERT INTO courses
+VALUES ('B', 'English');
+INSERT INTO courses
+VALUES ('C', 'Math');
+INSERT INTO courses
+VALUES ('D', 'Biology');
+INSERT INTO courses
+VALUES ('E', 'Math');
+INSERT INTO courses
+VALUES ('F', 'Computer');
+INSERT INTO courses
+VALUES ('G', 'Math');
+INSERT INTO courses
+VALUES ('H', 'Math');
+INSERT INTO courses
+VALUES ('I', 'Math');
+
+-- 解题
+SELECT class
+FROM courses
+GROUP BY class
+HAVING COUNT(DISTINCT student) >= 5;
