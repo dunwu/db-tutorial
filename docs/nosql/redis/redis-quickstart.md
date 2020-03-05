@@ -1,24 +1,5 @@
 # Redis 入门指南
 
-<!-- TOC depthFrom:2 depthTo:2 -->
-
-- [一、Redis 简介](#一redis-简介)
-- [二、Redis 数据类型](#二redis-数据类型)
-- [三、Redis 内存淘汰](#三redis-内存淘汰)
-- [四、Redis 持久化](#四redis-持久化)
-- [五、Redis 事件](#五redis-事件)
-- [六、Redis 事务](#六redis-事务)
-- [七、Redis 管道](#七redis-管道)
-- [八、发布与订阅](#八发布与订阅)
-- [九、复制](#九复制)
-- [十、哨兵](#十哨兵)
-- [十一、集群](#十一集群)
-- [Redis Client](#redis-client)
-- [扩展](#扩展)
-- [参考资料](#参考资料)
-
-<!-- /TOC -->
-
 ## 一、Redis 简介
 
 > Redis 是速度非常快的非关系型（NoSQL）内存键值数据库，可以存储键和五种不同类型的值之间的映射。
@@ -337,7 +318,7 @@ redis>
 
 内存淘汰只是 Redis 提供的一个功能，为了更好地实现这个功能，必须为不同的应用场景提供不同的策略，内存淘汰策略讲的是为实现内存淘汰我们具体怎么做，要解决的问题包括淘汰键空间如何选择？在键空间中淘汰键如何选择？
 
-Redis 提供了下面几种淘汰策略供用户选：
+Redis 提供了下面几种内存淘汰策略供用户选：
 
 - **`noeviction`** - 当内存使用达到阈值的时候，所有引起申请内存的命令会报错。这是 Redis 默认的策略。
 - **`allkeys-lru`** - 在主键空间中，优先移除最近未使用的 key。
@@ -641,7 +622,7 @@ pipe.exec();
 
 > :bell: 注意：使用管道发送命令时，Redis Server 会将部分请求放到缓存队列中（占用内存），执行完毕后一次性发送结果。如果需要发送大量的命令，会占用大量的内存，因此应该按照合理数量分批次的处理。
 
-## 八、发布与订阅
+## 八、Redis 发布与订阅
 
 订阅者订阅了频道之后，发布者向频道发送字符串消息会被所有订阅者接收到。
 
@@ -656,7 +637,7 @@ pipe.exec();
 
 ***分割线以下为 Redis 集群功能特性***
 
-## 九、复制
+## 九、Redis 复制
 
 > 关系型数据库通常会使用一个主服务器向多个从服务器发送更新，并使用从服务器来处理所有读请求，Redis 也采用了同样的方式来实现复制特性。
 
@@ -701,13 +682,13 @@ Redis 2.8 版本以后的复制功能基于 `PSYNC` 命令实现。`PSYNC` 命�
 
 > :bulb: 更详细的特性及原理说明请参考：[Redis 复制](redis-replication.md)
 
-## 十、哨兵
+## 十、Redis 哨兵
 
 Sentinel（哨兵）可以监听主服务器，并在主服务器进入下线状态时，自动从从服务器中选举出新的主服务器。
 
 > 💡 更详细的特性及原理说明请参考：[Redis 哨兵](redis-sentinel.md)
 
-## 十一、集群
+## 十一、Redis 集群
 
 分片是将数据划分为多个部分的方法，可以将数据存储到多台机器里面，也可以从多台机器里面获取数据，这种方法在解决某些问题时可以获得线性级别的性能提升。
 
@@ -717,25 +698,20 @@ Sentinel（哨兵）可以监听主服务器，并在主服务器进入下线状
 
 - 客户端分片：客户端使用一致性哈希等算法决定键应当分布到哪个节点。
 - 代理分片：将客户端请求发送到代理上，由代理转发请求到正确的节点上。
-- 服务器分片：Redis Cluster。
+- 服务器分片：Redis Cluster（官方的 Redis 集群解决方案）。
 
-- https://github.com/lettuce-io/lettuce-core)
-
--
 
 ## Redis Client
 
-Redis 社区中有多种编程语言的客户端，可以在这里查找合适的客户端：https://redis.io/clients
+Redis 社区中有多种编程语言的客户端，可以在这里查找合适的客户端：[Redis 官方罗列的客户端清单](https://redis.io/clients)
 
 redis 官方推荐的 Java Redis Client：
 
-- [jedis](https://github.com/xetorthio/jedis)
-- [redisson](https://github.com/redisson/redisson)
-- [lettuce](https://github.com/lettuce-io/lettuce-core)
+- [jedis](https://github.com/xetorthio/jedis) - 最流行的 Redis Java 客户端
+- [redisson](https://github.com/redisson/redisson) - 额外提供了很多的分布式服务特性，如：分布式锁、分布式 Java 常用对象（BitSet、BlockingQueue、CountDownLatch 等）
+- [lettuce](https://github.com/lettuce-io/lettuce-core) - Spring Boot 2.0 默认 Redis 客户端
 
-## 扩展
-
-### 缓存
+## 扩展阅读
 
 > 💡 Redis 常用于分布式缓存，有关缓存的特性和原理请参考：[缓存基本原理](https://dunwu.github.io/blog/design/theory/cache-theory/)
 

@@ -21,10 +21,10 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 > [关系型数据库](sql) 整理主流关系型数据库知识点。
 
-- [关系型数据库面试题](sql/sql-interview.md) 💯
+- [关系型数据库面试总结](sql/sql-interview.md) 💯
 - [SQL Cheat Sheet](sql/sql-cheat-sheet.md)
 - [Mysql](sql/mysql) 📚
-  - [Mysql 原理](sql/mysql/mysql-theory.md)
+  - [Mysql 基本原理](sql/mysql/mysql-theory.md)
   - [Mysql 索引](sql/mysql/mysql-index.md)
   - [Mysql 并发控制](sql/mysql/mysql-concurrency-control.md)
   - [Mysql 事务](sql/mysql/mysql-transaction.md)
@@ -41,8 +41,9 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 - [Nosql 技术选型](nosql/nosql-selection.md)
 - [Redis](nosql/redis) 📚
+  - [Redis 面试总结](nosql/redis/redis-interview.md) 💯
   - [Redis 入门指南](nosql/redis/redis-quickstart.md) ⚡
-  - [Redis 数据类型](nosql/redis/redis-datatype.md)
+  - [Redis 数据类型和应用](nosql/redis/redis-datatype.md)
   - [Redis 持久化](nosql/redis/redis-persistence.md)
   - [Redis 复制](nosql/redis/redis-replication.md)
   - [Redis 哨兵](nosql/redis/redis-sentinel.md)

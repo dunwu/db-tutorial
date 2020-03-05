@@ -8,32 +8,6 @@
 > - Redis 集群采用主从模型，提供复制和故障转移功能，来保证 Redis 集群的高可用。
 > - 根据 CAP 理论，Consistency、Availability、Partition tolerance 三者不可兼得，而 Redis 集群的选择是 AP。Redis 集群节点间采用异步通信方式，不保证强一致性，尽力达到最终一致性。
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [节点](#节点)
-- [Hash 槽](#hash-槽)
-- [集群工作模式](#集群工作模式)
-  - [分片](#分片)
-  - [判断槽是否有当前节点负责处理](#判断槽是否有当前节点负责处理)
-  - [MOVED 错误](#moved-错误)
-  - [节点数据库](#节点数据库)
-- [重新分片](#重新分片)
-  - [重新分片的实现原理](#重新分片的实现原理)
-- [ASK](#ask)
-  - [ASK 错误](#ask-错误)
-  - [判断 ASK 错误的过程](#判断-ask-错误的过程)
-- [复制与故障转移](#复制与故障转移)
-  - [复制](#复制)
-  - [故障检测](#故障检测)
-  - [故障转移](#故障转移)
-  - [选举新的主节点](#选举新的主节点)
-- [消息](#消息)
-- [**Redis 集群参数配置**](#redis-集群参数配置)
-- [重点](#重点)
-- [参考资料](#参考资料)
-
-<!-- /TOC -->
-
 ## Redis 集群方案
 
 ### 客户端分区方案
@@ -260,7 +234,7 @@ Redis 集群选举新的主节点流程基于[共识算法：Raft](https://www.j
 
 ## 参考资料
 
-- 《Redis 实战》
-- 《Redis 设计与实现》
+- [《Redis 实战》](https://item.jd.com/11791607.html)
+- [《Redis 设计与实现》](https://item.jd.com/11486101.html)
 - [Redis 集群教程](http://ifeve.com/redis-cluster-tutorial/)
 - [深入剖析 Redis 系列(三) - Redis 集群模式搭建与原理详解](https://juejin.im/post/5b8fc5536fb9a05d2d01fb11)

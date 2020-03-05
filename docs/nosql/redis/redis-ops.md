@@ -26,7 +26,7 @@ Redis 支持 32 位和 64 位。这个需要根据你系统平台的实际情况
 
 下载、解压、编译 Redis
 
-````shell
+```shell
 wget http://download.redis.io/releases/redis-5.0.4.tar.gz
 tar xzf redis-5.0.4.tar.gz
 cd redis-5.0.4
@@ -37,13 +37,13 @@ make
 
 进入到解压后的 `src` 目录，通过如下命令启动 Redis:
 
-````shell
+```shell
 src/redis-server
 ```
 
 您可以使用内置的客户端与 Redis 进行交互:
 
-````shell
+```shell
 $ src/redis-cli
 redis> set foo bar
 OK
@@ -55,7 +55,7 @@ redis> get foo
 
 在 Ubuntu 系统安装 Redis 可以使用以下命令:
 
-````shell
+```shell
 sudo apt-get update
 sudo apt-get install redis-server
 ```
@@ -76,33 +76,33 @@ sudo apt-get install redis-server
 
 **启动 redis 服务**
 
-````shell
+```shell
 cd /usr/local/redis/src
 ./redis-server
 ```
 
 **启动 redis 客户端**
 
-````shell
+```shell
 cd /usr/local/redis/src
 ./redis-cli
 ```
 
 **查看 redis 是否启动**
 
-````shell
+```shell
 redis-cli
 ```
 
 以上命令将打开以下终端：
 
-````shell
+```shell
 redis 127.0.0.1:6379>
 ```
 
 127.0.0.1 是本机 IP ，6379 是 redis 服务端口。现在我们输入 PING 命令。
 
-````shell
+```shell
 redis 127.0.0.1:6379> ping
 PONG
 ```
@@ -237,7 +237,7 @@ sudo mkdir -p /usr/local/redis/cluster/6386
 
 实例配置模板以 6381 节点为例（其他节点，完全替换配置中的端口号 6381 即可），如下：
 
-````shell
+```shell
 # 端口号
 port 6381
 # 绑定的主机端口（0.0.0.0 表示允许远程访问）
@@ -295,7 +295,7 @@ fi
 
 然后，通过 ps 命令来确认 Redis 进程是否已经工作：
 
-````shell
+```shell
 $ ps -ef | grep redis
 root     12036     1 12 16:26 ?        00:08:28 /usr/local/redis/src/redis-server 0.0.0.0:6381 [cluster]
 root     12038     1  0 16:26 ?        00:00:03 /usr/local/redis/src/redis-server 0.0.0.0:6382 [cluster]
@@ -311,7 +311,7 @@ root     12038     1  0 16:26 ?        00:00:03 /usr/local/redis/src/redis-serve
 
 如果启动成功，可以看到如下信息：
 
-````shell
+```shell
 >>> Performing hash slots allocation on 6 nodes...
 Master[0] -> Slots 0 - 5460
 Master[1] -> Slots 5461 - 10922
@@ -386,7 +386,7 @@ Redis 自带了一个性能测试工具：`redis-benchmark`
 
 **（1）基本测试**
 
-````shell
+```shell
 redis-benchmark -q -n 100000
 ```
 
@@ -395,7 +395,7 @@ redis-benchmark -q -n 100000
 
 **（2）测试指定读写指令**
 
-````shell
+```shell
 $ redis-benchmark -t set,lpush -n 100000 -q
 SET: 74239.05 requests per second
 LPUSH: 79239.30 requests per second
@@ -403,7 +403,7 @@ LPUSH: 79239.30 requests per second
 
 **（3）测试 pipeline 模式下指定读写指令**
 
-````shell
+```shell
 redis-benchmark -n 1000000 -t set,get -P 16 -q
 SET: 403063.28 requests per second
 GET: 508388.41 requests per second
@@ -427,14 +427,14 @@ GET: 508388.41 requests per second
 
 - 默认安装 - 执行以下任意命令即可：
 
-````shell
+```shell
 curl -o- https://gitee.com/turnon/linux-tutorial/raw/master/codes/linux/soft/redis-install.sh | bash
 wget -qO- https://gitee.com/turnon/linux-tutorial/raw/master/codes/linux/soft/redis-install.sh | bash
 ```
 
 - 自定义安装 - 下载脚本到本地，并按照以下格式执行：
 
-````shell
+```shell
 sh redis-install.sh [version] [port] [password]
 ```
 
