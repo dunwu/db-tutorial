@@ -1,6 +1,8 @@
 # SQL Cheat Sheet
 
 > 本文针对关系型数据库的一般语法。限于篇幅，本文侧重说明用法，不会展开讲解特性、原理。
+>
+> 本文语法主要针对 Mysql。
 
 ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200115160512.png)
 

@@ -164,6 +164,18 @@ CREATE USER 'pig'@'%' IDENTIFIED BY '';
 CREATE USER 'pig'@'%';
 ```
 
+> 注意：在 Mysql 8 中，默认密码验证不再是 `password`。所以在创建用户时，`create user 'username'@'%' identified by 'password';` 客户端是无法连接服务的。
+>
+> 所以，需要加上 `IDENTIFIED WITH mysql_native_password`，例如：`CREATE USER 'slave'@'%' IDENTIFIED WITH mysql_native_password BY '123456';`
+
+### 查看用户
+
+```sql
+-- 查看所有用户
+SELECT DISTINCT CONCAT('User: ''', user, '''@''', host, ''';') AS query
+FROM mysql.user;
+```
+
 ### 授权
 
 命令：
@@ -191,7 +203,10 @@ GRANT ALL ON maindataplus.* TO 'pig'@'%';
 用以上命令授权的用户不能给其它用户授权，如果想让该用户可以授权，用以下命令:
 
 ```sql
+-- 为指定用户配置指定权限
 GRANT privileges ON databasename.tablename TO 'username'@'host' WITH GRANT OPTION;
+-- 为 root 用户分配所有权限
+GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY '密码' WITH GRANT OPTION;
 ```
 
 ### 撤销授权
@@ -217,6 +232,13 @@ REVOKE SELECT ON *.* FROM 'pig'@'%';
 假如你在给用户`'pig'@'%'`授权的时候是这样的（或类似的）：`GRANT SELECT ON test.user TO 'pig'@'%'`，则在使用`REVOKE SELECT ON *.* FROM 'pig'@'%';`命令并不能撤销该用户对 test 数据库中 user 表的`SELECT` 操作。相反，如果授权使用的是`GRANT SELECT ON *.* TO 'pig'@'%';`则`REVOKE SELECT ON test.user FROM 'pig'@'%';`命令也不能撤销该用户对 test 数据库中 user 表的`Select`权限。
 
 具体信息可以用命令`SHOW GRANTS FOR 'pig'@'%';` 查看。
+
+### 查看授权
+
+```SQL
+-- 查看用户权限
+SHOW GRANTS FOR 'root'@'%';
+```
 
 ### 更改用户密码
 
@@ -273,7 +295,7 @@ mysqldump -u <username> -p --all-databases > backup.sql
 
 #### 恢复一个数据库
 
-Mysql 恢复数据使用 mysqldump 命令。
+Mysql 恢复数据使用 mysql 命令。
 
 语法：
 
@@ -347,12 +369,40 @@ Password:
 执行以下 SQL：
 
 ```sql
--- 创建 slave1 用户，并指定该用户只能在主机 192.168.8.11 上登录
-mysql> CREATE USER 'slave1'@'192.168.8.11' IDENTIFIED WITH mysql_native_password BY '密码';
--- 为 slave1 赋予 REPLICATION SLAVE 权限
-mysql> GRANT REPLICATION SLAVE ON *.* TO 'slave1'@'192.168.8.11';
+-- a. 创建 slave 用户
+CREATE USER 'slave'@'%' IDENTIFIED WITH mysql_native_password BY '密码';
+-- 为 slave 赋予 REPLICATION SLAVE 权限
+GRANT REPLICATION SLAVE ON *.* TO 'slave'@'%';
+
+-- b. 或者，创建 slave 用户，并指定该用户能在任意主机上登录
+-- 如果有多个从节点，又想让所有从节点都使用统一的用户名、密码认证，可以考虑这种方式
+CREATE USER 'slave'@'%' IDENTIFIED WITH mysql_native_password BY '密码';
+GRANT REPLICATION SLAVE ON *.* TO 'slave'@'%';
+
 -- 刷新授权表信息
-mysql> FLUSH PRIVILEGES;
+FLUSH PRIVILEGES;
+```
+
+> 注意：在 Mysql 8 中，默认密码验证不再是 `password`。所以在创建用户时，`create user 'username'@'%' identified by 'password';` 客户端是无法连接服务的。所以，需要加上 `IDENTIFIED WITH mysql_native_password BY 'password'`
+
+补充用户管理 SQL:
+
+```sql
+-- 查看所有用户
+SELECT DISTINCT CONCAT('User: ''', user, '''@''', host, ''';') AS query
+FROM mysql.user;
+
+-- 查看用户权限
+SHOW GRANTS FOR 'root'@'%';
+
+-- 创建用户
+-- a. 创建 slave 用户，并指定该用户只能在主机 192.168.8.11 上登录
+CREATE USER 'slave'@'192.168.8.11' IDENTIFIED WITH mysql_native_password BY '密码';
+-- 为 slave 赋予 REPLICATION SLAVE 权限
+GRANT REPLICATION SLAVE ON *.* TO 'slave'@'192.168.8.11';
+
+-- 删除用户
+DROP USER 'slave'@'192.168.8.11';
 ```
 
 （3）加读锁
@@ -435,17 +485,20 @@ Password:
 
 ```sql
 -- 停止从节点服务
-mysql> STOP SLAVE;
+STOP SLAVE;
 
-mysql> CHANGE MASTER TO
-    -> MASTER_HOST='192.168.8.10',
-    -> MASTER_USER='slave1',
-    -> MASTER_PASSWORD='密码6',
-    -> MASTER_LOG_FILE='binlog.000001',
-    -> MASTER_LOG_POS=4202;
+-- 注意：MASTER_USER 和
+CHANGE MASTER TO
+MASTER_HOST='192.168.8.10',
+MASTER_USER='slave',
+MASTER_PASSWORD='密码',
+MASTER_LOG_FILE='binlog.000001',
+MASTER_LOG_POS=4202;
 ```
 
-`MASTER_LOG_FILE` 和 `MASTER_LOG_POS` 参数要分别与 `show master status` 指令获得的 `File` 和 `Position` 属性值对应。
+- `MASTER_LOG_FILE` 和 `MASTER_LOG_POS` 参数要分别与 `show master status` 指令获得的 `File` 和 `Position` 属性值对应。
+- `MASTER_HOST` 是主节点的 HOST。
+- `MASTER_USER` 和 `MASTER_PASSWORD` 是在主节点上注册的用户及密码。
 
 （4）启动 slave 进程
 
@@ -484,7 +537,7 @@ mysql> show global variables like "%read_only%";
 
 ## 三、配置
 
-> ***大部分情况下，默认的基本配置已经足够应付大多数场景，不要轻易修改 Mysql 服务器配置，除非你明确知道修改项是有益的。***
+> **_大部分情况下，默认的基本配置已经足够应付大多数场景，不要轻易修改 Mysql 服务器配置，除非你明确知道修改项是有益的。_**
 
 ### 配置文件路径
 

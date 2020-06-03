@@ -2,8 +2,12 @@
 
 ## 📖 内容
 
-- [Mysql 原理](mysql-theory.md)
-- [Mysql 运维 🔨](mysql-ops.md)
+- [Mysql 基本原理](mysql-theory.md)
+- [Mysql 索引](mysql-index.md)
+- [Mysql 锁](mysql-lock.md)
+- [Mysql 事务](mysql-transaction.md)
+- [Mysql 优化](mysql-optimization.md)
+- [Mysql 运维](mysql-ops.md) 🔨
 - [Mysql 配置](mysql-config.md)
 
 ## 📚 资料
