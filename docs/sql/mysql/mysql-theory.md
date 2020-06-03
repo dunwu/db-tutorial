@@ -1,6 +1,6 @@
 # Mysql 基本原理
 
-## 一、存储引擎
+## 存储引擎
 
 在文件系统中，Mysql 将每个数据库（也可以成为 schema）保存为数据目录下的一个子目录。创建表示，Mysql 会在数据库子目录下创建一个和表同名的 `.frm` 文件保存表的定义。因为 Mysql 使用文件系统的目录和文件来保存数据库和表的定义，大小写敏感性和具体平台密切相关。Windows 中大小写不敏感；类 Unix 中大小写敏感。**不同的存储引擎保存数据和索引的方式是不同的，但表的定义则是在 Mysql 服务层统一处理的。**
 
@@ -75,36 +75,31 @@ InnoDB 是基于聚簇索引建立的，与其他存储引擎有很大不同。�
 
 支持真正的在线热备份。其它存储引擎不支持在线热备份，要获取一致性视图需要停止对所有表的写入，而在读写混合场景中，停止写入可能也意味着停止读取。
 
-## 二、数据类型
-
-Mysql 支持的数据类型大体分为 4 类：
-
-- 整型
-- 浮点型
-- 字符串
-- 时间和日期
+## 数据类型
 
 ### 整型
 
 `TINYINT`, `SMALLINT`, `MEDIUMINT`, `INT`, `BIGINT` 分别使用 `8`, `16`, `24`, `32`, `64` 位存储空间，一般情况下越小的列越好。
 
-INT(11) 中的数字只是规定了交互工具显示字符的个数，对于存储和计算来说是没有意义的。
+**`UNSIGNED` 表示不允许负值，大致可以使正数的上限提高一倍**。
+
+`INT(11)` 中的数字只是规定了交互工具显示字符的个数，对于存储和计算来说是没有意义的。
 
 ### 浮点型
 
-`FLOAT` 和 `DOUBLE` 为浮点类型，`DECIMAL` 为高精度小数类型。
+`FLOAT` 和 `DOUBLE` 为浮点类型。
 
-CPU 原生支持浮点运算，但是不支持 `DECIMAl` 类型的计算，因此 `DECIMAL` 的计算比浮点类型需要更高的代价。
+`DECIMAL` 类型主要用于精确计算，代价较高，应该尽量只在对小数进行精确计算时才使用 `DECIMAL` ——例如存储财务数据。数据量比较大的时候，可以使用 `BIGINT` 代替 `DECIMAL`。
 
-`FLOAT`、`DOUBLE` 和 `DECIMAL` 都可以指定列宽，例如 DECIMAL(18, 9) 表示总共 18 位，取 9 位存储小数部分，剩下 9 位存储整数部分。
+`FLOAT`、`DOUBLE` 和 `DECIMAL` 都可以指定列宽，例如 `DECIMAL(18, 9)` 表示总共 18 位，取 9 位存储小数部分，剩下 9 位存储整数部分。
 
 ### 字符串
 
 主要有 `CHAR` 和 `VARCHAR` 两种类型，一种是定长的，一种是变长的。
 
-VARCHAR 这种变长类型能够节省空间，因为只需要存储必要的内容。但是在执行 UPDATE 时可能会使行变得比原来长，当超出一个页所能容纳的大小时，就要执行额外的操作。MyISAM 会将行拆成不同的片段存储，而 InnoDB 则需要分裂页来使行放进页内。
+**`VARCHAR` 这种变长类型能够节省空间，因为只需要存储必要的内容。但是在执行 UPDATE 时可能会使行变得比原来长**。当超出一个页所能容纳的大小时，就要执行额外的操作。MyISAM 会将行拆成不同的片段存储，而 InnoDB 则需要分裂页来使行放进页内。
 
-VARCHAR 会保留字符串末尾的空格，而 CHAR 会删除。
+`VARCHAR` 会保留字符串末尾的空格，而 `CHAR` 会删除。
 
 ### 时间和日期
 
@@ -130,86 +125,39 @@ MySQL 提供了 FROM_UNIXTIME() 函数把 UNIX 时间戳转换为日期，并提
 
 应该尽量使用 TIMESTAMP，因为它比 DATETIME 空间效率更高。
 
+### BLOB 和 TEXT
+
+`BLOB` 和 `TEXT` 都是为了存储大的数据而设计，前者存储二进制数据，后者存储字符串数据。
+
+不能对 `BLOB` 和 `TEXT` 类型的全部内容进行排序、索引。
+
+### 枚举类型
+
+大多数情况下没有使用枚举类型的必要，其中一个缺点是：枚举的字符串列表是固定的，添加和删除字符串（枚举选项）必须使用`ALTER TABLE`（如果只只是在列表末尾追加元素，不需要重建表）。
+
+### 类型的选择
+
+- 整数类型通常是标识列最好的选择，因为它们很快并且可以使用 `AUTO_INCREMENT`。
+
+- `ENUM` 和 `SET` 类型通常是一个糟糕的选择，应尽量避免。
+- 应该尽量避免用字符串类型作为标识列，因为它们很消耗空间，并且通常比数字类型慢。对于 `MD5`、`SHA`、`UUID` 这类随机字符串，由于比较随机，所以可能分布在很大的空间内，导致 `INSERT` 以及一些 `SELECT` 语句变得很慢。
+  - 如果存储 UUID ，应该移除 `-` 符号；更好的做法是，用 `UNHEX()` 函数转换 UUID 值为 16 字节的数字，并存储在一个 `BINARY(16)` 的列中，检索时，可以通过 `HEX()` 函数来格式化为 16 进制格式。
+
 ## 索引
+
+详见：[Mysql 索引](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/mysql/mysql-index.md)
 
 ## 锁
 
+详见：[Mysql 锁](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/mysql/mysql-lock.md)
+
 ## 事务
 
-## 查询性能优化
+详见：[Mysql 事务](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/mysql/mysql-transaction.md)
 
-### 使用 Explain 进行分析
+## 性能优化
 
-Explain 用来分析 SELECT 查询语句，开发人员可以通过分析 Explain 结果来优化查询语句。
-
-比较重要的字段有：
-
-- select_type : 查询类型，有简单查询、联合查询、子查询等
-- key : 使用的索引
-- rows : 扫描的行数
-
-更多内容请参考：[MySQL 性能优化神器 Explain 使用分析](https://segmentfault.com/a/1190000008131735)
-
-### 优化数据访问
-
-#### 减少请求的数据量
-
-（一）只返回必要的列
-
-最好不要使用 `SELECT *` 语句。
-
-（二）只返回必要的行
-
-使用 WHERE 语句进行查询过滤，有时候也需要使用 LIMIT 语句来限制返回的数据。
-
-（三）缓存重复查询的数据
-
-使用缓存可以避免在数据库中进行查询，特别要查询的数据经常被重复查询，缓存可以带来的查询性能提升将会是非常明显的。
-
-#### 减少服务器端扫描的行数
-
-最有效的方式是使用索引来覆盖查询。
-
-### 重构查询方式
-
-#### 切分大查询
-
-一个大查询如果一次性执行的话，可能一次锁住很多数据、占满整个事务日志、耗尽系统资源、阻塞很多小的但重要的查询。
-
-```sql
-DELEFT FROM messages WHERE create < DATE_SUB(NOW(), INTERVAL 3 MONTH);
-```
-
-```sql
-rows_affected = 0
-do {
-    rows_affected = do_query(
-    "DELETE FROM messages WHERE create  < DATE_SUB(NOW(), INTERVAL 3 MONTH) LIMIT 10000")
-} while rows_affected > 0
-```
-
-#### 分解大连接查询
-
-将一个大连接查询（JOIN）分解成对每一个表进行一次单表查询，然后将结果在应用程序中进行关联，这样做的好处有：
-
-- 让缓存更高效。对于连接查询，如果其中一个表发生变化，那么整个查询缓存就无法使用。而分解后的多个查询，即使其中一个表发生变化，对其它表的查询缓存依然可以使用。
-- 分解成多个单表查询，这些单表查询的缓存结果更可能被其它查询使用到，从而减少冗余记录的查询。
-- 减少锁竞争；
-- 在应用层进行连接，可以更容易对数据库进行拆分，从而更容易做到高性能和可扩展。
-- 查询本身效率也可能会有所提升。例如下面的例子中，使用 IN() 代替连接查询，可以让 MySQL 按照 ID 顺序进行查询，这可能比随机的连接要更高效。
-
-```sql
-SELECT * FROM tag
-JOIN tag_post ON tag_post.tag_id=tag.id
-JOIN post ON tag_post.post_id=post.id
-WHERE tag.tag='mysql';
-```
-
-```sql
-SELECT * FROM tag WHERE tag='mysql';
-SELECT * FROM tag_post WHERE tag_id=1234;
-SELECT * FROM post WHERE post.id IN (123,456,567,9098,8904);
-```
+详见：[Mysql 性能优化](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/mysql/mysql-optimization.md)
 
 ## 复制
 
@@ -226,8 +174,9 @@ Mysql 支持两种复制：基于行的复制和基于语句的复制。
 - **SQL 线程** ：负责读取中继日志并重放其中的 SQL 语句。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/mysql/master-slave.png!zp" />
+<img src="http://dunwu.test.upcdn.net/cs/database/mysql/master-slave.png" />
 </div>
+
 
 ### 读写分离
 
@@ -242,13 +191,13 @@ MySQL 读写分离能提高性能的原因在于：
 - 增加冗余，提高可用性。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/mysql/master-slave-proxy.png!zp" />
+<img src="http://dunwu.test.upcdn.net/cs/database/mysql/master-slave-proxy.png" />
 </div>
+
 
 ## 参考资料
 
 - [《高性能 MySQL》](https://book.douban.com/subject/23008813/)
-- 姜承尧. MySQL 技术内幕: InnoDB 存储引擎 [M]. 机械工业出版社, 2011.
 - [20+ 条 MySQL 性能优化的最佳经验](https://www.jfox.info/20-tiao-mysql-xing-nen-you-hua-de-zui-jia-jing-yan.html)
 - [How to create unique row ID in sharded databases?](https://stackoverflow.com/questions/788829/how-to-create-unique-row-id-in-sharded-databases)
 - [SQL Azure Federation – Introduction](http://geekswithblogs.net/shaunxu/archive/2012/01/07/sql-azure-federation-ndash-introduction.aspx)

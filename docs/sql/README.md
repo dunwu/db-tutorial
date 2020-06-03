@@ -14,11 +14,13 @@
 
 ### [Mysql](mysql/README.md)
 
-- [Mysql 原理](mysql/mysql-theory.md)
-- [Mysql 运维 🔨](mysql/mysql-ops.md)
+- [Mysql 基本原理](mysql/mysql-theory.md)
+- [Mysql 索引](mysql/mysql-index.md)
+- [Mysql 锁](mysql/mysql-lock.md)
+- [Mysql 事务](mysql/mysql-transaction.md)
+- [Mysql 性能优化](mysql/mysql-optimization.md)
+- [Mysql 运维](mysql/mysql-ops.md) 🔨
 - [Mysql 配置](mysql/mysql-config.md)
-- Mysql 索引
-- Mysql 锁
 
 ### 其他关系型数据库
 
@@ -36,7 +38,7 @@
   - [《高性能 MySQL》](https://item.jd.com/11220393.html) - Mysql 经典
   - [《SQL 必知必会》](https://item.jd.com/11232698.html) - SQL 入门
 - **教程**
-  - [runoob.com MySQL 教程](http://www.runoob.com/mysql/mysql-tutorial.html) - 入门级 SQL 教程
+  - [runoob.com MySQL 教程](http://www.runoob.com/mymysql-tutorial.html) - 入门级 SQL 教程
   - [mysql-tutorial](https://github.com/jaywcjlove/mysql-tutorial)
 - **更多资源**
   - [awesome-mysql](https://github.com/jobbole/awesome-mysql-cn)

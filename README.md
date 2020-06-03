@@ -29,7 +29,7 @@
   - [Mysql 索引](docs/sql/mysql/mysql-index.md)
   - [Mysql 锁](docs/sql/mysql/mysql-lock.md)
   - [Mysql 事务](docs/sql/mysql/mysql-transaction.md)
-  - [Mysql 优化](docs/sql/mysql/mysql-optimization.md)
+  - [Mysql 性能优化](docs/sql/mysql/mysql-optimization.md)
   - [Mysql 运维](docs/sql/mysql/mysql-ops.md) 🔨
   - [Mysql 配置](docs/sql/mysql/mysql-config.md)
 - [H2 入门指南](docs/sql/h2.md)
@@ -72,8 +72,6 @@
 - [分库分表中间件 ShardingSphere](docs/middleware/shardingsphere.md)
 
 ## 📚 资料
-
-- [《SQL 必知必会》](https://item.jd.com/11232698.html)
 
 - **Mysql**
   - **官方**

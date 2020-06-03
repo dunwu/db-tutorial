@@ -6,9 +6,16 @@
 - [Mysql 索引](mysql-index.md)
 - [Mysql 锁](mysql-lock.md)
 - [Mysql 事务](mysql-transaction.md)
-- [Mysql 优化](mysql-optimization.md)
+- [Mysql 性能优化](mysql-optimization.md)
 - [Mysql 运维](mysql-ops.md) 🔨
 - [Mysql 配置](mysql-config.md)
+
+------
+
+关系型数据库基本知识：
+
+- [关系型数据库面试总结](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/sql-interview.md) 💯
+- [SQL Cheat Sheet](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/sql-cheat-sheet.md)
 
 ## 📚 资料
 
