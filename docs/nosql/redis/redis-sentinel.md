@@ -4,7 +4,7 @@ Redis 哨兵（Sentinel）是 Redis 的**高可用性**（Hight Availability）�
 
 **Sentinel 本质上是一个运行在特殊状模式下的 Redis 服务器**。
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200131135847.png)
+![img](http://dunwu.test.upcdn.net/snap/20200131135847.png)
 
 ## 一、哨兵简介
 
@@ -75,7 +75,7 @@ Sentinel 模式下 Redis 服务器主要功能的使用情况：
 
 对于每个与 Sentinel 连接的服务器，Sentinel 既会向服务器的 `__sentinel__:hello` 频道发送消息，也会订阅服务器的 `__sentinel__:hello` 频道的消息。
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200131153842.png)
+![img](http://dunwu.test.upcdn.net/snap/20200131153842.png)
 
 ### 向服务器发送消息
 
@@ -97,7 +97,7 @@ Sentinel 对 `__sentinel__:hello` 频道的订阅会一直持续到 Sentinel 与
 
 > Redis Sentinel 系统选举 Leader 的算法是 [Raft](https://ramcloud.atlassian.net/wiki/download/attachments/6586375/raft.pdf) 的实现。
 >
-> Raft 是一种共识性算法，想了解其原理，可以参考 [深入剖析共识性算法 Raft](https://github.com/dunwu/blog/blob/master/source/_posts/distributed/raft.md)。
+> Raft 是一种共识性算法，想了解其原理，可以参考 [深入剖析共识性算法 Raft](https://github.com/dunwu/blog/blob/master/source/_posts/theory/raft.md)。
 
 当一个主服务器被判断为客观下线时，监视这个下线主服务器的各个 Sentinel 会进行协商，选举出一个领头的 Sentinel，并由领头 Sentinel 对下线主服务器执行故障转移操作。
 
@@ -173,7 +173,7 @@ Sentinel 对 `__sentinel__:hello` 频道的订阅会一直持续到 Sentinel 与
 
 ## 七、要点总结
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224221812.png)
+![img](http://dunwu.test.upcdn.net/snap/20200224221812.png)
 
 ## 参考资料
 

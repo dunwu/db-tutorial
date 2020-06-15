@@ -1,6 +1,6 @@
 # Nosql 技术选型
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209020702.png)
+![img](http://dunwu.test.upcdn.net/snap/20200209020702.png)
 
 [TOC]
 
@@ -16,7 +16,7 @@
 
 随着大数据时代的到来，越来越多的网站、应用系统需要支撑海量数据存储，高并发请求、高可用、高可扩展性等特性要求。传统的关系型数据库在应付这些调整已经显得力不从心，暴露了许多能以克服的问题。由此，各种各样的 NoSQL（Not Only SQL）数据库作为传统关系型数据的一个有力补充得到迅猛发展。
 
-![nosql-history](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209005228.png)
+![nosql-history](http://dunwu.test.upcdn.net/snap/20200209005228.png)
 
 **NoSQL，泛指非关系型的数据库**，可以理解为 SQL 的一个有力补充。
 
@@ -45,7 +45,7 @@
 
 将表放入存储系统中有两种方法，而我们绝大部分是采用行存储的。 行存储法是将各行放入连续的物理位置，这很像传统的记录和文件系统。 列存储法是将数据按照列存储到数据库中，与行存储类似，下图是两种存储方法的图形化解释：
 
-![按行存储和按列存储模式](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209005316.png)
+![按行存储和按列存储模式](http://dunwu.test.upcdn.net/snap/20200209005316.png)
 
 ### 列式数据库产品
 
@@ -69,13 +69,13 @@
 
 列式数据库由于其针对不同列的数据特征而发明的不同算法，使其**往往有比行式数据库高的多的压缩率**，普通的行式数据库一般压缩率在 3：1 到 5：1 左右，而列式数据库的压缩率一般在 8：1 到 30：1 左右。 比较常见的，通过字典表压缩数据： 下面中才是那张表本来的样子。经过字典表进行数据压缩后，表中的字符串才都变成数字了。正因为每个字符串在字典表里只出现一次了，所以达到了压缩的目的(有点像规范化和非规范化 Normalize 和 Denomalize)
 
-![通过字典表压缩数据](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209005406.png)
+![通过字典表压缩数据](http://dunwu.test.upcdn.net/snap/20200209005406.png)
 
 - **查询效率高**
 
 读取多条数据的同一列效率高，因为这些列都是存储在一起的，一次磁盘操作可以数据的指定列全部读取到内存中。 下图通过一条查询的执行过程说明列式存储(以及数据压缩)的优点
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209005611.png)
+![img](http://dunwu.test.upcdn.net/snap/20200209005611.png)
 
 ```
 执行步骤如下：
@@ -116,19 +116,19 @@ KV 存储非常适合存储**不涉及过多数据关系业务关系的数据**�
 
 - Redis
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209010410.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209010410.png)
 
   Redis 是一个使用 ANSI C 编写的开源、支持网络、基于内存、可选持久性的键值对存储数据库。从 2015 年 6 月开始，Redis 的开发由 Redis Labs 赞助，而 2013 年 5 月至 2015 年 6 月期间，其开发由 Pivotal 赞助。在 2013 年 5 月之前，其开发由 VMware 赞助。根据月度排行网站 DB-Engines.com 的数据显示，Redis 是最流行的键值对存储数据库。
 
 - Cassandra
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209010451.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209010451.png)
 
   Apache Cassandra（社区内一般简称为 C\*）是一套开源分布式 NoSQL 数据库系统。它最初由 Facebook 开发，用于储存收件箱等简单格式数据，集 Google BigTable 的数据模型与 Amazon Dynamo 的完全分布式架构于一身。Facebook 于 2008 将 Cassandra 开源，此后，由于 Cassandra 良好的可扩展性和性能，被 Apple, Comcast,Instagram, Spotify, eBay, Rackspace, Netflix 等知名网站所采用，成为了一种流行的分布式结构化数据存储方案。
 
 - LevelDB
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209011140.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209011140.png)
 
   LevelDB 是一个由 Google 公司所研发的键／值对（Key/Value Pair）嵌入式数据库管理系统编程库， 以开源的 BSD 许可证发布。
 
@@ -157,23 +157,21 @@ KV 存储非常适合存储**不涉及过多数据关系业务关系的数据**�
 
 ## 四、文档数据库
 
-文档数据库（也称为文档型数据库）是**旨在将半结构化数据存储为文档的一种数据库**。文档数据库**通常以 JSON 或 XML 格式存储数据**。
+文档数据库（也称为文档型数据库）是**旨在将半结构化数据存储为文档的一种数据库，它可以解决关系型数据库表结构 schema 扩展不方便的问题**。文档数据库**通常以 JSON 或 XML 格式存储数据**。
 
-由于文档数据库的 no-schema 特性，可以存储和读取任意数据。
-
-由于使用的数据格式是 JSON 或者 BSON，因为 JSON 数据是自描述的，无需在使用前定义字段，读取一个 JSON 中不存在的字段也不会导致 SQL 那样的语法错误，**可以解决关系型数据库表结构 schema 扩展不方便的问题**
+由于文档数据库的 no-schema 特性，可以存储和读取任意数据。由于使用的数据格式是 JSON 或者 XML，无需在使用前定义字段，读取一个 JSON 中不存在的字段也不会导致 SQL 那样的语法错误。
 
 ### 文档数据库产品
 
 - MongoDB
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209012320.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209012320.png)
 
   **MongoDB**是一种面向文档的数据库管理系统，由 C++ 撰写而成，以此来解决应用程序开发社区中的大量现实问题。2007 年 10 月，MongoDB 由 10gen 团队所发展。2009 年 2 月首度推出。
 
 - CouchDB
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209012418.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209012418.png)
 
   Apache CouchDB 是一个开源数据库，专注于易用性和成为"**完全拥抱 web 的数据库**"。它是一个使用 JSON 作为存储格式，JavaScript 作为查询语言，MapReduce 和 HTTP 作为 API 的 NoSQL 数据库。其中一个显著的功能就是多主复制。CouchDB 的第一个版本发布在 2005 年，在 2008 年成为了 Apache 的项目。
 
@@ -192,13 +190,13 @@ KV 存储非常适合存储**不涉及过多数据关系业务关系的数据**�
 - **部分支持事务**
   - Atomicity(原子性) 仅支持单行/文档级原子性，不支持多行、多文档、多语句原子性。
   - Isolation(隔离性) 隔离级别仅支持已提交读（Read committed）级别，可能导致不可重复读，幻读的问题。
-- **不支持复杂查询** - 例如 join 查询，如果需要 join 查询，需要多次操作数据库
+- **不支持复杂查询** - 例如 join 查询，如果需要 join 查询，需要多次操作数据库。
 
 MongonDB 还是支持多文档事务的 Consistency(一致性)和 Durability(持久性)
 
 虽然官方宣布 MongoDB 将在 4.0 版本中正式推出多文档 ACID 事务支持，最后落地情况还有待见证。
 
-### 文档数据库场景
+### 文档数据库使用场景
 
 **适用场景**：
 
@@ -215,21 +213,21 @@ MongonDB 还是支持多文档事务的 Consistency(一致性)和 Durability(持
 传统关系型数据库主要通过索引来达到快速查询的目的，在全文搜索的业务下，索引也无能为力，主要体现在：
 
 - 全文搜索的条件可以随意排列组合，如果通过索引来满足，则索引的数量非常多
-- 全文搜索的模糊匹配方式，索引无法满足，只能用 like 查询，而 like 查询是整表扫描，效率非常低
+- 全文搜索的模糊匹配方式，索引无法满足，只能用 `LIKE` 查询，而 `LIKE` 查询是整表扫描，效率非常低
 
-而全文搜索引擎的出现，正是**解决关系型数据库全文搜索功能较弱的问题**
+而全文搜索引擎的出现，正是**解决关系型数据库全文搜索功能较弱的问题**。
 
 ### 搜索引擎原理
 
-全文搜索引擎的技术原理称为“倒排索引”（inverted index），是一种索引方法，其基本原理是建立单词到文档的索引。与之相对是，是“正排索引”，其基本原理是建立文档到单词的索引。
+全文搜索引擎的技术原理称为 **`倒排索引（inverted index）`**，是一种索引方法，其基本原理是建立单词到文档的索引。与之相对是，是“正排索引”，其基本原理是建立文档到单词的索引。
 
 现在有如下文档集合：
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209014530.png)
+![img](http://dunwu.test.upcdn.net/snap/20200209014530.png)
 
 正排索引得到索引如下：
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209014723.png)
+![img](http://dunwu.test.upcdn.net/snap/20200209014723.png)
 
 可见，正排索引适用于根据文档名称查询文档内容
 
@@ -239,7 +237,7 @@ MongonDB 还是支持多文档事务的 Consistency(一致性)和 Durability(持
 
 带有单词频率信息的倒排索引如下：
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209014842.png)
+![img](http://dunwu.test.upcdn.net/snap/20200209014842.png)
 
 可见，倒排索引适用于根据关键词来查询文档内容
 
@@ -253,7 +251,7 @@ MongonDB 还是支持多文档事务的 Consistency(一致性)和 Durability(持
 
 - Solr
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209014947.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209014947.png)
 
   Solr 是 Apache Lucene 项目的开源企业搜索平台。其主要功能包括全文检索、命中标示、分面搜索、动态聚类、数据库集成，以及富文本（如 Word、PDF）的处理。Solr 是高度可扩展的，并提供了分布式搜索和索引复制
 
@@ -287,7 +285,7 @@ MongonDB 还是支持多文档事务的 Consistency(一致性)和 Durability(持
 
 ## 六、图数据库
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209015751.png)
+![img](http://dunwu.test.upcdn.net/snap/20200209015751.png)
 
 **图形数据库应用图论存储实体之间的关系信息**。最常见例子就是社会网络中人与人之间的关系。关系型数据库用于存储“关系型”数据的效果并不好，其查询复杂、缓慢、超出预期，而图形数据库的独特设计恰恰弥补了这个缺陷，解决关系型数据库存储和处理复杂关系型数据功能较弱的问题。
 
@@ -295,19 +293,19 @@ MongonDB 还是支持多文档事务的 Consistency(一致性)和 Durability(持
 
 - Neo4j
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209015817.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209015817.png)
 
   Neo4j 是由 Neo4j，Inc。开发的图形数据库管理系统。由其开发人员描述为具有原生图存储和处理的符合 ACID 的事务数据库，根据 DB-Engines 排名， Neo4j 是最流行的图形数据库。
 
 - ArangoDB
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209015858.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209015858.png)
 
   ArangoDB 是由 triAGENS GmbH 开发的原生多模型数据库系统。数据库系统支持三个重要的数据模型（键/值，文档，图形），其中包含一个数据库核心和统一查询语言 AQL（ArangoDB 查询语言）。查询语言是声明性的，允许在单个查询中组合不同的数据访问模式。ArangoDB 是一个 NoSQL 数据库系统，但 AQL 在很多方面与 SQL 类似。
 
 - Titan
 
-  ![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200209015923.png)
+  ![img](http://dunwu.test.upcdn.net/snap/20200209015923.png)
 
   Titan 是一个可扩展的图形数据库，针对存储和查询包含分布在多机群集中的数百亿个顶点和边缘的图形进行了优化。Titan 是一个事务性数据库，可以支持数千个并发用户实时执行复杂的图形遍历。
 

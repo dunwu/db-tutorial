@@ -8,7 +8,7 @@
 
 ### SQL
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200115160512.png)
+![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
 
 - [SQL Cheat Sheet](sql-cheat-sheet.md) - SQL 速查手册
 

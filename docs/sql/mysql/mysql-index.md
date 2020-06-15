@@ -274,7 +274,7 @@ MyISAM 存储引擎支持空间数据索引（R-Tree），可以用于地理数�
 - **聚集索引**(`Clustered`)：表中各行的物理顺序与键值的逻辑（索引）顺序相同，每个表只能有一个。
 - **非聚集索引**(`Non-clustered`)：非聚集索引指定表的逻辑顺序，也可以视为二级索引。数据存储在一个位置，索引存储在另一个位置，索引中包含指向数据存储位置的指针。可以有多个，小于 249 个。
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200304235424.jpg)
+![img](http://dunwu.test.upcdn.net/snap/20200304235424.jpg)
 
 如上图所示，InnoDB 的聚簇索引，其叶子节点包含了行的全部数据，而非叶子节点则包含了索引列。
 

@@ -54,7 +54,6 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 - [Redis 复制](nosql/redis/redis-replication.md)
 - [Redis 哨兵](nosql/redis/redis-sentinel.md)
 - [Redis 集群](nosql/redis/redis-cluster.md)
-- [Redis 事务](nosql/redis/redis-transaction.md)
 - [Redis 发布与订阅](nosql/redis/redis-pub-sub.md)
 - [Redis 运维](nosql/redis/redis-ops.md) 🔨
 
@@ -110,3 +109,10 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 ## 🚪 传送门
 
 ◾ 🏠 [LINUX-TUTORIAL 首页](https://github.com/dunwu/linux-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾
+
+
+
+
+
+
+

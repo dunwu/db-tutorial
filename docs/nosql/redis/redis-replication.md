@@ -37,7 +37,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 3. 主服务器执行 `BGSAVE` 完毕后，主服务器会将生成的 RDB 文件发送给从服务器。从服务器接收并载入 RDB 文件，更新自己的数据库状态。
 4. 主服务器将记录在缓冲区中的所有写命令发送给从服务器，从服务器执行这些写命令，更新自己的数据库状态。
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224220353.png)
+![img](http://dunwu.test.upcdn.net/snap/20200224220353.png)
 
 ### 命令传播
 
@@ -260,7 +260,7 @@ REPLCONF ACK <replication_coffset>
 
 ## 七、要点总结
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224220328.png)
+![img](http://dunwu.test.upcdn.net/snap/20200224220328.png)
 
 ## 参考资料
 

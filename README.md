@@ -53,7 +53,6 @@
 - [Redis 复制](docs/nosql/redis/redis-replication.md)
 - [Redis 哨兵](docs/nosql/redis/redis-sentinel.md)
 - [Redis 集群](docs/nosql/redis/redis-cluster.md)
-- [Redis 事务](docs/nosql/redis/redis-transaction.md)
 - [Redis 发布与订阅](docs/nosql/redis/redis-pub-sub.md)
 - [Redis 运维](docs/nosql/redis/redis-ops.md) 🔨
 
@@ -106,6 +105,6 @@
     - [CRUG | Redisson PRO vs. Jedis: Which Is Faster? 翻译](https://www.jianshu.com/p/82f0d5abb002)
     - [redis 分布锁 Redisson 性能测试](https://blog.csdn.net/everlasting_188/article/details/51073505)
 
-## 🚪 传送门
+## 🚪 传送
 
 ◾ 🏠 [LINUX-TUTORIAL 首页](https://github.com/dunwu/linux-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

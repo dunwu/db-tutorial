@@ -4,7 +4,7 @@
 >
 > 本文语法主要针对 Mysql。
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200115160512.png)
+![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
 
 ## 一、基本概念
 

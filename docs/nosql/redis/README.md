@@ -8,21 +8,21 @@
 
 ### [Redis 数据类型和应用](redis-datatype.md)
 
-![Redis 数据类型](https://raw.githubusercontent.com/dunwu/images/master/snap/20200226113813.png)
+![Redis 数据类型](http://dunwu.test.upcdn.net/snap/20200226113813.png)
 
 ### [Redis 持久化](redis-persistence.md)
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224214047.png)
+![img](http://dunwu.test.upcdn.net/snap/20200224214047.png)
 
 ### [Redis 集群](redis-cluster.md)
 
 ### [Redis 复制](redis-replication.md)
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224220328.png)
+![img](http://dunwu.test.upcdn.net/snap/20200224220328.png)
 
 ### [Redis 哨兵](redis-sentinel.md)
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224221812.png)
+![img](http://dunwu.test.upcdn.net/snap/20200224221812.png)
 
 ### [Redis 运维 🔨](redis-ops.md)
 

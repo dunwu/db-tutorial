@@ -2,7 +2,7 @@
 
 ## 逻辑架构
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200229184651.png)
+![img](http://dunwu.test.upcdn.net/snap/20200229184651.png)
 
 MySQL 逻辑架构整体分为三层，最上层为客户端层，并非 MySQL 所独有，诸如：连接处理、授权认证、安全等功能均在这一层处理。
 

@@ -6,7 +6,7 @@
 
 很多的查询优化工作实际上就是遵循一些原则让 MySQL 的优化器能够按照预想的合理方式运行而已。
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200227201908.jpg)
+![img](http://dunwu.test.upcdn.net/snap/20200227201908.jpg)
 
 ### （1）客户端/服务端通信协议
 

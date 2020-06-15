@@ -418,7 +418,7 @@ Redis 基于 Reactor 模式开发了自己的网络时间处理器。
 
 文件事件处理器有四个组成部分：套接字、I/O 多路复用程序、文件事件分派器、事件处理器。
 
-![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200130172525.png)
+![img](http://dunwu.test.upcdn.net/snap/20200130172525.png)
 
 ### 时间事件
 
