@@ -22,16 +22,26 @@
 
 > [关系型数据库](docs/sql) 整理主流关系型数据库知识点。
 
-- [关系型数据库面试总结](docs/sql/sql-interview.md) 💯
-- [SQL Cheat Sheet](docs/sql/sql-cheat-sheet.md)
-- [Mysql](docs/sql/mysql) 📚
-  - [Mysql 基本原理](docs/sql/mysql/mysql-theory.md)
-  - [Mysql 索引](docs/sql/mysql/mysql-index.md)
-  - [Mysql 锁](docs/sql/mysql/mysql-lock.md)
-  - [Mysql 事务](docs/sql/mysql/mysql-transaction.md)
-  - [Mysql 性能优化](docs/sql/mysql/mysql-optimization.md)
-  - [Mysql 运维](docs/sql/mysql/mysql-ops.md) 🔨
-  - [Mysql 配置](docs/sql/mysql/mysql-config.md)
+[关系型数据库面试总结](docs/sql/sql-interview.md) 💯
+
+[**SQL Cheat Sheet**](docs/sql/sql-cheat-sheet.md) 是一个 SQL 入门教程。
+
+![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
+
+#### Mysql
+
+> [Mysql](docs/sql/mysql) 📚 是互联网最流行的关系型数据库。
+
+- [Mysql 基本原理](docs/sql/mysql/mysql-theory.md)
+- [Mysql 索引](docs/sql/mysql/mysql-index.md)
+- [Mysql 锁](docs/sql/mysql/mysql-lock.md)
+- [Mysql 事务](docs/sql/mysql/mysql-transaction.md)
+- [Mysql 性能优化](docs/sql/mysql/mysql-optimization.md)
+- [Mysql 运维](docs/sql/mysql/mysql-ops.md) 🔨
+- [Mysql 配置](docs/sql/mysql/mysql-config.md)
+
+#### 其他关系型数据库
+
 - [H2 入门指南](docs/sql/h2.md)
 - [SqLite 入门指南](docs/sql/sqlite.md)
 - [PostgreSQL 入门指南](docs/sql/postgresql.md)
@@ -48,13 +58,23 @@
 
 - [Redis 面试总结](docs/nosql/redis/redis-interview.md) 💯
 - [Redis 入门指南](docs/nosql/redis/redis-quickstart.md) ⚡
-- [Redis 数据类型和应用](docs/nosql/redis/redis-datatype.md)
-- [Redis 持久化](docs/nosql/redis/redis-persistence.md)
-- [Redis 复制](docs/nosql/redis/redis-replication.md)
-- [Redis 哨兵](docs/nosql/redis/redis-sentinel.md)
-- [Redis 集群](docs/nosql/redis/redis-cluster.md)
+- [Redis 数据类型和应用](docs/nosql/redis/redis-datatype.md) - 关键词：`STRING`、`HASH`、`LIST`、`SET`、`ZSET`、`BitMap`、`HyperLogLog`、`Geo`
+- [Redis 持久化](docs/nosql/redis/redis-persistence.md) - 关键词：`RDB`、`AOF`、`SAVE`、`BGSAVE`、`appendfsync`
+- [Redis 复制](docs/nosql/redis/redis-replication.md) - 关键词：`SYNC`、`PSYNC`、`REPLCONF ACK`
+- [Redis 哨兵](docs/nosql/redis/redis-sentinel.md) - 关键词：`Sentinel`、`PING`、`INFO`、`Raft`
+- [Redis 集群](docs/nosql/redis/redis-cluster.md) - 关键词：`分片`、`虚拟 Hash 槽`
 - [Redis 发布与订阅](docs/nosql/redis/redis-pub-sub.md)
+- [Redis 实战](docs/nosql/redis/redis-action.md)
 - [Redis 运维](docs/nosql/redis/redis-ops.md) 🔨
+
+#### Elasticsearch
+
+> [Elasticsearch](docs/nosql/elasticsearch) 📚
+
+- [Elasticsearch 面试总结](docs/nosql/elasticsearch/elasticsearch-interview.md) 💯
+- [ElasticSearch 应用指南](docs/nosql/elasticsearch/elasticsearch-quickstart.md)
+- [ElasticSearch API](docs/nosql/elasticsearch/elasticsearch-api.md)
+- [ElasticSearch 运维](docs/nosql/elasticsearch/elasticsearch-ops.md)
 
 #### HBase
 
@@ -90,7 +110,7 @@
     - [Redis 官网](https://redis.io/)
     - [Redis github](https://github.com/antirez/redis)
     - [Redis 官方文档中文版](http://redis.cn/)
-    - [Redis 官方文档翻译版本](http://redisdoc.com/topic/sentinel.html)
+    - [Redis 命令参考](http://redisdoc.com/)
   - **书籍**
     - [《Redis 实战》](https://item.jd.com/11791607.html)
     - [《Redis 设计与实现》](https://item.jd.com/11486101.html)

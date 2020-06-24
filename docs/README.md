@@ -57,6 +57,15 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 - [Redis 发布与订阅](nosql/redis/redis-pub-sub.md)
 - [Redis 运维](nosql/redis/redis-ops.md) 🔨
 
+#### Elasticsearch
+
+> [Elasticsearch](nosql/elasticsearch) 📚
+
+- [Elasticsearch 面试总结](nosql/elasticsearch/elasticsearch-interview.md) 💯
+- [ElasticSearch 应用指南](nosql/elasticsearch/elasticsearch-quickstart.md)
+- [ElasticSearch API](nosql/elasticsearch/elasticsearch-api.md)
+- [ElasticSearch 运维](nosql/elasticsearch/elasticsearch-ops.md)
+
 #### HBase
 
 > [HBase](https://dunwu.github.io/bigdata-tutorial/hbase) 📚 因为常用于大数据项目，所以将其文档和源码整理在 [bigdata-tutorial](https://dunwu.github.io/bigdata-tutorial/) 项目中。
@@ -91,7 +100,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
     - [Redis 官网](https://redis.io/)
     - [Redis github](https://github.com/antirez/redis)
     - [Redis 官方文档中文版](http://redis.cn/)
-    - [Redis 官方文档翻译版本](http://redisdoc.com/topic/sentinel.html)
+    - [Redis 命令参考](http://redisdoc.com/)
   - **书籍**
     - [《Redis 实战》](https://item.jd.com/11791607.html)
     - [《Redis 设计与实现》](https://item.jd.com/11486101.html)

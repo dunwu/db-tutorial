@@ -2,6 +2,34 @@
 
 > 在 Redis 中，可以通过执行 `SLAVEOF` 命令或设置 `slaveof` 选项，让一个服务器去复制（replicate）另一个服务器，其中，后者叫主服务器（master），前者叫从服务器（slave）。
 
+<!-- TOC depthFrom:2 depthTo:3 -->
+
+- [一、复制简介](#一复制简介)
+- [二、`SYNC`](#二sync)
+  - [同步](#同步)
+  - [命令传播](#命令传播)
+  - [旧版复制的缺陷](#旧版复制的缺陷)
+- [三、`PSYNC`](#三psync)
+  - [部分重同步](#部分重同步)
+  - [PSYNC 命令](#psync-命令)
+- [四、心跳检测](#四心跳检测)
+  - [检测主从服务器的网络连接状态](#检测主从服务器的网络连接状态)
+  - [辅助实现 min-slaves 选项](#辅助实现-min-slaves-选项)
+- [五、复制的流程](#五复制的流程)
+  - [步骤 1. 设置主从服务器](#步骤-1-设置主从服务器)
+  - [步骤 2. 主从服务器建立 TCP 连接。](#步骤-2-主从服务器建立-tcp-连接)
+  - [步骤 3. 发送 PING 检查通信状态。](#步骤-3-发送-ping-检查通信状态)
+  - [步骤 4. 身份验证。](#步骤-4-身份验证)
+  - [步骤 5. 发送端口信息。](#步骤-5-发送端口信息)
+  - [步骤 6. 同步。](#步骤-6-同步)
+  - [步骤 7. 命令传播。](#步骤-7-命令传播)
+- [六、复制的配置项](#六复制的配置项)
+  - [限制有 N 个以上从服务器才允许写入](#限制有-n-个以上从服务器才允许写入)
+- [七、要点总结](#七要点总结)
+- [参考资料](#参考资料)
+
+<!-- /TOC -->
+
 ## 一、复制简介
 
 Redis 通过 `slaveof host port` 命令来让一个服务器成为另一个服务器的从服务器。
@@ -19,7 +47,7 @@ Redis 通过 `slaveof host port` 命令来让一个服务器成为另一个服�
 - 只读模式由 `redis.conf` 文件中的 `slave-read-only` 选项控制， 也可以通过 [CONFIG SET parameter value](http://redisdoc.com/configure/config_set.html#config-set) 命令来开启或关闭这个模式。
 - 只读从服务器会拒绝执行任何写命令， 所以不会出现因为操作失误而将数据不小心写入到了从服务器的情况。
 
-## 二、旧版复制
+## 二、`SYNC`
 
 > Redis 2.8 版本以前实现方式：`SYNC` 命令
 
@@ -58,7 +86,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 > - 主服务器传输 RDB 文件给从服务器，这个操作会耗费主从服务器大量的网络资源，并对主服务器响应时延产生影响。
 > - 从服务器载入 RDB 文件期间，会阻塞其他命令请求。
 
-## 三、新版复制
+## 三、`PSYNC`
 
 > Redis 2.8 版本以后的新实现方式：使用 `PSYNC` 命令替代 `SYNC` 命令。
 
@@ -260,13 +288,16 @@ REPLCONF ACK <replication_coffset>
 
 ## 七、要点总结
 
-![img](http://dunwu.test.upcdn.net/snap/20200224220328.png)
+![img](http://dunwu.test.upcdn.net/snap/20200623111535.png)
 
 ## 参考资料
 
 - **官网**
   - [Redis 官网](https://redis.io/)
-  - [Redis Persistence](http://redisdoc.com/topic/replication.html)
+  - [Redis github](https://github.com/antirez/redis)
+  - [Redis 官方文档中文版](http://redis.cn/)
 - **书籍**
   - [《Redis 实战》](https://item.jd.com/11791607.html)
   - [《Redis 设计与实现》](https://item.jd.com/11486101.html)
+- **教程**
+  - [Redis 命令参考](http://redisdoc.com/)

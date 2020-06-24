@@ -32,11 +32,12 @@
   - [Redis 官网](https://redis.io/)
   - [Redis github](https://github.com/antirez/redis)
   - [Redis 官方文档中文版](http://redis.cn/)
-  - [Redis 官方文档翻译版本](http://redisdoc.com/topic/sentinel.html)
 - **书籍**
   - [《Redis 实战》](https://item.jd.com/11791607.html)
   - [《Redis 设计与实现》](https://item.jd.com/11486101.html)
-- 源码
+- **教程**
+  - [Redis 命令参考](http://redisdoc.com/)
+- **源码**
   - [《Redis 实战》配套 Python 源码](https://github.com/josiahcarlson/redis-in-action)
 - **资源汇总**
   - [awesome-redis](https://github.com/JamzyWang/awesome-redis)
@@ -47,6 +48,6 @@
   - [CRUG | Redisson PRO vs. Jedis: Which Is Faster? 翻译](https://www.jianshu.com/p/82f0d5abb002)
   - [redis 分布锁 Redisson 性能测试](https://blog.csdn.net/everlasting_188/article/details/51073505)
 
-## 🚪 传送门
+## 🚪 传送
 
 ◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

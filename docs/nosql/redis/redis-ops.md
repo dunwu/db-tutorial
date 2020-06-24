@@ -4,6 +4,31 @@
 >
 > SET 操作每秒钟 110000 次；GET 操作每秒钟 81000 次。
 
+<!-- TOC depthFrom:2 depthTo:3 -->
+
+- [安装](#安装)
+  - [Window 下安装](#window-下安装)
+  - [Linux 下安装](#linux-下安装)
+  - [Ubuntu 下安装](#ubuntu-下安装)
+  - [开机启动](#开机启动)
+  - [开放防火墙端口](#开放防火墙端口)
+- [Redis 使用和配置](#redis-使用和配置)
+  - [启动](#启动)
+  - [常见配置](#常见配置)
+  - [设为守护进程](#设为守护进程)
+- [Redis 集群使用和配置](#redis-集群使用和配置)
+  - [集群规划](#集群规划)
+  - [部署](#部署)
+- [Redis 命令](#redis-命令)
+  - [通用命令](#通用命令)
+  - [集群命令](#集群命令)
+- [压力测试](#压力测试)
+- [客户端](#客户端)
+- [脚本](#脚本)
+- [参考资料](#参考资料)
+
+<!-- /TOC -->
+
 ## 安装
 
 ### Window 下安装
@@ -370,6 +395,8 @@ S: b6d70f2ed78922b1dcb7967ebe1d05ad9157fca8 127.0.0.3:6386
 
 ## Redis 命令
 
+### 通用命令
+
 > 命令详细用法，请参考 [**Redis 命令官方文档**](https://redis.io/commands)
 >
 > 搬迁两张 cheat sheet 图，原址：https://www.cheatography.com/tasjaevan/cheat-sheets/redis/
@@ -377,6 +404,29 @@ S: b6d70f2ed78922b1dcb7967ebe1d05ad9157fca8 127.0.0.3:6386
 ![img](https://user-gold-cdn.xitu.io/2019/10/10/16db5250b0b8ea57?w=2230&h=2914&f=png&s=246433)
 
 ![img](https://user-gold-cdn.xitu.io/2019/10/10/16db5250b0e9ba3c?w=2229&h=2890&f=png&s=192997)
+
+### 集群命令
+
+- **集群**
+  - `cluster info` - 打印集群的信息
+  - `cluster nodes` - 列出集群当前已知的所有节点（ node），以及这些节点的相关信息。
+- **节点**
+  - `cluster meet <ip> <port>` - 将 ip 和 port 所指定的节点添加到集群当中，让它成为集群的一份子。
+  - `cluster forget <node_id>` - 从集群中移除 node_id 指定的节点。
+  - `cluster replicate <node_id>` - 将当前节点设置为 node_id 指定的节点的从节点。
+  - `cluster saveconfig` - 将节点的配置文件保存到硬盘里面。
+- **槽(slot)**
+  - `cluster addslots <slot> [slot ...]` - 将一个或多个槽（ slot）指派（ assign）给当前节点。
+  - `cluster delslots <slot> [slot ...]` - 移除一个或多个槽对当前节点的指派。
+  - `cluster flushslots` - 移除指派给当前节点的所有槽，让当前节点变成一个没有指派任何槽的节点。
+  - `cluster setslot <slot> node <node_id>` - 将槽 slot 指派给 node_id 指定的节点，如果槽已经指派给另一个节点，那么先让另一个节点删除该槽>，然后再进行指派。
+  - `cluster setslot <slot> migrating <node_id>` - 将本节点的槽 slot 迁移到 node_id 指定的节点中。
+  - `cluster setslot <slot> importing <node_id>` - 从 node_id 指定的节点中导入槽 slot 到本节点。
+  - `cluster setslot <slot> stable` - 取消对槽 slot 的导入（ import）或者迁移（ migrate）。
+- **键**
+  - `cluster keyslot <key>` - 计算键 key 应该被放置在哪个槽上。
+  - `cluster countkeysinslot <slot>` - 返回槽 slot 目前包含的键值对数量。
+  - `cluster getkeysinslot <slot> <count>` - 返回 count 个 slot 槽中的键。
 
 ## 压力测试
 
@@ -446,5 +496,14 @@ sh redis-install.sh [version] [port] [password]
 
 ## 参考资料
 
-- [Redis 官方文档](https://redis.io)
-- [深入剖析 Redis 系列(三) - Redis 集群模式搭建与原理详解](https://juejin.im/post/5b8fc5536fb9a05d2d01fb11)
+- **官网**
+  - [Redis 官网](https://redis.io/)
+  - [Redis github](https://github.com/antirez/redis)
+  - [Redis 官方文档中文版](http://redis.cn/)
+- **书籍**
+  - [《Redis 实战》](https://item.jd.com/11791607.html)
+  - [《Redis 设计与实现》](https://item.jd.com/11486101.html)
+- **教程**
+  - [Redis 命令参考](http://redisdoc.com/)
+- **文章**
+  - [深入剖析 Redis 系列(三) - Redis 集群模式搭建与原理详解](https://juejin.im/post/5b8fc5536fb9a05d2d01fb11)

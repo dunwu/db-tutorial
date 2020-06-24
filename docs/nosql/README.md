@@ -17,7 +17,12 @@
 
 ### 搜索引擎数据库
 
-- [Elasticsearch](elasticsearch.md)
+> [Elasticsearch](elasticsearch) 📚
+
+- [Elasticsearch 面试总结](elasticsearch/elasticsearch-interview.md) 💯
+- [ElasticSearch 应用指南](elasticsearch/elasticsearch-quickstart.md)
+- [ElasticSearch API](elasticsearch/elasticsearch-api.md)
+- [ElasticSearch 运维](elasticsearch/elasticsearch-ops.md)
 
 ### 图数据库
 
@@ -29,7 +34,7 @@ TODO: 待补充
   - [Redis 官网](https://redis.io/)
   - [Redis github](https://github.com/antirez/redis)
   - [Redis 官方文档中文版](http://redis.cn/)
-  - [Redis 官方文档翻译版本](http://redisdoc.com/topic/sentinel.html)
+  - [Redis 命令参考](http://redisdoc.com/)
 - **书籍**
   - [《Redis 实战》](https://item.jd.com/11791607.html)
   - [《Redis 设计与实现》](https://item.jd.com/11486101.html)

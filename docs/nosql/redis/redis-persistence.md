@@ -1,17 +1,43 @@
 # Redis 持久化
 
-Redis 支持持久化，即把数据存储到硬盘中。
+> Redis 支持持久化，即把数据存储到硬盘中。
+>
+> Redis 提供了两种持久化方式：
+>
+> - **`RDB 快照（snapshot）`** - 将存在于某一时刻的所有数据都写入到硬盘中。
+> - **`只追加文件（append-only file，AOF）`** - 它会在执行写命令时，将被执行的写命令复制到硬盘中。
+>
+> 这两种持久化方式既可以同时使用，也可以单独使用。
+>
+> 将内存中的数据存储到硬盘的一个主要原因是为了在之后重用数据，或者是为了防止系统故障而将数据备份到一个远程位置。另外，存储在 Redis 里面的数据有可能是经过长时间计算得出的，或者有程序正在使用 Redis 存储的数据进行计算，所以用户会希望自己可以将这些数据存储起来以便之后使用，这样就不必重新计算了。
+>
+> Redis 提供了两种持久方式：RDB 和 AOF。你可以同时开启两种持久化方式。在这种情况下, 当 redis 重启的时候会优先载入 AOF 文件来恢复原始的数据，因为在通常情况下 AOF 文件保存的数据集要比 RDB 文件保存的数据集要完整。
 
-Redis 提供了两种持久化方式：
+<!-- TOC depthFrom:2 depthTo:3 -->
 
-- **`RDB 快照（snapshot）`** - 将存在于某一时刻的所有数据都写入到硬盘中。
-- **`只追加文件（append-only file，AOF）`** - 它会在执行写命令时，将被执行的写命令复制到硬盘中。
+- [一、RDB](#一rdb)
+  - [RDB 简介](#rdb-简介)
+  - [RDB 的创建](#rdb-的创建)
+  - [RDB 的载入](#rdb-的载入)
+  - [RDB 的文件结构](#rdb-的文件结构)
+  - [RDB 的配置](#rdb-的配置)
+- [二、AOF](#二aof)
+  - [AOF 简介](#aof-简介)
+  - [AOF 的创建](#aof-的创建)
+  - [AOF 的载入](#aof-的载入)
+  - [AOF 的重写](#aof-的重写)
+  - [AOF 的配置](#aof-的配置)
+- [三、RDB 和 AOF](#三rdb-和-aof)
+  - [如何选择持久化](#如何选择持久化)
+  - [RDB 切换为 AOF](#rdb-切换为-aof)
+  - [AOF 和 RDB 的相互作用](#aof-和-rdb-的相互作用)
+- [四、Redis 备份](#四redis-备份)
+  - [备份过程](#备份过程)
+  - [容灾备份](#容灾备份)
+- [五、要点总结](#五要点总结)
+- [参考资料](#参考资料)
 
-这两种持久化方式既可以同时使用，也可以单独使用。
-
-将内存中的数据存储到硬盘的一个主要原因是为了在之后重用数据，或者是为了防止系统故障而将数据备份到一个远程位置。另外，存储在 Redis 里面的数据有可能是经过长时间计算得出的，或者有程序正在使用 Redis 存储的数据进行计算，所以用户会希望自己可以将这些数据存储起来以便之后使用，这样就不必重新计算了。
-
-Redis 提供了两种持久方式：RDB 和 AOF。你可以同时开启两种持久化方式。在这种情况下, 当 redis 重启的时候会优先载入 AOF 文件来恢复原始的数据，因为在通常情况下 AOF 文件保存的数据集要比 RDB 文件保存的数据集要完整。
+<!-- /TOC -->
 
 ## 一、RDB
 
@@ -38,8 +64,8 @@ RDB 既可以手动执行，也可以根据服务器配置选项定期执行。�
 
 有两个 Redis 命令可以用于生成 RDB 文件：`SAVE` 和 `BGSAVE`。
 
-- `SAVE` - [SAVE](https://redis.io/commands/save) 命令会阻塞 Redis 服务器进程，直到 RDB 创建完成为止，在阻塞期间，服务器不能响应任何命令请求。
-- `BGSAVE` - [BGSAVE](https://redis.io/commands/bgsave) 命令会派生出（fork）一个子进程，然后由子进程负责创建 RDB 文件，服务器进程（父进程）继续处理命令请求。
+- [**`SAVE`**](https://redis.io/commands/save) 命令会阻塞 Redis 服务器进程，直到 RDB 创建完成为止，在阻塞期间，服务器不能响应任何命令请求。
+- [**`BGSAVE`**](https://redis.io/commands/bgsave) 命令会派生出（fork）一个子进程，然后由子进程负责创建 RDB 文件，服务器进程（父进程）继续处理命令请求。
 
 > :bell: 注意：`BGSAVE` 命令执行期间，`SAVE`、`BGSAVE`、`BGREWRITEAOF` 三个命令会被拒绝，以免与当前的 `BGSAVE` 操作产生竞态条件，降低性能。
 
@@ -275,7 +301,10 @@ Redis 的容灾备份基本上就是对数据进行备份，并将这些备份�
 
 - **官网**
   - [Redis 官网](https://redis.io/)
-  - [Redis Persistence](https://redis.io/topics/persistence)
+  - [Redis github](https://github.com/antirez/redis)
+  - [Redis 官方文档中文版](http://redis.cn/)
 - **书籍**
   - [《Redis 实战》](https://item.jd.com/11791607.html)
   - [《Redis 设计与实现》](https://item.jd.com/11486101.html)
+- **教程**
+  - [Redis 命令参考](http://redisdoc.com/)
