@@ -47,15 +47,17 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 > [Redis](nosql/redis) 📚
 
+![img](http://dunwu.test.upcdn.net/snap/20200713105627.png)
+
 - [Redis 面试总结](nosql/redis/redis-interview.md) 💯
-- [Redis 入门指南](nosql/redis/redis-quickstart.md) ⚡
-- [Redis 数据类型和应用](nosql/redis/redis-datatype.md)
-- [Redis 持久化](nosql/redis/redis-persistence.md)
-- [Redis 复制](nosql/redis/redis-replication.md)
-- [Redis 哨兵](nosql/redis/redis-sentinel.md)
-- [Redis 集群](nosql/redis/redis-cluster.md)
-- [Redis 发布与订阅](nosql/redis/redis-pub-sub.md)
-- [Redis 运维](nosql/redis/redis-ops.md) 🔨
+- [Redis 入门指南](nosql/redis/redis-quickstart.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
+- [Redis 数据类型和应用](nosql/redis/redis-datatype.md) - 关键词：`STRING`、`HASH`、`LIST`、`SET`、`ZSET`、`BitMap`、`HyperLogLog`、`Geo`
+- [Redis 持久化](nosql/redis/redis-persistence.md) - 关键词：`RDB`、`AOF`、`SAVE`、`BGSAVE`、`appendfsync`
+- [Redis 复制](nosql/redis/redis-replication.md) - 关键词：`SLAVEOF`、`SYNC`、`PSYNC`、`REPLCONF ACK`
+- [Redis 哨兵](nosql/redis/redis-sentinel.md) - 关键词：`Sentinel`、`PING`、`INFO`、`Raft`
+- [Redis 集群](nosql/redis/redis-cluster.md) - 关键词：`CLUSTER MEET`、`Hash slot`、`MOVED`、`ASK`、`SLAVEOF no one`、`redis-trib`
+- [Redis 实战](nosql/redis/redis-action.md) - 关键词：`缓存`、`分布式锁`、`布隆过滤器`
+- [Redis 运维](nosql/redis/redis-ops.md) 🔨 - 关键词：`安装`、`命令`、`集群`、`客户端`
 
 #### Elasticsearch
 

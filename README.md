@@ -56,16 +56,17 @@
 
 > [Redis](docs/nosql/redis) 📚
 
+![img](http://dunwu.test.upcdn.net/snap/20200713105627.png)
+
 - [Redis 面试总结](docs/nosql/redis/redis-interview.md) 💯
-- [Redis 入门指南](docs/nosql/redis/redis-quickstart.md) ⚡
+- [Redis 入门指南](docs/nosql/redis/redis-quickstart.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
 - [Redis 数据类型和应用](docs/nosql/redis/redis-datatype.md) - 关键词：`STRING`、`HASH`、`LIST`、`SET`、`ZSET`、`BitMap`、`HyperLogLog`、`Geo`
 - [Redis 持久化](docs/nosql/redis/redis-persistence.md) - 关键词：`RDB`、`AOF`、`SAVE`、`BGSAVE`、`appendfsync`
-- [Redis 复制](docs/nosql/redis/redis-replication.md) - 关键词：`SYNC`、`PSYNC`、`REPLCONF ACK`
+- [Redis 复制](docs/nosql/redis/redis-replication.md) - 关键词：`SLAVEOF`、`SYNC`、`PSYNC`、`REPLCONF ACK`
 - [Redis 哨兵](docs/nosql/redis/redis-sentinel.md) - 关键词：`Sentinel`、`PING`、`INFO`、`Raft`
-- [Redis 集群](docs/nosql/redis/redis-cluster.md) - 关键词：`分片`、`虚拟 Hash 槽`
-- [Redis 发布与订阅](docs/nosql/redis/redis-pub-sub.md)
+- [Redis 集群](docs/nosql/redis/redis-cluster.md) - 关键词：`CLUSTER MEET`、`Hash slot`、`MOVED`、`ASK`、`SLAVEOF no one`、`redis-trib`
 - [Redis 实战](docs/nosql/redis/redis-action.md) - 关键词：`缓存`、`分布式锁`、`布隆过滤器`
-- [Redis 运维](docs/nosql/redis/redis-ops.md) 🔨
+- [Redis 运维](docs/nosql/redis/redis-ops.md) 🔨 - 关键词：`安装`、`命令`、`集群`、`客户端`
 
 #### Elasticsearch
 

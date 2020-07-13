@@ -12,18 +12,18 @@
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
-- [一、分区](#一分区)
+- [一、Redis Cluster 分区](#一redis-cluster-分区)
   - [集群节点](#集群节点)
   - [分配 Hash 槽](#分配-hash-槽)
   - [寻址](#寻址)
   - [重新分片](#重新分片)
   - [ASK 错误](#ask-错误)
-- [二、故障转移](#二故障转移)
+- [二、Redis Cluster 故障转移](#二redis-cluster-故障转移)
   - [复制](#复制)
   - [故障检测](#故障检测)
   - [故障转移](#故障转移)
-- [三、通信](#三通信)
-- [四、应用](#四应用)
+- [三、Redis Cluster 通信](#三redis-cluster-通信)
+- [四、Redis Cluster 应用](#四redis-cluster-应用)
   - [集群限制](#集群限制)
   - [集群配置](#集群配置)
 - [五、其他方案](#五其他方案)
@@ -34,7 +34,7 @@
 
 <!-- /TOC -->
 
-## 一、分区
+## 一、Redis Cluster 分区
 
 ### 集群节点
 
@@ -118,7 +118,7 @@ Redis 集群的重新分片操作由 Redis 集群管理软件 **redis-trib** 负
 
 ![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-ask.png)
 
-## 二、故障转移
+## 二、Redis Cluster 故障转移
 
 ### 复制
 
@@ -147,7 +147,7 @@ Redis 复制机制可以参考：[Redis 复制](redis-replication.md)
 
 Redis 集群选举新的主节点流程基于[共识算法：Raft](https://www.jianshu.com/p/8e4bbe7e276c)
 
-## 三、通信
+## 三、Redis Cluster 通信
 
 集群中的节点通过发送和接收消息来进行通信。
 
@@ -159,7 +159,7 @@ Redis 集群节点发送的消息主要有以下五种：
 - `FAIL` - 当一个主节点 A 判断另一个主节点 B 已经进入 FAIL 状态时，节点 A 会向集群广播一条关于节点 B 的 FAIL 消息，所有收到这条消息的节点都会立即将节点 B 标记为已下线。
 - `PUBLISH` - 当节点收到一个 PUBLISH 命令时，节点会执行这个命令，并向集群广播一条 PUBLISH 消息，所有接受到这条消息的节点都会执行相同的 PUBLISH 命令。
 
-## 四、应用
+## 四、Redis Cluster 应用
 
 ### 集群限制
 

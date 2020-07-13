@@ -12,15 +12,25 @@
 
 ### [Redis 入门指南 ⚡](redis-quickstart.md)
 
+> 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
+
+![img](http://dunwu.test.upcdn.net/snap/20200713105627.png)
+
 ### [Redis 数据类型和应用](redis-datatype.md)
+
+> 关键词：`STRING`、`HASH`、`LIST`、`SET`、`ZSET`、`BitMap`、`HyperLogLog`、`Geo`
 
 ![Redis 数据类型](http://dunwu.test.upcdn.net/snap/20200226113813.png)
 
 ### [Redis 持久化](redis-persistence.md)
 
+> 关键词：`RDB`、`AOF`、`SAVE`、`BGSAVE`、`appendfsync`
+
 ![img](http://dunwu.test.upcdn.net/snap/20200224214047.png)
 
 ### [Redis 复制](redis-replication.md)
+
+> 关键词：`SLAVEOF`、`SYNC`、`PSYNC`、`REPLCONF ACK`
 
 ![img](http://dunwu.test.upcdn.net/snap/20200712182603.png)
 
@@ -29,14 +39,24 @@
 > Redis 哨兵（Sentinel）是 Redis 的高可用性（Hight Availability）解决方案。
 >
 > Redis 哨兵是 Raft 算法 的具体实现。
+>
+> 关键词：`Sentinel`、`PING`、`INFO`、`Raft`
 
 ![img](http://dunwu.test.upcdn.net/snap/20200713072747.png)
 
 ### [Redis 集群](redis-cluster.md)
 
+> 关键词：`CLUSTER MEET`、`Hash slot`、`MOVED`、`ASK`、`SLAVEOF no one`、`redis-trib`
+
 ![img](http://dunwu.test.upcdn.net/snap/20200713100613.png)
 
+### [Redis 实战](redis-action.md)
+
+> 关键词：`缓存`、`分布式锁`、`布隆过滤器`
+
 ### [Redis 运维 🔨](redis-ops.md)
+
+> 关键词：`安装`、`命令`、`集群`、`客户端`
 
 ## 📚 资料
 

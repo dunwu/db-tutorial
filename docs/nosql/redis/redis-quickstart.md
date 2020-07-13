@@ -113,228 +113,11 @@ Redis 是单线程模型（Redis 6.0 已经支持多线程模型），为什么�
 
 ## 二、Redis 数据类型
 
-| 数据类型 | 可以存储的值           | 操作                                                                                                             |
-| -------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| STRING   | 字符串、整数或者浮点数 | 对整个字符串或者字符串的其中一部分执行操作</br> 对整数和浮点数执行自增或者自减操作                               |
-| LIST     | 列表                   | 从两端压入或者弹出元素</br> 读取单个或者多个元素</br> 进行修剪，只保留一个范围内的元素                           |
-| SET      | 无序集合               | 添加、获取、移除单个元素</br> 检查一个元素是否存在于集合中</br> 计算交集、并集、差集</br> 从集合里面随机获取元素 |
-| HASH     | 包含键值对的无序散列表 | 添加、获取、移除单个键值对</br> 获取所有键值对</br> 检查某个键是否存在                                           |
-| ZSET     | 有序集合               | 添加、获取、删除元素</br> 根据分值范围或者成员来获取元素</br> 计算一个键的排名                                   |
+Redis 基本数据类型：STRING、HASH、LIST、SET、ZSET
 
-> [What Redis data structures look like](https://redislabs.com/ebook/part-1-getting-started/chapter-1-getting-to-know-redis/1-2-what-redis-data-structures-look-like/)
+Redis 高级数据类型：BitMap、HyperLogLog、GEO
 
-### STRING
-
-<div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-string.png" width="400"/>
-</div>
-
-应用场景：缓存、计数器、共享 Session
-
-命令：
-
-| 命令  | 行为                                                 |
-| ----- | ---------------------------------------------------- |
-| `GET` | 获取存储在给定键中的值。                             |
-| `SET` | 设置存储在给定键中的值。                             |
-| `DEL` | 删除存储在给定键中的值（这个命令可以用于所有类型）。 |
-
-> 更多命令请参考：[Redis String 类型命令](https://redis.io/commands#string)
-
-示例：
-
-```shell
-127.0.0.1:6379> set hello world
-OK
-127.0.0.1:6379> get hello
-"jack"
-127.0.0.1:6379> del hello
-(integer) 1
-127.0.0.1:6379> get hello
-(nil)
-```
-
-### HASH
-
-<div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-hash.png" width="400"/>
-</div>
-
-场景：适合存储结构化数据，如一个对象：用户信息、产品信息等。
-
-命令：
-
-| 命令      | 行为                                       |
-| --------- | ------------------------------------------ |
-| `HSET`    | 在散列里面关联起给定的键值对。             |
-| `HGET`    | 获取指定散列键的值。                       |
-| `HGETALL` | 获取散列包含的所有键值对。                 |
-| `HDEL`    | 如果给定键存在于散列里面，那么移除这个键。 |
-
-> 更多命令请参考：[Redis Hash 类型命令](https://redis.io/commands#hash)
-
-示例：
-
-```shell
-127.0.0.1:6379> hset hash-key sub-key1 value1
-(integer) 1
-127.0.0.1:6379> hset hash-key sub-key2 value2
-(integer) 1
-127.0.0.1:6379> hset hash-key sub-key1 value1
-(integer) 0
-127.0.0.1:6379> hset hash-key sub-key3 value2
-(integer) 0
-127.0.0.1:6379> hgetall hash-key
-1) "sub-key1"
-2) "value1"
-3) "sub-key2"
-4) "value2"
-127.0.0.1:6379> hdel hash-key sub-key2
-(integer) 1
-127.0.0.1:6379> hdel hash-key sub-key2
-(integer) 0
-127.0.0.1:6379> hget hash-key sub-key1
-"value1"
-127.0.0.1:6379> hgetall hash-key
-1) "sub-key1"
-2) "value1"
-```
-
-### LIST
-
-<div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-list.png" width="400"/>
-</div>
-
-适用场景：用于存储列表型数据。如：粉丝列表、商品列表等。
-
-命令：
-
-| 命令     | 行为                                       |
-| -------- | ------------------------------------------ |
-| `RPUSH`  | 将给定值推入列表的右端。                   |
-| `LRANGE` | 获取列表在给定范围上的所有值。             |
-| `LINDEX` | 获取列表在给定位置上的单个元素。           |
-| `LPOP`   | 从列表的左端弹出一个值，并返回被弹出的值。 |
-
-> 更多命令请参考：[Redis List 类型命令](https://redis.io/commands#list)
-
-示例：
-
-```shell
-127.0.0.1:6379> rpush list-key item
-(integer) 1
-127.0.0.1:6379> rpush list-key item2
-(integer) 2
-127.0.0.1:6379> rpush list-key item
-(integer) 3
-127.0.0.1:6379> lrange list-key 0 -1
-1) "item"
-2) "item2"
-3) "item"
-127.0.0.1:6379> lindex list-key 1
-"item2"
-127.0.0.1:6379> lpop list-key
-"item"
-127.0.0.1:6379> lrange list-key 0 -1
-1) "item2"
-2) "item"
-```
-
-### SET
-
-<div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-set.png" width="400"/>
-</div>
-
-适用场景：适用于存储不出现重复的列表数据。
-
-命令：
-
-| 命令        | 行为                                           |
-| ----------- | ---------------------------------------------- |
-| `SADD`      | 将给定元素添加到集合。                         |
-| `SMEMBERS`  | 返回集合包含的所有元素。                       |
-| `SISMEMBER` | 检查给定元素是否存在于集合中。                 |
-| `SREM`      | 如果给定的元素存在于集合中，那么移除这个元素。 |
-
-> 更多命令请参考：[Redis Set 类型命令](https://redis.io/commands#set)
-
-示例：
-
-```shell
-127.0.0.1:6379> sadd set-key item
-(integer) 1
-127.0.0.1:6379> sadd set-key item2
-(integer) 1
-127.0.0.1:6379> sadd set-key item3
-(integer) 1
-127.0.0.1:6379> sadd set-key item
-(integer) 0
-127.0.0.1:6379> smembers set-key
-1) "item"
-2) "item2"
-3) "item3"
-127.0.0.1:6379> sismember set-key item4
-(integer) 0
-127.0.0.1:6379> sismember set-key item
-(integer) 1
-127.0.0.1:6379> srem set-key item2
-(integer) 1
-127.0.0.1:6379> srem set-key item2
-(integer) 0
-127.0.0.1:6379> smembers set-key
-1) "item"
-2) "item3"
-```
-
-### ZSET
-
-<div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-zset.png" width="400"/>
-</div>
-
-场景：由于可以设置 score，且不重复。适合存储各种排行数据，如：按评分排序的有序商品集合、按时间排序的有序文章集合。
-
-命令：
-
-| 命令            | 行为                                                         |
-| --------------- | ------------------------------------------------------------ |
-| `ZADD`          | 将一个带有给定分值的成员添加到有序集合里面。                 |
-| `ZRANGE`        | 根据元素在有序排列中所处的位置，从有序集合里面获取多个元素。 |
-| `ZRANGEBYSCORE` | 获取有序集合在给定分值范围内的所有元素。                     |
-| `ZREM`          | 如果给定成员存在于有序集合，那么移除这个成员。               |
-
-> 更多命令请参考：[Redis ZSet 类型命令](https://redis.io/commands#sorted_set)
-
-示例：
-
-```shell
-127.0.0.1:6379> zadd zset-key 728 member1
-(integer) 1
-127.0.0.1:6379> zadd zset-key 982 member0
-(integer) 1
-127.0.0.1:6379> zadd zset-key 982 member0
-(integer) 0
-
-127.0.0.1:6379> zrange zset-key 0 -1 withscores
-1) "member1"
-2) "728"
-3) "member0"
-4) "982"
-
-127.0.0.1:6379> zrangebyscore zset-key 0 800 withscores
-1) "member1"
-2) "728"
-
-127.0.0.1:6379> zrem zset-key member1
-(integer) 1
-127.0.0.1:6379> zrem zset-key member1
-(integer) 0
-127.0.0.1:6379> zrange zset-key 0 -1 withscores
-1) "member0"
-2) "982"
-```
+> :bulb: 更详细的特性及原理说明请参考：[Redis 数据类型和应用](redis-datatype.md)
 
 ## 三、Redis 内存淘汰
 
@@ -360,7 +143,7 @@ Redis 可以为每个键设置过期时间，当键过期时，会自动删除�
 
 示例：
 
-```py
+```shell
 redis> SET mykey "Hello"
 "OK"
 redis> EXPIRE mykey 10
@@ -410,7 +193,6 @@ Redis 是内存型数据库，为了保证数据在宕机后不会丢失，需�
 Redis 支持两种持久化方式：RDB 和 AOF。
 
 - RDB - **RDB 即快照方式，它将某个时间点的所有 Redis 数据保存到一个经过压缩的二进制文件（RDB 文件）中**。
-  - 创建 RDB 后，用户可以对 RDB 进行**备份**，可以将 RDB **复制**到其他服务器从而创建具有相同数据的服务器副本，还可以在**重启**服务器时使用。一句话来说：RDB 适合作为 **冷备**。
 - AOF - `AOF(Append Only File)` 是以文本日志形式将所有写命令追加到 AOF 文件的末尾，以此来记录数据的变化。当服务器重启的时候会重新载入和执行这些命令来恢复原始的数据。AOF 适合作为 **热备**。
 
 > :bulb: 更详细的特性及原理说明请参考：[Redis 持久化](redis-persistence.md)
@@ -639,6 +421,16 @@ pipe.exec();
 
 ## 八、Redis 发布与订阅
 
+Redis 提供了 5 个发布与订阅命令：
+
+| 命令           | 描述                                                         |
+| -------------- | ------------------------------------------------------------ |
+| `SUBSCRIBE`    | `SUBSCRIBE channel [channel ...]`—订阅指定频道。             |
+| `UNSUBSCRIBE`  | `UNSUBSCRIBE [channel [channel ...]]`—取消订阅指定频道。     |
+| `PUBLISH`      | `PUBLISH channel message`—发送信息到指定的频道。             |
+| `PSUBSCRIBE`   | `PSUBSCRIBE pattern [pattern ...]`—订阅符合指定模式的频道。  |
+| `PUNSUBSCRIBE` | `PUNSUBSCRIBE [pattern [pattern ...]]`—取消订阅符合指定模式的频道。 |
+
 订阅者订阅了频道之后，发布者向频道发送字符串消息会被所有订阅者接收到。
 
 某个客户端使用 SUBSCRIBE 订阅一个频道，其它客户端可以使用 PUBLISH 向这个频道发送消息。
@@ -715,7 +507,7 @@ Sentinel（哨兵）可以监听主服务器，并在主服务器进入下线状
 - 代理分片：将客户端请求发送到代理上，由代理转发请求到正确的节点上。
 - 服务器分片：Redis Cluster（官方的 Redis 集群解决方案）。
 
-## Redis Client
+## 十二、Redis Client
 
 Redis 社区中有多种编程语言的客户端，可以在这里查找合适的客户端：[Redis 官方罗列的客户端清单](https://redis.io/clients)
 
