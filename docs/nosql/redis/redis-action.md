@@ -20,7 +20,7 @@ Redis 可以应用于很多场景，这里列举几个经典的应用场景。
 
 Redis 有多种数据类型，以及丰富的操作命令，并且有着高性能、高可用的特性，非常适合用于分布式缓存。
 
-> 缓存应用的基本原理，请参考 [**缓存基本原理**](https://github.com/dunwu/blog/blob/master/source/_posts/theory/cache-theory.md) 第四 ~ 第六节内容。
+> 缓存应用的基本原理，请参考 [**缓存基本原理**](https://github.com/dunwu/blog/blob/master/source/_posts/theory/cache.md) 第四 ~ 第六节内容。
 
 ### BitMap 和 BloomFilter
 
@@ -28,7 +28,7 @@ Redis 除了 5 种基本数据类型外，还支持 BitMap 和 BloomFilter（即
 
 BitMap 和 BloomFilter 都可以用于解决缓存穿透问题。要点在于：过滤一些不可能存在的数据。
 
-> 什么是缓存穿透，可以参考：[**缓存基本原理**](https://github.com/dunwu/blog/blob/master/source/_posts/theory/cache-theory.md)
+> 什么是缓存穿透，可以参考：[**缓存基本原理**](https://github.com/dunwu/blog/blob/master/source/_posts/theory/cache.md)
 
 小数据量可以用 BitMap，大数据量可以用布隆过滤器。
 

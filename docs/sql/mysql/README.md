@@ -2,7 +2,7 @@
 
 ## 📖 内容
 
-- [Mysql 基本原理](mysql-theory.md)
+- [Mysql 应用指南](mysql-quickstart.md)
 - [Mysql 索引](mysql-index.md)
 - [Mysql 锁](mysql-lock.md)
 - [Mysql 事务](mysql-transaction.md)
@@ -32,6 +32,6 @@
 - **更多资源**
   - [awesome-mysql](https://github.com/jobbole/awesome-mysql-cn)
 
-## 🚪 传送门
+## 🚪 传送
 
 ◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

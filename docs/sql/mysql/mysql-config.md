@@ -2,6 +2,14 @@
 
 > 版本：![mysql](https://img.shields.io/badge/mysql-8.0-blue)
 
+<!-- TOC depthFrom:2 depthTo:3 -->
+
+- [一、基本配置](#一基本配置)
+- [二、配置项说明](#二配置项说明)
+- [参考资料](#参考资料)
+
+<!-- /TOC -->
+
 ## 一、基本配置
 
 ```ini

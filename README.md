@@ -1,12 +1,12 @@
 <p align="center">
-    <a href="https://github.com/dunwu/db-tutorial/" target="_blank" rel="noopener noreferrer">
+    <a href="https://dunwu.github.io/db-tutorial/" target="_blank" rel="noopener noreferrer">
         <img src="http://dunwu.test.upcdn.net/common/logo/dunwu-logo.png" alt="logo" width="150px"/>
     </a>
 </p>
 
 <p align="center">
     <img src="https://badgen.net/github/license/dunwu/db-tutorial" alt="license">
-    <img src="https://api.travis-ci.com/dunwu/db-tutorial.svg?branch=master" alt="build">
+    <img src="https://travis-ci.com/dunwu/db-tutorial.svg?branch=master" alt="build">
 </p>
 
 <h1 align="center">DB-TUTORIAL</h1>
@@ -32,7 +32,7 @@
 
 > [Mysql](docs/sql/mysql) 📚 是互联网最流行的关系型数据库。
 
-- [Mysql 基本原理](docs/sql/mysql/mysql-theory.md)
+- [Mysql 应用指南](docs/sql/mysql/mysql-quickstart.md)
 - [Mysql 索引](docs/sql/mysql/mysql-index.md)
 - [Mysql 锁](docs/sql/mysql/mysql-lock.md)
 - [Mysql 事务](docs/sql/mysql/mysql-transaction.md)
@@ -64,7 +64,7 @@
 - [Redis 哨兵](docs/nosql/redis/redis-sentinel.md) - 关键词：`Sentinel`、`PING`、`INFO`、`Raft`
 - [Redis 集群](docs/nosql/redis/redis-cluster.md) - 关键词：`分片`、`虚拟 Hash 槽`
 - [Redis 发布与订阅](docs/nosql/redis/redis-pub-sub.md)
-- [Redis 实战](docs/nosql/redis/redis-action.md)
+- [Redis 实战](docs/nosql/redis/redis-action.md) - 关键词：`缓存`、`分布式锁`、`布隆过滤器`
 - [Redis 运维](docs/nosql/redis/redis-ops.md) 🔨
 
 #### Elasticsearch
@@ -127,4 +127,4 @@
 
 ## 🚪 传送
 
-◾ 🏠 [LINUX-TUTORIAL 首页](https://github.com/dunwu/linux-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾
+◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

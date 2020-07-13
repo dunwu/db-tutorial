@@ -1,5 +1,11 @@
 # Redis 教程
 
+> Redis 最典型的应用场景是作为分布式缓存。
+>
+> 学习 Redis，有必要深入理解缓存的原理，以及 Redis 作为一种缓存方案，在系统应用中的定位。
+>
+> 参考：[缓存基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/cache.md)，有助于理解缓存的特性、原理，使用缓存常见的问题及解决方案。
+
 ## 📖 内容
 
 ### [Redis 面试总结 💯](redis-interview.md)
@@ -14,15 +20,21 @@
 
 ![img](http://dunwu.test.upcdn.net/snap/20200224214047.png)
 
-### [Redis 集群](redis-cluster.md)
-
 ### [Redis 复制](redis-replication.md)
 
-![img](http://dunwu.test.upcdn.net/snap/20200224220328.png)
+![img](http://dunwu.test.upcdn.net/snap/20200712182603.png)
 
 ### [Redis 哨兵](redis-sentinel.md)
 
-![img](http://dunwu.test.upcdn.net/snap/20200224221812.png)
+> Redis 哨兵（Sentinel）是 Redis 的高可用性（Hight Availability）解决方案。
+>
+> Redis 哨兵是 Raft 算法 的具体实现。
+
+![img](http://dunwu.test.upcdn.net/snap/20200713072747.png)
+
+### [Redis 集群](redis-cluster.md)
+
+![img](http://dunwu.test.upcdn.net/snap/20200713100613.png)
 
 ### [Redis 运维 🔨](redis-ops.md)
 
@@ -37,6 +49,8 @@
   - [《Redis 设计与实现》](https://item.jd.com/11486101.html)
 - **教程**
   - [Redis 命令参考](http://redisdoc.com/)
+- **文章**
+  - [《我们一起进大厂》系列- Redis 基础](https://juejin.im/post/5db66ed9e51d452a2f15d833)
 - **源码**
   - [《Redis 实战》配套 Python 源码](https://github.com/josiahcarlson/redis-in-action)
 - **资源汇总**

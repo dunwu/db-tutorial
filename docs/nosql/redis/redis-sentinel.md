@@ -1,10 +1,10 @@
 # Redis 哨兵
 
-Redis 哨兵（Sentinel）是 Redis 的**高可用性**（Hight Availability）解决方案：由一个或多个 Sentinel 实例组成的 Sentinel 系统可以监视任意多个主服务器，以及这些主服务器的所有从服务器，并在被监视的主服务器进入下线状态时，自动将下线主服务器的某个从服务器升级为新的主服务器，然后由新的主服务器代替已下线的主服务器继续处理命令请求。
+> Redis 哨兵（Sentinel）是 Redis 的**高可用性**（Hight Availability）解决方案。
+>
+> Redis 哨兵是 [Raft 算法](https://github.com/dunwu/blog/blob/master/source/_posts/theory/raft.md) 的具体实现。
 
-**Sentinel 本质上是一个运行在特殊状模式下的 Redis 服务器**。
-
-![img](http://dunwu.test.upcdn.net/snap/20200131135847.png)
+![img](http://dunwu.test.upcdn.net/snap/20200713072747.png)
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
@@ -18,12 +18,15 @@ Redis 哨兵（Sentinel）是 Redis 的**高可用性**（Hight Availability）�
   - [接收服务器的消息](#接收服务器的消息)
 - [五、选举 Leader](#五选举-leader)
 - [六、故障转移](#六故障转移)
-- [七、要点总结](#七要点总结)
 - [参考资料](#参考资料)
 
 <!-- /TOC -->
 
 ## 一、哨兵简介
+
+Redis 哨兵（Sentinel）是 Redis 的**高可用性**（Hight Availability）解决方案：由一个或多个 Sentinel 实例组成的 Sentinel 系统可以监视任意多个主服务器，以及这些主服务器的所有从服务器，并在被监视的主服务器进入下线状态时，自动将下线主服务器的某个从服务器升级为新的主服务器，然后由新的主服务器代替已下线的主服务器继续处理命令请求。
+
+![img](http://dunwu.test.upcdn.net/snap/20200131135847.png)
 
 Sentinel 的主要功能如下：
 
@@ -44,26 +47,19 @@ redis-server /path/to/sentinel.conf --sentinel
 当一个 Sentinel 启动时，它需要执行以下步骤：
 
 1. 初始化服务器。
-2. 将普通 Redis 服务器使用的代码替换成 Sentinel 专用代码。
+2. 使用 Sentinel 专用代码。
 3. 初始化 Sentinel 状态。
-4. 根据给定的配置文件， 初始化 Sentinel 的监视主服务器列表。
-5. 创建连向主服务器的网络连接。
+4. 初始化 Sentinel 的主服务器列表。
+5. 创建连向被监视的主服务器的网络连接。
 
 **Sentinel 本质上是一个运行在特殊状模式下的 Redis 服务器**。
 
-Sentinel 模式下 Redis 服务器主要功能的使用情况：
+Sentinel 模式下 Redis 服务器只支持 `PING`、`SENTINEL`、`INFO`、`SUBSCRIBE`、`UNSUBSCRIBE`、`PSUBSCRIBE`、`PUNSUBSCRIBE` 七个命令。
 
-| 功能                                                     | 使用情况                                                                                                                                                        |
-| :------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 数据库和键值对方面的命令， 比如 SET 、 DEL 、 FLUSHDB 。 | 不使用。                                                                                                                                                        |
-| 事务命令， 比如 MULTI 和 WATCH 。                        | 不使用。                                                                                                                                                        |
-| 脚本命令，比如 EVAL 。                                   | 不使用。                                                                                                                                                        |
-| RDB 持久化命令， 比如 SAVE 和 BGSAVE 。                  | 不使用。                                                                                                                                                        |
-| AOF 持久化命令， 比如 BGREWRITEAOF 。                    | 不使用。                                                                                                                                                        |
-| 复制命令，比如 SLAVEOF 。                                | Sentinel 内部可以使用，但客户端不可以使用。                                                                                                                     |
-| 发布与订阅命令， 比如 PUBLISH 和 SUBSCRIBE 。            | SUBSCRIBE 、 PSUBSCRIBE 、 UNSUBSCRIBE PUNSUBSCRIBE 四个命令在 Sentinel 内部和客户端都可以使用， 但 PUBLISH 命令只能在 Sentinel 内部使用。                      |
-| 文件事件处理器（负责发送命令请求、处理命令回复）。       | Sentinel 内部使用， 但关联的文件事件处理器和普通 Redis 服务器不同。                                                                                             |
-| 时间事件处理器（负责执行 `serverCron` 函数）。           | Sentinel 内部使用， 时间事件的处理器仍然是 `serverCron` 函数， `serverCron` 函数会调用 `sentinel.c/sentinelTimer` 函数， 后者包含了 Sentinel 要执行的所有操作。 |
+创建连向被监视的主服务器的网络连接，Sentinel 将成为主服务器的客户端，它可以向主服务器发送命令，并从命令回复中获取相关的信息。对于每个被 Sentinel 监视的主服务器，Sentinel 会创建两个连向主服务器的异步网络：
+
+- 命令连接：专门用于向主服务器发送命令，并接受命令回复。
+- 订阅连接：专门用于订阅主服务器的 `__sentinel__:hello` 频道。
 
 ## 三、监控
 
@@ -73,19 +69,17 @@ Sentinel 模式下 Redis 服务器主要功能的使用情况：
 
 默认情况下，**每个** `Sentinel` 节点会以 **每秒一次** 的频率对 `Redis` 节点和 **其它** 的 `Sentinel` 节点发送 `PING` 命令，并通过节点的 **回复** 来判断节点是否在线。
 
-- **主观下线**
-
-**主观下线** 适用于所有 **主节点** 和 **从节点**。如果在 `down-after-milliseconds` 毫秒内，`Sentinel` 没有收到 **目标节点** 的有效回复，则会判定 **该节点** 为 **主观下线**。
-
-- **客观下线**
-
-**客观下线** 只适用于 **主节点**。如果 **主节点** 出现故障，`Sentinel` 节点会通过 `sentinel is-master-down-by-addr` 命令，向其它 `Sentinel` 节点询问对该节点的 **状态判断**。如果超过 `` 个数的节点判定 **主节点** 不可达，则该 `Sentinel` 节点会判断 **主节点** 为 **客观下线**。
+- **主观下线**：**主观下线** 适用于所有 **主节点** 和 **从节点**。如果在 `down-after-milliseconds` 毫秒内，`Sentinel` 没有收到 **目标节点** 的有效回复，则会判定 **该节点** 为 **主观下线**。
+- **客观下线**：**客观下线** 只适用于 **主节点**。当 `Sentinel` 将一个主服务器判断为主管下线后，为了确认这个主服务器是否真的下线，会向同样监视这一主服务器的其他 Sentinel 询问，看它们是否也认为主服务器已经下线。当足够数量的 Sentinel 认为主服务器已下线，就判定其为客观下线，并对其执行故障转移操作。
+  - `Sentinel` 节点通过 `sentinel is-master-down-by-addr` 命令，向其它 `Sentinel` 节点询问对该节点的 **状态判断**。
 
 ### 获取服务器信息
 
 > **Sentinel 向主服务器发送 `INFO` 命令，获取主服务器及它的从服务器信息**。
 
-- **获取主服务器信息** - Sentinel 默认会以每十秒一次的频率，通过命令连接向被监视的主服务器发送 `INFO` 命令，并通过分析 `INFO` 命令的回复来获取主服务器的当前信息。
+- **获取主服务器信息** - Sentinel **默认**会以**每十秒一次**的频率，通过命令连接**向被监视的主服务器发送 `INFO` 命令，并通过分析 `INFO` 命令的回复来获取主服务器的当前信息**。
+  - 主服务自身信息：包括 run_id 域记录的服务器运行 ID，以及 role 域记录的服务器角色
+  - 主服务的从服务器信息：包括 IP 地址和端口号
 - **获取从服务器信息** - 当 Sentinel 发现主服务器有新的从服务器出现时，Sentinel 除了会为这个新的从服务器创建相应的实例结构之外，Sentinel 还会创建连接到从服务器的命令连接和订阅连接。
 
 ## 四、通知
@@ -116,7 +110,7 @@ Sentinel 对 `__sentinel__:hello` 频道的订阅会一直持续到 Sentinel 与
 >
 > Raft 是一种共识性算法，想了解其原理，可以参考 [深入剖析共识性算法 Raft](https://github.com/dunwu/blog/blob/master/source/_posts/theory/raft.md)。
 
-当一个主服务器被判断为客观下线时，监视这个下线主服务器的各个 Sentinel 会进行协商，选举出一个领头的 Sentinel，并由领头 Sentinel 对下线主服务器执行故障转移操作。
+**当一个主服务器被判断为客观下线时，监视这个下线主服务器的各个 Sentinel 会进行协商，选举出一个领头的 Sentinel，并由领头 Sentinel 对下线主服务器执行故障转移操作**。
 
 所有在线 Sentinel 都有资格被选为 Leader。
 
@@ -156,13 +150,24 @@ Sentinel 对 `__sentinel__:hello` 频道的订阅会一直持续到 Sentinel 与
 
 在选举产生出 Sentinel Leader 后，Sentinel Leader 将对已下线的主服务器执行故障转移操作。操作含以下三个步骤：
 
-1. 选出新的主服务器
-2. 修改从服务器的复制目标
-3. 将旧的主服务器变为从服务器
+（一）**选出新的主服务器**
 
-## 七、要点总结
+故障转移第一步，是 Sentinel Leader 在已下线主服务属下的所有从服务器中，挑选一个状态良好、数据完整的从服务器。然后，向这个从服务器发送 `SLAVEOF no one` 命令，将其转换为主服务器。
 
-![img](http://dunwu.test.upcdn.net/snap/20200224221812.png)
+Sentinel Leader 如何选出新的主服务器：
+
+- 删除列表中所有处于下线或断线状态的从服务器。
+- 删除列表中所有最近五秒没有回复过 Sentinel Leader 的 INFO 命令的从服务器。
+- 删除所有与已下线主服务器连接断开超过 `down-after-milliseconds` \* 10 毫秒的从服务器（`down-after-milliseconds` 指定了判断主服务器下线所需的时间）。
+- 之后， Sentinel Leader 先选出优先级最高的从服务器；如果优先级一样高，再选择复制偏移量最大的从服务器；如果结果还不唯一，则选出运行 ID 最小的从服务器。
+
+（二）**修改从服务器的复制目标**
+
+选出新的主服务器后，Sentinel Leader 会向所有从服务器发送 `SLAVEOF` 命令，让它们去复制新的主服务器。
+
+（三）**将旧的主服务器变为从服务器**
+
+Sentinel Leader 将旧的主服务器标记为从服务器。当旧的主服务器重新上线，Sentinel 会向它发送 SLAVEOF 命令，让其成为从服务器。
 
 ## 参考资料
 

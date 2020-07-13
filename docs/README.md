@@ -26,7 +26,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 - [关系型数据库面试总结](sql/sql-interview.md) 💯
 - [SQL Cheat Sheet](sql/sql-cheat-sheet.md)
 - [Mysql](sql/mysql) 📚
-  - [Mysql 基本原理](sql/mysql/mysql-theory.md)
+  - [Mysql 应用指南](sql/mysql/mysql-quickstart.md)
   - [Mysql 索引](sql/mysql/mysql-index.md)
   - [Mysql 锁](sql/mysql/mysql-lock.md)
   - [Mysql 事务](sql/mysql/mysql-transaction.md)
