@@ -1,23 +1,25 @@
 # Mysql 锁
 
+![img](http://dunwu.test.upcdn.net/snap/20200716064947.png)
+
 <!-- TOC depthFrom:2 depthTo:3 -->
 
-- [乐观锁和悲观锁](#乐观锁和悲观锁)
-- [锁粒度](#锁粒度)
-- [读写锁](#读写锁)
-- [意向锁](#意向锁)
-- [MVCC](#mvcc)
-  - [基本思想](#基本思想)
+- [一、悲观锁和乐观锁](#一悲观锁和乐观锁)
+- [二、表级锁和行级锁](#二表级锁和行级锁)
+- [三、读写锁](#三读写锁)
+- [四、意向锁](#四意向锁)
+- [五、MVCC](#五mvcc)
+  - [MVCC 思想](#mvcc-思想)
   - [版本号](#版本号)
   - [Undo 日志](#undo-日志)
   - [ReadView](#readview)
   - [快照读与当前读](#快照读与当前读)
-- [Next-key 锁](#next-key-锁)
+- [六、Next-key 锁](#六next-key-锁)
 - [参考资料](#参考资料)
 
 <!-- /TOC -->
 
-## 乐观锁和悲观锁
+## 一、悲观锁和乐观锁
 
 确保在多个事务同时存取数据库中同一数据时不破坏事务的隔离性和统一性以及数据库的统一性，**乐观锁和悲观锁是并发控制主要采用的技术手段。**
 
@@ -28,7 +30,21 @@
   - 在修改数据的时候把事务锁起来，通过 version 的方式来进行锁定
   - 实现方式：**使用 version 版本或者时间戳**。
 
-## 锁粒度
+【示例】乐观锁示例
+
+商品 goods 表中有一个字段 status，status 为 1 代表商品未被下单，status 为 2 代表商品已经被下单，那么我们对某个商品下单时必须确保该商品 status 为 1。假设商品的 id 为 1。
+
+```sql
+select (status,status,version) from t_goods where id=#{id}
+
+update t_goods
+set status=2,version=version+1
+where id=#{id} and version=#{version};
+```
+
+> 更详细的乐观锁说可以参考：[使用mysql乐观锁解决并发问题](https://www.cnblogs.com/laoyeye/p/8097684.html)
+
+## 二、表级锁和行级锁
 
 从数据库的锁粒度来看，MySQL 中提供了两种封锁粒度：行级锁和表级锁。
 
@@ -41,7 +57,7 @@
 
 在 `InnoDB` 中，**行锁是通过给索引上的索引项加锁来实现的**。**如果没有索引，`InnoDB` 将会通过隐藏的聚簇索引来对记录加锁**。
 
-## 读写锁
+## 三、读写锁
 
 - 独享锁（Exclusive），简写为 X 锁，又称写锁。使用方式：`SELECT ... FOR UPDATE;`
 - 共享锁（Shared），简写为 S 锁，又称读锁。使用方式：`SELECT ... LOCK IN SHARE MODE;`
@@ -50,7 +66,7 @@
 
 **`InnoDB` 下的行锁、间隙锁、next-key 锁统统属于独享锁**。
 
-## 意向锁
+## 四、意向锁
 
 **当存在表级锁和行级锁的情况下，必须先申请意向锁（表级锁，但不是真的加锁），再获取行级锁**。使用意向锁（Intention Locks）可以更容易地支持多粒度封锁。
 
@@ -81,21 +97,19 @@
 - 任意 IS/IX 锁之间都是兼容的，因为它们只表示想要对表加锁，而不是真正加锁；
 - 这里兼容关系针对的是表级锁，而表级的 IX 锁和行级的 X 锁兼容，两个事务可以对两个数据行加 X 锁。（事务 T1 想要对数据行 R1 加 X 锁，事务 T2 想要对同一个表的数据行 R2 加 X 锁，两个事务都需要对该表加 IX 锁，但是 IX 锁是兼容的，并且 IX 锁与行级的 X 锁也是兼容的，因此两个事务都能加锁成功，对同一个表中的两个数据行做修改。）
 
-## MVCC
+## 五、MVCC
 
-不仅是 Mysql，包括 Oracle、PostgreSQL 等其他数据库都实现了各自的 MVCC，实现机制没有统一标准。
-
-多版本并发控制（Multi-Version Concurrency Control, MVCC）可以视为行级锁的一个变种。它在很多情况下都避免了加锁操作，因此开销更低。
+**多版本并发控制（Multi-Version Concurrency Control, MVCC）可以视为行级锁的一个变种。它在很多情况下都避免了加锁操作，因此开销更低**。不仅是 Mysql，包括 Oracle、PostgreSQL 等其他数据库都实现了各自的 MVCC，实现机制没有统一标准。
 
 MVCC 是 `InnoDB` 存储引擎实现隔离级别的一种具体方式，**用于实现提交读和可重复读这两种隔离级别**。而未提交读隔离级别总是读取最新的数据行，要求很低，无需使用 MVCC。可串行化隔离级别需要对所有读取的行都加锁，单纯使用 MVCC 无法实现。
 
-### 基本思想
+### MVCC 思想
 
 加锁能解决多个事务同时执行时出现的并发一致性问题。在实际场景中读操作往往多于写操作，因此又引入了读写锁来避免不必要的加锁操作，例如读和读没有互斥关系。读写锁中读和写操作仍然是互斥的。
 
 MVCC 的思想是：
 
-- 保存数据在某个时间点的快照。**写操作（DELETE、INSERT、UPDATE）更新最新的版本快照，而读操作去读旧版本快照，没有互斥关系**，这一点和 `CopyOnWrite` 类似。
+- **保存数据在某个时间点的快照，写操作（DELETE、INSERT、UPDATE）更新最新的版本快照；而读操作去读旧版本快照，没有互斥关系**。这一点和 `CopyOnWrite` 类似。
 - 脏读和不可重复读最根本的原因是**事务读取到其它事务未提交的修改**。在事务进行读取操作时，为了解决脏读和不可重复读问题，**MVCC 规定只能读取已经提交的快照**。当然一个事务可以读取自身未提交的快照，这不算是脏读。
 
 ### 版本号
@@ -107,7 +121,7 @@ InnoDB 的 MVCC 实现是：在每行记录后面保存两个隐藏列，一个�
 
 ### Undo 日志
 
-MVCC 的多版本指的是多个版本的快照，快照存储在 Undo 日志中，该日志通过回滚指针 ROLL_PTR 把一个数据行的所有快照连接起来。
+MVCC 的多版本指的是多个版本的快照，快照存储在 Undo 日志中，该日志通过回滚指针 `ROLL_PTR` 把一个数据行的所有快照连接起来。
 
 例如在 MySQL 创建一个表 t，包含主键 id 和一个字段 x。我们先插入一个数据行，然后对该数据行执行两次更新操作。
 
@@ -123,7 +137,17 @@ UPDATE t SET x="c" WHERE id=1;
 
 ### ReadView
 
-MVCC 维护了一个 `ReadView` 结构，主要包含了当前系统未提交的事务列表 `TRX_IDs {TRX_ID_1, TRX_ID_2, ...}`，还有该列表的最小值 `TRX_ID_MIN` 和 `TRX_ID_MAX`。
+MVCC 维护了一个一致性读视图 `consistent read view` ，主要包含了当前系统**未提交的事务列表** `TRX_IDs {TRX_ID_1, TRX_ID_2, ...}`，还有该列表的最小值 `TRX_ID_MIN` 和 `TRX_ID_MAX`。
+
+![](http://dunwu.test.upcdn.net/snap/20200715135809.png)
+
+这样，对于当前事务的启动瞬间来说，一个数据版本的 row trx_id，有以下几种可能：
+
+1. 如果落在绿色部分，表示这个版本是已提交的事务或者是当前事务自己生成的，这个数据是可见的；
+2. 如果落在红色部分，表示这个版本是由将来启动的事务生成的，是肯定不可见的；
+3. 如果落在黄色部分，那就包括两种情况
+   a. 若 row trx_id 在数组中，表示这个版本是由还没提交的事务生成的，不可见；
+   b. 若 row trx_id 不在数组中，表示这个版本是已经提交了的事务生成的，可见。
 
 在进行 `SELECT` 操作时，根据数据行快照的 `TRX_ID` 与 `TRX_ID_MIN` 和 `TRX_ID_MAX` 之间的关系，从而判断数据行快照是否可以使用：
 
@@ -162,7 +186,7 @@ SELECT * FROM table WHERE ? lock in share mode;
 SELECT * FROM table WHERE ? for update;
 ```
 
-## Next-key 锁
+## 六、Next-key 锁
 
 Next-Key 锁是 MySQL 的 `InnoDB` 存储引擎的一种锁实现。
 
@@ -183,3 +207,4 @@ MVCC 不能解决幻读问题，**Next-Key 锁就是为了解决幻读问题**�
 - [《高性能 MySQL》](https://book.douban.com/subject/23008813/)
 - [数据库系统原理](https://github.com/CyC2018/Interview-Notebook/blob/master/notes/数据库系统原理.md)
 - [数据库两大神器【索引和锁】](https://juejin.im/post/5b55b842f265da0f9e589e79)
+- [使用mysql乐观锁解决并发问题](https://www.cnblogs.com/laoyeye/p/8097684.html)

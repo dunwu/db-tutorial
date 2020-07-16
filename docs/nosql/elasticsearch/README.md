@@ -24,11 +24,11 @@
 > Elastic 技术栈，在 ELK 的基础上扩展了一些新的产品，如：[Beats](https://www.elastic.co/products/beats) 、[X-Pack](https://www.elastic.co/products/x-pack) 。
 
 - [Elastic 技术栈快速入门](nosql/elasticsearch/elastic/elastic-quickstart.md)
-- [Beats 入门指南](nosql/elasticsearch/elastic/elastic-beats.md)
+- [Beats 应用指南](nosql/elasticsearch/elastic/elastic-beats.md)
 - [Beats 运维](nosql/elasticsearch/elastic/elastic-beats-ops.md)
-- [Kibana 入门指南](nosql/elasticsearch/elastic/elastic-kibana.md)
+- [Kibana 应用指南](nosql/elasticsearch/elastic/elastic-kibana.md)
 - [Kibana 运维](nosql/elasticsearch/elastic/elastic-kibana-ops.md)
-- [Logstash 入门指南](nosql/elasticsearch/elastic/elastic-logstash.md)
+- [Logstash 应用指南](nosql/elasticsearch/elastic/elastic-logstash.md)
 - [Logstash 运维](nosql/elasticsearch/elastic/elastic-logstash-ops.md)
 
 ## 📚 资料

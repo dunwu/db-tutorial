@@ -10,7 +10,7 @@
 
 ### [Redis 面试总结 💯](redis-interview.md)
 
-### [Redis 入门指南 ⚡](redis-quickstart.md)
+### [Redis 应用指南 ⚡](redis-quickstart.md)
 
 > 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
 

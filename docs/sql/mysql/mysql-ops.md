@@ -174,6 +174,38 @@ vim /etc/my.cnf
 
 ## 二、基本运维
 
+### 客户端连接
+
+语法：`mysql -h<主机> -P<端口> -u<用户名> -p<密码>`
+
+如果没有显式指定密码，会要求输入密码才能访问。
+
+【示例】连接本地 Mysql
+
+```shell
+$ mysql -h 127.0.0.1 -P 3306 -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 13501
+Server version: 8.0.19 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+```
+
+### 查看连接
+
+连接完成后，如果你没有后续的动作，这个连接就处于空闲状态，你可以在 `show processlist` 命令中看到它。客户端如果太长时间没动静，连接器就会自动将它断开。这个时间是由参数 `wait_timeout` 控制的，默认值是 8 小时。
+
+![](http://dunwu.test.upcdn.net/snap/20200714115031.png)
+
 ### 创建用户
 
 ```sql

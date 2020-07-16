@@ -23,19 +23,32 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 > [关系型数据库](sql) 整理主流关系型数据库知识点。
 
-- [关系型数据库面试总结](sql/sql-interview.md) 💯
-- [SQL Cheat Sheet](sql/sql-cheat-sheet.md)
-- [Mysql](sql/mysql) 📚
-  - [Mysql 应用指南](sql/mysql/mysql-quickstart.md)
-  - [Mysql 索引](sql/mysql/mysql-index.md)
-  - [Mysql 锁](sql/mysql/mysql-lock.md)
-  - [Mysql 事务](sql/mysql/mysql-transaction.md)
-  - [Mysql 性能优化](sql/mysql/mysql-optimization.md)
-  - [Mysql 运维](sql/mysql/mysql-ops.md) 🔨
-  - [Mysql 配置](sql/mysql/mysql-config.md)
-- [H2 入门指南](sql/h2.md)
-- [SqLite 入门指南](sql/sqlite.md)
-- [PostgreSQL 入门指南](sql/postgresql.md)
+#### [共性知识](sql/common)
+
+- [关系型数据库面试总结](sql/common/sql-interview.md) 💯
+- [SQL Cheat Sheet](sql/common/sql-cheat-sheet.md) 是一个 SQL 入门教程。
+- [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage-theory.md)
+- [分布式事务基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-transaction.md)
+
+#### [Mysql](sql/mysql) 📚
+
+![img](http://dunwu.test.upcdn.net/snap/20200716103611.png)
+
+- [Mysql 应用指南](sql/mysql/mysql-quickstart.md) ⚡
+- [Mysql 工作流](sql/mysql/mysql-index.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`
+- [Mysql 索引](sql/mysql/mysql-index.md) - 关键词：`Hash`、`B 树`、`聚簇索引`、`回表`
+- [Mysql 锁](sql/mysql/mysql-lock.md) - 关键词：`乐观锁`、`表级锁`、`行级锁`、`意向锁`、`MVCC`、`Next-key 锁`
+- [Mysql 事务](sql/mysql/mysql-transaction.md) - 关键词：`ACID`、`AUTOCOMMIT`、`事务隔离级别`、`死锁`、`分布式事务`
+- [Mysql 性能优化](sql/mysql/mysql-optimization.md)
+- [Mysql 运维](sql/mysql/mysql-ops.md) 🔨
+- [Mysql 配置](sql/mysql/mysql-config.md)
+- [Mysql 问题](sql/mysql/mysql-faq.md)
+
+#### 其他关系型数据库
+
+- [H2 应用指南](sql/h2.md)
+- [SqLite 应用指南](sql/sqlite.md)
+- [PostgreSQL 应用指南](sql/postgresql.md)
 
 ### Nosql 数据库
 
@@ -43,14 +56,12 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 - [Nosql 技术选型](nosql/nosql-selection.md)
 
-#### Redis
-
-> [Redis](nosql/redis) 📚
+#### [Redis](nosql/redis) 📚
 
 ![img](http://dunwu.test.upcdn.net/snap/20200713105627.png)
 
 - [Redis 面试总结](nosql/redis/redis-interview.md) 💯
-- [Redis 入门指南](nosql/redis/redis-quickstart.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
+- [Redis 应用指南](nosql/redis/redis-quickstart.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
 - [Redis 数据类型和应用](nosql/redis/redis-datatype.md) - 关键词：`STRING`、`HASH`、`LIST`、`SET`、`ZSET`、`BitMap`、`HyperLogLog`、`Geo`
 - [Redis 持久化](nosql/redis/redis-persistence.md) - 关键词：`RDB`、`AOF`、`SAVE`、`BGSAVE`、`appendfsync`
 - [Redis 复制](nosql/redis/redis-replication.md) - 关键词：`SLAVEOF`、`SYNC`、`PSYNC`、`REPLCONF ACK`
@@ -106,7 +117,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
   - **书籍**
     - [《Redis 实战》](https://item.jd.com/11791607.html)
     - [《Redis 设计与实现》](https://item.jd.com/11486101.html)
-  - 源码
+  - **源码**
     - [《Redis 实战》配套 Python 源码](https://github.com/josiahcarlson/redis-in-action)
   - **资源汇总**
     - [awesome-redis](https://github.com/JamzyWang/awesome-redis)
@@ -117,13 +128,6 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
     - [CRUG | Redisson PRO vs. Jedis: Which Is Faster? 翻译](https://www.jianshu.com/p/82f0d5abb002)
     - [redis 分布锁 Redisson 性能测试](https://blog.csdn.net/everlasting_188/article/details/51073505)
 
-## 🚪 传送门
+## 🚪 传送
 
-◾ 🏠 [LINUX-TUTORIAL 首页](https://github.com/dunwu/linux-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾
-
-
-
-
-
-
-
+◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

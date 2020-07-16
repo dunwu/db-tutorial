@@ -4,23 +4,26 @@
 
 ## 📖 内容
 
-- [关系型数据库面试题 💯](sql-interview.md)
+### [共性知识](common)
 
-### SQL
-
-![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
-
-- [SQL Cheat Sheet](sql-cheat-sheet.md) - SQL 速查手册
+- [关系型数据库面试总结](common/sql-interview.md) 💯
+- [SQL Cheat Sheet](common/sql-cheat-sheet.md) 是一个 SQL 入门教程。
+- [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage-theory.md)
+- [分布式事务基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-transaction.md)
 
 ### [Mysql](mysql/README.md)
 
-- [Mysql 基本原理](mysql/mysql-theory.md)
-- [Mysql 索引](mysql/mysql-index.md)
-- [Mysql 锁](mysql/mysql-lock.md)
-- [Mysql 事务](mysql/mysql-transaction.md)
+![img](http://dunwu.test.upcdn.net/snap/20200716103611.png)
+
+- [Mysql 应用指南](mysql/mysql-quickstart.md) ⚡
+- [Mysql 工作流](mysql/mysql-index.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`
+- [Mysql 索引](mysql/mysql-index.md) - 关键词：`Hash`、`B 树`、`聚簇索引`、`回表`
+- [Mysql 锁](mysql/mysql-lock.md) - 关键词：`乐观锁`、`表级锁`、`行级锁`、`意向锁`、`MVCC`、`Next-key 锁`
+- [Mysql 事务](mysql/mysql-transaction.md) - 关键词：`ACID`、`AUTOCOMMIT`、`事务隔离级别`、`死锁`、`分布式事务`
 - [Mysql 性能优化](mysql/mysql-optimization.md)
 - [Mysql 运维](mysql/mysql-ops.md) 🔨
 - [Mysql 配置](mysql/mysql-config.md)
+- [Mysql 问题](mysql/mysql-faq.md)
 
 ### 其他关系型数据库
 
@@ -43,6 +46,6 @@
 - **更多资源**
   - [awesome-mysql](https://github.com/jobbole/awesome-mysql-cn)
 
-## 🚪 传送门
+## 🚪 传送
 
 ◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾

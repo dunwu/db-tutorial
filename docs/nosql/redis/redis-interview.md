@@ -129,7 +129,7 @@ AOF 丢数据比 RDB 少，但文件会比 RDB 文件大很多。
 
 > **_Redis 的事务特性、原理_**
 >
-> 详情参考：[Redis 入门指南之 事务](redis-quickstart.md#六redis-事务)
+> 详情参考：[Redis 应用指南之 事务](redis-quickstart.md#六redis-事务)
 
 **Redis 提供的不是严格的事务，Redis 只保证串行执行命令，并且能保证全部执行，但是执行命令失败时并不会回滚，而是会继续执行下去**。
 

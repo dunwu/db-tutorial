@@ -22,29 +22,32 @@
 
 > [关系型数据库](docs/sql) 整理主流关系型数据库知识点。
 
-[关系型数据库面试总结](docs/sql/sql-interview.md) 💯
+#### [共性知识](docs/sql/common)
 
-[**SQL Cheat Sheet**](docs/sql/sql-cheat-sheet.md) 是一个 SQL 入门教程。
+- [关系型数据库面试总结](docs/sql/common/sql-interview.md) 💯
+- [SQL Cheat Sheet](docs/sql/common/sql-cheat-sheet.md) 是一个 SQL 入门教程。
+- [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage-theory.md)
+- [分布式事务基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-transaction.md)
 
-![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
+#### [Mysql](docs/sql/mysql) 📚
 
-#### Mysql
+![img](http://dunwu.test.upcdn.net/snap/20200716103611.png)
 
-> [Mysql](docs/sql/mysql) 📚 是互联网最流行的关系型数据库。
-
-- [Mysql 应用指南](docs/sql/mysql/mysql-quickstart.md)
-- [Mysql 索引](docs/sql/mysql/mysql-index.md)
-- [Mysql 锁](docs/sql/mysql/mysql-lock.md)
-- [Mysql 事务](docs/sql/mysql/mysql-transaction.md)
+- [Mysql 应用指南](docs/sql/mysql/mysql-quickstart.md) ⚡
+- [Mysql 工作流](docs/sql/mysql/mysql-index.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`
+- [Mysql 索引](docs/sql/mysql/mysql-index.md) - 关键词：`Hash`、`B 树`、`聚簇索引`、`回表`
+- [Mysql 锁](docs/sql/mysql/mysql-lock.md) - 关键词：`乐观锁`、`表级锁`、`行级锁`、`意向锁`、`MVCC`、`Next-key 锁`
+- [Mysql 事务](docs/sql/mysql/mysql-transaction.md) - 关键词：`ACID`、`AUTOCOMMIT`、`事务隔离级别`、`死锁`、`分布式事务`
 - [Mysql 性能优化](docs/sql/mysql/mysql-optimization.md)
 - [Mysql 运维](docs/sql/mysql/mysql-ops.md) 🔨
 - [Mysql 配置](docs/sql/mysql/mysql-config.md)
+- [Mysql 问题](docs/sql/mysql/mysql-faq.md)
 
 #### 其他关系型数据库
 
-- [H2 入门指南](docs/sql/h2.md)
-- [SqLite 入门指南](docs/sql/sqlite.md)
-- [PostgreSQL 入门指南](docs/sql/postgresql.md)
+- [H2 应用指南](docs/sql/h2.md)
+- [SqLite 应用指南](docs/sql/sqlite.md)
+- [PostgreSQL 应用指南](docs/sql/postgresql.md)
 
 ### Nosql 数据库
 
@@ -52,14 +55,12 @@
 
 - [Nosql 技术选型](docs/nosql/nosql-selection.md)
 
-#### Redis
-
-> [Redis](docs/nosql/redis) 📚
+#### [Redis](docs/nosql/redis) 📚
 
 ![img](http://dunwu.test.upcdn.net/snap/20200713105627.png)
 
 - [Redis 面试总结](docs/nosql/redis/redis-interview.md) 💯
-- [Redis 入门指南](docs/nosql/redis/redis-quickstart.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
+- [Redis 应用指南](docs/nosql/redis/redis-quickstart.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
 - [Redis 数据类型和应用](docs/nosql/redis/redis-datatype.md) - 关键词：`STRING`、`HASH`、`LIST`、`SET`、`ZSET`、`BitMap`、`HyperLogLog`、`Geo`
 - [Redis 持久化](docs/nosql/redis/redis-persistence.md) - 关键词：`RDB`、`AOF`、`SAVE`、`BGSAVE`、`appendfsync`
 - [Redis 复制](docs/nosql/redis/redis-replication.md) - 关键词：`SLAVEOF`、`SYNC`、`PSYNC`、`REPLCONF ACK`
@@ -115,7 +116,7 @@
   - **书籍**
     - [《Redis 实战》](https://item.jd.com/11791607.html)
     - [《Redis 设计与实现》](https://item.jd.com/11486101.html)
-  - 源码
+  - **源码**
     - [《Redis 实战》配套 Python 源码](https://github.com/josiahcarlson/redis-in-action)
   - **资源汇总**
     - [awesome-redis](https://github.com/JamzyWang/awesome-redis)

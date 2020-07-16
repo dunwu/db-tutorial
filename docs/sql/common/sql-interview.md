@@ -823,7 +823,7 @@ SQL 关键字尽量大写，如：Oracle 默认会将 SQL 语句中的关键字�
 >
 > 在不同环境，不同场景下，应该酌情使用合理的配置。这种优化比较考验 Mysql 运维经验，一般是 DBA 的考量，普通开发接触的较少。
 >
-> Mysql 配置说明请参考：[Mysql 服务器配置说明](./mysql/mysql-config.md)
+> Mysql 配置说明请参考：[Mysql 服务器配置说明](sql/mysql/mysql-config.md)
 
 ### 硬件优化
 

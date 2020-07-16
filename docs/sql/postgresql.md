@@ -1,4 +1,4 @@
-# PostgreSQL 入门指南
+# PostgreSQL 应用指南
 
 > [PostgreSQL](https://www.postgresql.org/) 是一个关系型数据库（RDBM）。
 >
