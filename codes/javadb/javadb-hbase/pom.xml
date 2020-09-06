@@ -16,7 +16,7 @@
 
 		<hbase.version>1.3.1</hbase.version>
 		<junit.version>4.12</junit.version>
-		<dunwu.version>0.4.1</dunwu.version>
+		<dunwu.version>0.5.7</dunwu.version>
 	</properties>
 
 	<dependencies>
@@ -26,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.github.dunwu</groupId>
-			<artifactId>dunwu-common</artifactId>
+			<artifactId>dunwu-tool-core</artifactId>
 		</dependency>
 
 		<!-- test begin -->
@@ -44,11 +44,11 @@
 				<artifactId>hbase-client</artifactId>
 				<version>${hbase.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>io.github.dunwu</groupId>
-				<artifactId>dunwu-common</artifactId>
-				<version>${dunwu.version}</version>
-			</dependency>
+      <dependency>
+        <groupId>io.github.dunwu</groupId>
+        <artifactId>dunwu-tool-core</artifactId>
+        <version>${dunwu.version}</version>
+      </dependency>
 
 			<!-- test begin -->
 			<dependency>

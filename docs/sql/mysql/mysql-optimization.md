@@ -14,7 +14,8 @@
   - [优化 LIMIT](#优化-limit)
   - [优化 UNION](#优化-union)
   - [优化查询方式](#优化查询方式)
-- [三、执行计划](#三执行计划)
+- [三、EXPLAIN](#三explain)
+- [四、optimizer trace](#四optimizer-trace)
 - [参考资料](#参考资料)
 
 <!-- /TOC -->
@@ -255,7 +256,7 @@ SELECT * FROM tag_post WHERE tag_id=1234;
 SELECT * FROM post WHERE post.id IN (123,456,567,9098,8904);
 ```
 
-## 三、执行计划
+## 三、EXPLAIN
 
 如何检验修改后的 SQL 确实有优化效果？这就需要用到执行计划（`EXPLAIN`）。
 
@@ -301,6 +302,19 @@ possible_keys: PRIMARY
 - extra: 额外的信息
 
 > 更多内容请参考：[MySQL 性能优化神器 Explain 使用分析](https://segmentfault.com/a/1190000008131735)
+
+## 四、optimizer trace
+
+在 MySQL 5.6 及之后的版本中，我们可以使用 optimizer trace 功能查看优化器生成执行计划的整个过程。有了这个功能，我们不仅可以了解优化器的选择过程，更可以了解每一个执行环节的成本，然后依靠这些信息进一步优化查询。
+
+如下代码所示，打开 optimizer_trace 后，再执行 SQL 就可以查询 information_schema.OPTIMIZER_TRACE 表查看执行计划了，最后可以关闭 optimizer_trace 功能：
+
+```sql
+SET optimizer_trace="enabled=on";
+SELECT * FROM person WHERE NAME >'name84059' AND create_time>'2020-01-24 05:00
+SELECT * FROM information_schema.OPTIMIZER_TRACE;
+SET optimizer_trace="enabled=off";
+```
 
 ## 参考资料
 

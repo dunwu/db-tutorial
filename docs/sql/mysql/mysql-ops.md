@@ -15,6 +15,8 @@
   - [配置远程访问](#配置远程访问)
   - [跳过登录认证](#跳过登录认证)
 - [二、基本运维](#二基本运维)
+  - [客户端连接](#客户端连接)
+  - [查看连接](#查看连接)
   - [创建用户](#创建用户)
   - [查看用户](#查看用户)
   - [授权](#授权)
@@ -184,7 +186,7 @@ vim /etc/my.cnf
 
 ```shell
 $ mysql -h 127.0.0.1 -P 3306 -u root -p
-Enter password: 
+Enter password:
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 13501
 Server version: 8.0.19 MySQL Community Server - GPL
@@ -204,7 +206,7 @@ mysql>
 
 连接完成后，如果你没有后续的动作，这个连接就处于空闲状态，你可以在 `show processlist` 命令中看到它。客户端如果太长时间没动静，连接器就会自动将它断开。这个时间是由参数 `wait_timeout` 控制的，默认值是 8 小时。
 
-![](http://dunwu.test.upcdn.net/snap/20200714115031.png)
+![img](http://dunwu.test.upcdn.net/snap/20200714115031.png)
 
 ### 创建用户
 

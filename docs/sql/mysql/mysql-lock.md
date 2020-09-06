@@ -42,7 +42,7 @@ set status=2,version=version+1
 where id=#{id} and version=#{version};
 ```
 
-> 更详细的乐观锁说可以参考：[使用mysql乐观锁解决并发问题](https://www.cnblogs.com/laoyeye/p/8097684.html)
+> 更详细的乐观锁说可以参考：[使用 mysql 乐观锁解决并发问题](https://www.cnblogs.com/laoyeye/p/8097684.html)
 
 ## 二、表级锁和行级锁
 
@@ -139,7 +139,7 @@ UPDATE t SET x="c" WHERE id=1;
 
 MVCC 维护了一个一致性读视图 `consistent read view` ，主要包含了当前系统**未提交的事务列表** `TRX_IDs {TRX_ID_1, TRX_ID_2, ...}`，还有该列表的最小值 `TRX_ID_MIN` 和 `TRX_ID_MAX`。
 
-![](http://dunwu.test.upcdn.net/snap/20200715135809.png)
+![img](http://dunwu.test.upcdn.net/snap/20200715135809.png)
 
 这样，对于当前事务的启动瞬间来说，一个数据版本的 row trx_id，有以下几种可能：
 
@@ -207,4 +207,4 @@ MVCC 不能解决幻读问题，**Next-Key 锁就是为了解决幻读问题**�
 - [《高性能 MySQL》](https://book.douban.com/subject/23008813/)
 - [数据库系统原理](https://github.com/CyC2018/Interview-Notebook/blob/master/notes/数据库系统原理.md)
 - [数据库两大神器【索引和锁】](https://juejin.im/post/5b55b842f265da0f9e589e79)
-- [使用mysql乐观锁解决并发问题](https://www.cnblogs.com/laoyeye/p/8097684.html)
+- [使用 mysql 乐观锁解决并发问题](https://www.cnblogs.com/laoyeye/p/8097684.html)

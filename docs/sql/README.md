@@ -8,7 +8,7 @@
 
 - [关系型数据库面试总结](common/sql-interview.md) 💯
 - [SQL Cheat Sheet](common/sql-cheat-sheet.md) 是一个 SQL 入门教程。
-- [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage-theory.md)
+- [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage.md)
 - [分布式事务基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-transaction.md)
 
 ### [Mysql](mysql/README.md)

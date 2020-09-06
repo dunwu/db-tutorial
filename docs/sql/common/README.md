@@ -8,7 +8,7 @@
 
 ![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
 
-### [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage-theory.md)
+### [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage.md)
 
 ![img](http://dunwu.test.upcdn.net/snap/20200716110854.png)
 

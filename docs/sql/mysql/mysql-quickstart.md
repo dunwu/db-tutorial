@@ -237,7 +237,7 @@ MySQL 读写分离能提高性能的原因在于：
 
 ## 十、分库分表
 
-> 参考：[分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage-theory.md)
+> 参考：[分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage.md)
 
 ## 参考资料
 

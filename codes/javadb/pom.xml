@@ -14,5 +14,6 @@
 		<module>javadb-mysql</module>
 		<module>javadb-redis</module>
 		<module>javadb-sqlite</module>
+		<module>javadb-mongodb</module>
 	</modules>
 </project>

@@ -42,7 +42,7 @@ BitMap 和 BloomFilter 都可以用于解决缓存穿透问题。要点在于：
 - **避免永远不释放锁** - 使用 `expire` 加一个过期时间，避免一直不释放锁，导致阻塞。
 - **原子性** - setnx 和 expire 必须合并为一个原子指令，避免 setnx 后，机器崩溃，没来得及设置 expire，从而导致锁永不释放。
 
-> 更多分布式锁的实现方式及细节，请参考：[分布式锁基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-lock-theory.md)
+> 更多分布式锁的实现方式及细节，请参考：[分布式锁基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-lock.md)
 
 ## 二、技巧
 

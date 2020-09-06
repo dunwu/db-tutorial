@@ -631,11 +631,11 @@ rebalance：表明让 Redis 自动根据节点数进行均衡哈希槽分配。
 
 --cluster-use-empty-masters：表明
 
-![](http://dunwu.test.upcdn.net/snap/20200712125827.png)
+![img](http://dunwu.test.upcdn.net/snap/20200712125827.png)
 
 执行结束后，查看状态：
 
-![](http://dunwu.test.upcdn.net/snap/20200712130234.png)
+![img](http://dunwu.test.upcdn.net/snap/20200712130234.png)
 
 ## 四、Redis 命令
 
