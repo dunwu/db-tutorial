@@ -3,9 +3,9 @@
 <!-- TOC depthFrom:2 depthTo:3 -->
 
 - [一、MongoDB 安装](#一mongodb-安装)
-  - [Windows](#windows)
-  - [Linux](#linux)
-  - [设置用户名、密码](#设置用户名密码)
+    - [Windows](#windows)
+    - [Linux](#linux)
+    - [设置用户名、密码](#设置用户名密码)
 - [参考资料](#参考资料)
 
 <!-- /TOC -->
@@ -122,5 +122,5 @@ Successfully added user: {
 
 - [MongoDB 官网](https://www.mongodb.com/)
 - [MongoDBGithub](https://github.com/mongodb/mongo)
-- [MongoDB 官方免费教程——MongoDB University](https://link.zhihu.com/?target=https%3A//university.mongodb.com/)
+- [MongoDB 官方免费教程](https://university.mongodb.com/)
 - [MongoDB 教程](https://www.runoob.com/mongodb/mongodb-tutorial.html)

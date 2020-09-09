@@ -3,14 +3,22 @@
 <!-- TOC depthFrom:2 depthTo:3 -->
 
 - [简介](#简介)
+    - [MongoDB 发展](#mongodb-发展)
+    - [MongoDB vs. RDBMS](#mongodb-vs-rdbms)
+    - [MongoDB 特性](#mongodb-特性)
 - [MongoDB 概念](#mongodb-概念)
 - [MongoDB 数据类型](#mongodb-数据类型)
-- [MongoDB SQL](#mongodb-sql)
-  - [数据库操作](#数据库操作)
-  - [集合操作](#集合操作)
-  - [文档操作](#文档操作)
-  - [索引操作](#索引操作)
-  - [聚合操作](#聚合操作)
+- [MongoDB CRUD](#mongodb-crud)
+    - [数据库操作](#数据库操作)
+    - [集合操作](#集合操作)
+    - [插入文档操作](#插入文档操作)
+    - [查询文档操作](#查询文档操作)
+    - [更新文档操作](#更新文档操作)
+    - [删除文档操作](#删除文档操作)
+    - [索引操作](#索引操作)
+- [MongoDB 聚合操作](#mongodb-聚合操作)
+    - [管道](#管道)
+    - [聚合步骤](#聚合步骤)
 - [参考资料](#参考资料)
 
 <!-- /TOC -->
@@ -369,8 +377,6 @@ db.<集合>.find(<JSON>)
 68
 ```
 
-
-
 #### 查询逻辑条件
 
 （1）and 条件
@@ -594,7 +600,7 @@ MongoDB 中聚合(aggregate)主要用于处理数据(诸如统计平均值,求�
 
 - 接受一系列文档（原始数据）；
 - 每个步骤对这些文档进行一系列运算；
-- 结果文档输出给下一个步骤； 
+- 结果文档输出给下一个步骤；
 
 聚合操作的基本格式
 
@@ -606,21 +612,17 @@ db.<集合>.aggregate(pipeline, {options});
 
 ### 聚合步骤
 
-| 步骤          | 作用 | SQL 等价运算符 |
-| ------------- | ---- | -------------- |
-| `$match`      | 过滤 | WHERE          |
-| `$project`    | 投影 | AS             |
-| `$sort`       | 排序 | ORDER BY       |
-| `$group`      | 分组 | GROUP BY       |
-| `$skip` / `$limit` | 结果限制 | SKIP / LIMIT |
-| `$lookup` | 左外连接 | LEFT OUTER JOIN |
-| `$unwind` | 展开数组 | N/A |
-| `$graphLookup` | 图搜索 | N/A |
-| `$facet` / `$bucket` | 分面搜索 | N/A |
-
-
-
-
+| 步骤                 | 作用     | SQL 等价运算符  |
+| -------------------- | -------- | --------------- |
+| `$match`             | 过滤     | WHERE           |
+| `$project`           | 投影     | AS              |
+| `$sort`              | 排序     | ORDER BY        |
+| `$group`             | 分组     | GROUP BY        |
+| `$skip` / `$limit`   | 结果限制 | SKIP / LIMIT    |
+| `$lookup`            | 左外连接 | LEFT OUTER JOIN |
+| `$unwind`            | 展开数组 | N/A             |
+| `$graphLookup`       | 图搜索   | N/A             |
+| `$facet` / `$bucket` | 分面搜索 | N/A             |
 
 【示例】
 
@@ -645,7 +647,7 @@ db.<集合>.aggregate(pipeline, {options});
 | \$first    | 根据资源文档的排序获取第一个文档数据。         | db.mycol.aggregate([{$group : {_id : "$by_user", first_url : {$first : "$url"}}}])    |
 | \$last     | 根据资源文档的排序获取最后一个文档数据         | db.mycol.aggregate([{$group : {_id : "$by_user", last_url : {$last : "$url"}}}])      |
 
-- 
+-
 
 ## 参考资料
 
