@@ -6,6 +6,8 @@
 
 ### [MongoDB 建模](mongodb-model.md)
 
+### [MongoDB 建模示例](mongodb-model-example.md)
+
 ### [MongoDB 运维](mongodb-ops.md)
 
 ## 📚 资料
@@ -17,6 +19,8 @@
 - **教程**
   - [MongoDB 教程](https://www.runoob.com/mongodb/mongodb-tutorial.html)
   - [MongoDB 高手课](https://time.geekbang.org/course/intro/100040001)
+- **数据**
+  - [mongodb-json-files](https://github.com/ozlerhakan/mongodb-json-files)
 
 ## 🚪 传送
 

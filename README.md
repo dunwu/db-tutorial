@@ -87,9 +87,11 @@
 - [HBase Java API](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/hbase-api.md)
 - [HBase 配置](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/hbase-ops.md)
 
-#### MongoDB
+#### [MongoDB](docs/nosql/mongodb) 📚
 
 - [MongoDB 应用指南](docs/nosql/mongodb/mongodb-quickstart.md)
+- [MongoDB 建模](docs/nosql/mongodb/mongodb-model.md)
+- [MongoDB 建模示例](docs/nosql/mongodb/mongodb-model-example.md)
 - [MongoDB 运维](docs/nosql/mongodb/mongodb-ops.md)
 
 ### 中间件

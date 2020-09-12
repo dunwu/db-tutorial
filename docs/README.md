@@ -90,7 +90,11 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 #### MongoDB
 
+> [MongoDB](nosql/mongodb) 📚
+
 - [MongoDB 应用指南](nosql/mongodb/mongodb-quickstart.md)
+- [MongoDB 建模](nosql/mongodb/mongodb-model.md)
+- [MongoDB 建模示例](nosql/mongodb/mongodb-model-example.md)
 - [MongoDB 运维](nosql/mongodb/mongodb-ops.md)
 
 ### 中间件

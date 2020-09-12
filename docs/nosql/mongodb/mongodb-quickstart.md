@@ -1,28 +1,5 @@
 # MongoDB 应用指南
 
-<!-- TOC depthFrom:2 depthTo:3 -->
-
-- [简介](#简介)
-    - [MongoDB 发展](#mongodb-发展)
-    - [MongoDB vs. RDBMS](#mongodb-vs-rdbms)
-    - [MongoDB 特性](#mongodb-特性)
-- [MongoDB 概念](#mongodb-概念)
-- [MongoDB 数据类型](#mongodb-数据类型)
-- [MongoDB CRUD](#mongodb-crud)
-    - [数据库操作](#数据库操作)
-    - [集合操作](#集合操作)
-    - [插入文档操作](#插入文档操作)
-    - [查询文档操作](#查询文档操作)
-    - [更新文档操作](#更新文档操作)
-    - [删除文档操作](#删除文档操作)
-    - [索引操作](#索引操作)
-- [MongoDB 聚合操作](#mongodb-聚合操作)
-    - [管道](#管道)
-    - [聚合步骤](#聚合步骤)
-- [参考资料](#参考资料)
-
-<!-- /TOC -->
-
 ## 简介
 
 MongoDB 是一个基于分布式文件存储的数据库。由 C++ 语言编写。旨在为 WEB 应用提供可扩展的高性能数据存储解决方案。
@@ -31,15 +8,12 @@ MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组
 
 ### MongoDB 发展
 
-1.x - 支持复制和分片
+- 1.x - 支持复制和分片
+- 2.x - 更丰富的数据库功能
+- 3.x - WiredTiger 和周边生态
+- 4.x - 支持分布式事务
 
-2.x - 更丰富的数据库功能
-
-3.x - WiredTiger 和周边生态
-
-4.x - 支持分布式事务
-
-### MongoDB vs. RDBMS
+### MongoDB 和 RDBMS
 
 | 特性      | MongoDB                                          | RDBMS    |
 | --------- | ------------------------------------------------ | -------- |
@@ -71,7 +45,7 @@ MongoDB 将数据存储为一个文档，数据结构由键值(key=>value)对组
 | table joins   |                   | 表连接,MongoDB 不支持                  |
 | primary key   | primary key       | 主键,MongoDB 自动将\_id 字段设置为主键 |
 
-#### 数据库
+### 数据库
 
 一个 MongoDB 中可以建立多个数据库。
 
@@ -115,7 +89,7 @@ local
 数据库也通过名字来标识。数据库名可以是满足以下条件的任意 UTF-8 字符串。
 
 - 不能是空字符串（"")。
-- 不得含有' '（空格)、.、\$、/、\和\0 (空字符)。
+- 不得含有 ' '（空格)、`.`、`\$`、`/`、`\`和 `\0` (空字符)。
 - 应全部小写。
 - 最多 64 字节。
 
@@ -125,7 +99,7 @@ local
 - **local**：这个数据永远不会被复制，可以用来存储限于本地单台服务器的任意集合
 - **config**：当 Mongo 用于分片设置时，config 数据库在内部使用，用于保存分片的相关信息。
 
-#### 文档
+### 文档
 
 文档是一组键值(key-value)对(即 BSON)。MongoDB 的文档不需要设置相同的字段，并且相同的字段不需要相同的数据类型，这与关系型数据库有很大的区别，也是 MongoDB 非常突出的特点。
 
@@ -143,7 +117,7 @@ local
 - `.` 和 `$` 有特别的意义，只有在特定环境下才能使用。
 - 以下划线 `_` 开头的键是保留的(不是严格要求的)。
 
-#### 集合
+### 集合
 
 集合就是 MongoDB 文档组，类似于 RDBMS （关系数据库管理系统：Relational Database Management System)中的表格。
 
@@ -152,11 +126,11 @@ local
 合法的集合名：
 
 - 集合名不能是空字符串""。
-- 集合名不能含有\0 字符（空字符)，这个字符表示集合名的结尾。
+- 集合名不能含有 `\0` 字符（空字符)，这个字符表示集合名的结尾。
 - 集合名不能以"system."开头，这是为系统集合保留的前缀。
-- 用户创建的集合名字不能含有保留字符。有些驱动程序的确支持在集合名里面包含，这是因为某些系统生成的集合中包含该字符。除非你要访问这种系统创建的集合，否则千万不要在名字里出现\$。
+- 用户创建的集合名字不能含有保留字符。有些驱动程序的确支持在集合名里面包含，这是因为某些系统生成的集合中包含该字符。除非你要访问这种系统创建的集合，否则千万不要在名字里出现 `$`。
 
-#### 元数据
+### 元数据
 
 数据库的信息是存储在集合中。它们使用了系统的命名空间：`dbname.system.*`
 
@@ -172,9 +146,7 @@ local
 
 对于修改系统集合中的对象有如下限制。
 
-在{{system.indexes}}插入数据，可以创建索引。但除此之外该表信息是不可变的(特殊的 drop index 命令将自动更新相关信息)。
-
-{{system.users}}是可修改的。 {{system.profile}}是可删除的。
+在 `system.indexes` 插入数据，可以创建索引。但除此之外该表信息是不可变的(特殊的 drop index 命令将自动更新相关信息)。`system.users` 是可修改的。`system.profile` 是可删除的。
 
 ## MongoDB 数据类型
 
@@ -202,13 +174,13 @@ local
 
 #### 查看所有数据库
 
-```
+```shell
 show dbs
 ```
 
 #### 创建数据库
 
-```
+```shell
 use <database>
 ```
 
@@ -218,7 +190,7 @@ use <database>
 
 刚创建的数据库 test 并不在数据库的列表中， 要显示它，需要插入一些数据
 
-```
+```shell
 > use test
 switched to db test
 >
@@ -239,7 +211,7 @@ test    0.000GB
 
 删除当前数据库
 
-```
+```shell
 db.dropDatabase()
 ```
 
@@ -247,13 +219,13 @@ db.dropDatabase()
 
 #### 查看集合
 
-```
+```shell
 show collections
 ```
 
 #### 创建集合
 
-```
+```shell
 db.createCollection(name, options)
 ```
 
@@ -273,7 +245,7 @@ options 可以是如下参数：
 
 在插入文档时，MongoDB 首先检查固定集合的 size 字段，然后检查 max 字段。
 
-```
+```shell
 > db.createCollection("collection")
 { "ok" : 1 }
 > show collections
@@ -282,7 +254,7 @@ collection
 
 #### 删除集合
 
-```
+```shell
 > db.collection.drop()
 true
 > show collections
@@ -304,7 +276,7 @@ db.<集合>.insertMany([<JSON 1>, <JSON 2>, ..., <JSON N>])
 
 【示例】insertOne
 
-```
+```shell
 > db.color.insertOne({name: "red"})
 {
         "acknowledged" : true,
@@ -314,7 +286,7 @@ db.<集合>.insertMany([<JSON 1>, <JSON 2>, ..., <JSON N>])
 
 【示例】insertMany
 
-```
+```shell
 > db.color.insertMany([
   {
     "name": "yellow"
@@ -339,7 +311,7 @@ MongoDB 使用 `find()` 方法完成查询文档操作。
 
 **语法格式**
 
-```
+```shell
 db.<集合>.find(<JSON>)
 ```
 
@@ -358,7 +330,7 @@ db.<集合>.find(<JSON>)
 
 > 说明：
 >
-> ```
+> ```shell
 > $eq  --------  equal  =
 > $ne ----------- not equal  !=
 > $gt -------- greater than  >
@@ -385,7 +357,7 @@ MongoDB 的 find() 方法可以传入多个键(key)，每个键(key)以逗号隔
 
 语法格式如下：
 
-```
+```shell
 > db.col.find({key1:value1, key2:value2}).pretty()
 ```
 
@@ -393,7 +365,7 @@ MongoDB 的 find() 方法可以传入多个键(key)，每个键(key)以逗号隔
 
 MongoDB OR 条件语句使用了关键字 **\$or**,语法格式如下：
 
-```
+```shell
 >db.col.find(
    {
       $or: [
@@ -407,20 +379,20 @@ MongoDB OR 条件语句使用了关键字 **\$or**,语法格式如下：
 
 查询 title 包含"教"字的文档：
 
-```
-db.col.find({title:/教/})
+```shell
+db.col.find({ title: /教/ })
 ```
 
 查询 title 字段以"教"字开头的文档：
 
-```
-db.col.find({title:/^教/})
+```shell
+db.col.find({ title: /^教/ })
 ```
 
 查询 titl e 字段以"教"字结尾的文档：
 
-```
-db.col.find({title:/教$/})
+```shell
+db.col.find({ title: /教$/ })
 ```
 
 #### Limit() 方法
@@ -429,7 +401,7 @@ db.col.find({title:/教$/})
 
 limit()方法基本语法如下所示：
 
-```
+```shell
 >db.COLLECTION_NAME.find().limit(NUMBER)
 ```
 
@@ -439,17 +411,17 @@ limit()方法基本语法如下所示：
 
 skip() 方法脚本语法格式如下：
 
-```
+```shell
 >db.COLLECTION_NAME.find().limit(NUMBER).skip(NUMBER)
 ```
 
-##### sort() 方法
+#### Sort() 方法
 
 在 MongoDB 中使用 sort() 方法对数据进行排序，sort() 方法可以通过参数指定排序的字段，并使用 1 和 -1 来指定排序的方式，其中 1 为升序排列，而 -1 是用于降序排列。
 
 sort()方法基本语法如下所示：
 
-```
+```shell
 >db.COLLECTION_NAME.find().sort({KEY:1})
 ```
 
@@ -459,7 +431,7 @@ sort()方法基本语法如下所示：
 
 update() 方法用于更新已存在的文档。语法格式如下：
 
-```
+```shell
 db.collection.update(
    <query>,
    <update>,
@@ -481,54 +453,83 @@ db.collection.update(
 
 【示例】更新文档
 
-```
-db.collection.update({'title':'MongoDB 教程'},{$set:{'title':'MongoDB'}})
+```shell
+db.collection.update({ title: 'MongoDB 教程' }, { $set: { title: 'MongoDB' } })
 ```
 
 【示例】更新多条相同文档
 
 以上语句只会修改第一条发现的文档，如果你要修改多条相同的文档，则需要设置 multi 参数为 true。
 
-```
-db.collection.update({'title':'MongoDB 教程'},{$set:{'title':'MongoDB'}},{multi:true})
+```shell
+db.collection.update(
+  { title: 'MongoDB 教程' },
+  { $set: { title: 'MongoDB' } },
+  { multi: true }
+)
 ```
 
 【示例】更多实例
 
 只更新第一条记录：
 
-```
-db.collection.update( { "count" : { $gt : 1 } } , { $set : { "test2" : "OK"} } );
+```shell
+db.collection.update({ count: { $gt: 1 } }, { $set: { test2: 'OK' } })
 ```
 
 全部更新：
 
-```
-db.collection.update( { "count" : { $gt : 3 } } , { $set : { "test2" : "OK"} },false,true );
+```shell
+db.collection.update(
+  { count: { $gt: 3 } },
+  { $set: { test2: 'OK' } },
+  false,
+  true
+)
 ```
 
 只添加第一条：
 
-```
-db.collection.update( { "count" : { $gt : 4 } } , { $set : { "test5" : "OK"} },true,false );
+```shell
+db.collection.update(
+  { count: { $gt: 4 } },
+  { $set: { test5: 'OK' } },
+  true,
+  false
+)
 ```
 
 全部添加进去:
 
-```
-db.collection.update( { "count" : { $gt : 4 } } , { $set : { "test5" : "OK"} },true,false );
+```shell
+db.collection.update(
+  { count: { $gt: 4 } },
+  { $set: { test5: 'OK' } },
+  true,
+  false
+)
 ```
 
 全部更新：
 
-```
-db.collection.update( { "count" : { $gt : 4 } } , { $set : { "test5" : "OK"} },true,false );
+```shell
+db.collection.update(
+  { count: { $gt: 4 } },
+  { $set: { test5: 'OK' } },
+  true,
+  false
+)
 ```
 
 只更新第一条记录：
 
-```
-db.collection.update( { "count" : { $gt : 4 } } , { $set : { "test5" : "OK"} },true,false );
+```shell
+db.collection.update(
+  { count: { $gt: 4 } },
+  { $set: { test5: 'OK' } },
+  true,
+  false
+)
 ```
 
 ### 删除文档操作
@@ -537,14 +538,14 @@ db.collection.update( { "count" : { $gt : 4 } } , { $set : { "test5" : "OK"} },t
 
 删除 status 等于 A 的全部文档：
 
-```
-db.collection.deleteMany({ status : "A" })
+```shell
+db.collection.deleteMany({ status: 'A' })
 ```
 
 删除 status 等于 D 的一个文档：
 
-```
-db.collection.deleteOne( { status: "D" } )
+```shell
+db.collection.deleteOne({ status: 'D' })
 ```
 
 ### 索引操作
@@ -559,19 +560,19 @@ MongoDB 使用 createIndex() 方法来创建索引。
 
 createIndex()方法基本语法格式如下所示：
 
-```
+```shell
 >db.collection.createIndex(keys, options)
 ```
 
 语法中 Key 值为你要创建的索引字段，1 为指定按升序创建索引，如果你想按降序来创建索引指定为 -1 即可。
 
-```
+```shell
 >db.col.createIndex({"title":1})
 ```
 
 createIndex() 方法中你也可以设置使用多个字段创建索引（关系型数据库中称作复合索引）。
 
-```
+```shell
 >db.col.createIndex({"title":1,"description":-1})
 ```
 
@@ -604,7 +605,7 @@ MongoDB 中聚合(aggregate)主要用于处理数据(诸如统计平均值,求�
 
 聚合操作的基本格式
 
-```
+```shell
 pipeline = [$stage1, $stage1, ..., $stageN];
 
 db.<集合>.aggregate(pipeline, {options});
@@ -626,7 +627,7 @@ db.<集合>.aggregate(pipeline, {options});
 
 【示例】
 
-```
+```shell
 > db.collection.insertMany([{"title":"MongoDB Overview","description":"MongoDB is no sql database","by_user":"collection","tagsr":["mongodb","database","NoSQL"],"likes":"100"},{"title":"NoSQL Overview","description":"No sql database is very fast","by_user":"collection","tagsr":["mongodb","database","NoSQL"],"likes":"10"},{"title":"Neo4j Overview","description":"Neo4j is no sql database","by_user":"Neo4j","tagsr":["neo4j","database","NoSQL"],"likes":"750"}])
 > db.collection.aggregate([{$group : {_id : "$by_user", num_tutorial : {$sum : 1}}}])
 { "_id" : null, "num_tutorial" : 3 }
@@ -636,18 +637,16 @@ db.<集合>.aggregate(pipeline, {options});
 
 下表展示了一些聚合的表达式:
 
-| 表达式     | 描述                                           | 实例                                                                                  |
-| :--------- | :--------------------------------------------- | :------------------------------------------------------------------------------------ |
-| \$sum      | 计算总和。                                     | db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$sum : "$likes"}}}]) |
-| \$avg      | 计算平均值                                     | db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}]) |
-| \$min      | 获取集合中所有文档对应值得最小值。             | db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$min : "$likes"}}}]) |
-| \$max      | 获取集合中所有文档对应值得最大值。             | db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$max : "$likes"}}}]) |
-| \$push     | 在结果文档中插入值到一个数组中。               | db.mycol.aggregate([{$group : {_id : "$by_user", url : {$push: "$url"}}}])            |
-| \$addToSet | 在结果文档中插入值到一个数组中，但不创建副本。 | db.mycol.aggregate([{$group : {_id : "$by_user", url : {$addToSet : "$url"}}}])       |
-| \$first    | 根据资源文档的排序获取第一个文档数据。         | db.mycol.aggregate([{$group : {_id : "$by_user", first_url : {$first : "$url"}}}])    |
-| \$last     | 根据资源文档的排序获取最后一个文档数据         | db.mycol.aggregate([{$group : {_id : "$by_user", last_url : {$last : "$url"}}}])      |
-
--
+| 表达式      | 描述                                           | 实例                                                                                    |
+| :---------- | :--------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| `$sum`      | 计算总和。                                     | `db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$sum : "$likes"}}}])` |
+| `$avg`      | 计算平均值                                     | `db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$avg : "$likes"}}}])` |
+| `$min`      | 获取集合中所有文档对应值得最小值。             | `db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$min : "$likes"}}}])` |
+| `$max`      | 获取集合中所有文档对应值得最大值。             | `db.mycol.aggregate([{$group : {_id : "$by_user", num_tutorial : {$max : "$likes"}}}])` |
+| `$push`     | 在结果文档中插入值到一个数组中。               | `db.mycol.aggregate([{$group : {_id : "$by_user", url : {$push: "$url"}}}])`            |
+| `$addToSet` | 在结果文档中插入值到一个数组中，但不创建副本。 | `db.mycol.aggregate([{$group : {_id : "$by_user", url : {$addToSet : "$url"}}}])`       |
+| `$first`    | 根据资源文档的排序获取第一个文档数据。         | `db.mycol.aggregate([{$group : {_id : "$by_user", first_url : {$first : "$url"}}}])`    |
+| `$last`     | 根据资源文档的排序获取最后一个文档数据         | `db.mycol.aggregate([{$group : {_id : "$by_user", last_url : {$last : "$url"}}}])`      |
 
 ## 参考资料
 

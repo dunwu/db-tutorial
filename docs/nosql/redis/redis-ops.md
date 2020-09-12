@@ -397,7 +397,7 @@ root      4629     1  0 11:07 ?        00:00:00 /opt/redis/src/redis-server 0.0.
 通过 `redis-cli --cluster create` 命令可以自动配置集群，如下：
 
 ```shell
-$ ./redis-cli --cluster create 127.0.0.1:7001 127.0.0.1:7002 127.0.0.2:7003 127.0.0.2:7004 127.0.0.3:7005 127.0.0.3:7006 --cluster-replicas 1
+./redis-cli --cluster create 127.0.0.1:7001 127.0.0.1:7002 127.0.0.2:7003 127.0.0.2:7004 127.0.0.3:7005 127.0.0.3:7006 --cluster-replicas 1
 ```
 
 redis-cluster 会根据设置的节点数和副本数自动分片（分配 Hash 虚拟槽 slot），如果满意，输入 yes ，直接开始分片。
