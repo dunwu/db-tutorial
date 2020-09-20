@@ -529,24 +529,57 @@ db.categories.insertMany([
 
 ```javascript
 db.categories.insertMany([
-  { _id: 'Books', parent: 0, left: 1, right: 12 },
-  { _id: 'Programming', parent: 'Books', left: 2, right: 11 },
-  { _id: 'Languages', parent: 'Programming', left: 3, right: 4 },
-  { _id: 'Databases', parent: 'Programming', left: 5, right: 10 },
-  { _id: 'MongoDB', parent: 'Databases', left: 6, right: 7 },
-  { _id: 'dbm', parent: 'Databases', left: 8, right: 9 },
-])
+  { _id: "Books", parent: 0, left: 1, right: 12 },
+  { _id: "Programming", parent: "Books", left: 2, right: 11 },
+  { _id: "Languages", parent: "Programming", left: 3, right: 4 },
+  { _id: "Databases", parent: "Programming", left: 5, right: 10 },
+  { _id: "MongoDB", parent: "Databases", left: 6, right: 7 },
+  { _id: "dbm", parent: "Databases", left: 8, right: 9 }
+]);
 ```
 
 可以查询以检索节点的后代：
 
 ```javascript
-var databaseCategory = db.categories.findOne({ _id: 'Databases' })
+var databaseCategory = db.categories.findOne({ _id: "Databases" });
 db.categories.find({
   left: { $gt: databaseCategory.left },
-  right: { $lt: databaseCategory.right },
-})
+  right: { $lt: databaseCategory.right }
+});
 ```
+
+## 设计模式
+
+### 大文档，很多列，很多索引
+
+解决方案是：列转行
+
+![img](http://dunwu.test.upcdn.net/snap/20200919225901.png)
+
+### 管理文档不同版本
+
+MongoDB 文档格式非常灵活，势必会带来版本维护上的难度。
+
+解决方案是：可以增加一个版本号字段
+
+- 快速过滤掉不需要升级的文档
+- 升级时，对不同版本的文档做不同处理
+
+### 统计网页点击量
+
+统计数据精确性要求并不是十分重要。
+
+解决方案：用近似计算
+
+每隔 10 次写一次：
+
+```json
+{ "$inc": { "views": 1 } }
+```
+
+### 精确统计
+
+解决方案：使用预聚合
 
 ## 参考资料
 

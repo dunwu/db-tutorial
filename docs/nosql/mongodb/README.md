@@ -8,6 +8,10 @@
 
 ### [MongoDB 建模示例](mongodb-model-example.md)
 
+### [MongoDB 复制](mongodb-replication.md)
+
+### [MongoDB 分片](mongodb-sharding.md)
+
 ### [MongoDB 运维](mongodb-ops.md)
 
 ## 📚 资料
