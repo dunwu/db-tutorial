@@ -90,8 +90,12 @@
 #### [MongoDB](docs/nosql/mongodb) 📚
 
 - [MongoDB 应用指南](docs/nosql/mongodb/mongodb-quickstart.md)
+- [MongoDB 聚合操作](docs/nosql/mongodb/mongodb-aggregation.md)
 - [MongoDB 建模](docs/nosql/mongodb/mongodb-model.md)
 - [MongoDB 建模示例](docs/nosql/mongodb/mongodb-model-example.md)
+- [MongoDB 索引](docs/nosql/mongodb/mongodb-index.md)
+- [MongoDB 复制](docs/nosql/mongodb/mongodb-replication.md)
+- [MongoDB 分片](docs/nosql/mongodb/mongodb-sharding.md)
 - [MongoDB 运维](docs/nosql/mongodb/mongodb-ops.md)
 
 ### 中间件

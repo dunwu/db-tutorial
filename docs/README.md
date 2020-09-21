@@ -93,8 +93,12 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 > [MongoDB](nosql/mongodb) 📚
 
 - [MongoDB 应用指南](nosql/mongodb/mongodb-quickstart.md)
+- [MongoDB 聚合操作](nosql/mongodb/mongodb-aggregation.md)
 - [MongoDB 建模](nosql/mongodb/mongodb-model.md)
 - [MongoDB 建模示例](nosql/mongodb/mongodb-model-example.md)
+- [MongoDB 索引](nosql/mongodb/mongodb-index.md)
+- [MongoDB 复制](nosql/mongodb/mongodb-replication.md)
+- [MongoDB 分片](nosql/mongodb/mongodb-sharding.md)
 - [MongoDB 运维](nosql/mongodb/mongodb-ops.md)
 
 ### 中间件
