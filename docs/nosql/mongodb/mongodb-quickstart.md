@@ -678,5 +678,5 @@ db.<集合>.aggregate(pipeline, {options});
 ## 参考资料
 
 - [MongoDB 官网](https://www.mongodb.com/)
-- [MongoDBGithub](https://github.com/mongodb/mongo)
+- [MongoDB Github](https://github.com/mongodb/mongo)
 - [MongoDB 教程](https://www.runoob.com/mongodb/mongodb-tutorial.html)

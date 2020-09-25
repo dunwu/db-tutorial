@@ -105,7 +105,7 @@ MongoDB 中的副本集是一组维护相同数据集的 mongod 进程。一个�
 
 - **官方**
   - [MongoDB 官网](https://www.mongodb.com/)
-  - [MongoDBGithub](https://github.com/mongodb/mongo)
+  - [MongoDB Github](https://github.com/mongodb/mongo)
   - [MongoDB 官方免费教程](https://university.mongodb.com/)
 - **教程**
   - [MongoDB 教程](https://www.runoob.com/mongodb/mongodb-tutorial.html)

@@ -10,6 +10,8 @@
 
 ### [MongoDB 应用指南](mongodb-quickstart.md)
 
+### [MongoDB CRUD 操作](mongodb-crud.md)
+
 ### [MongoDB 聚合操作](mongodb-aggregation.md)
 
 ### [MongoDB 建模](mongodb-model.md)
@@ -28,7 +30,7 @@
 
 - **官方**
   - [MongoDB 官网](https://www.mongodb.com/)
-  - [MongoDBGithub](https://github.com/mongodb/mongo)
+  - [MongoDB Github](https://github.com/mongodb/mongo)
   - [MongoDB 官方免费教程](https://university.mongodb.com/)
 - **教程**
   - [MongoDB 教程](https://www.runoob.com/mongodb/mongodb-tutorial.html)

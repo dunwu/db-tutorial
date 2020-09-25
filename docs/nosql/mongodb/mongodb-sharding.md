@@ -65,7 +65,7 @@ MongoDB 数据库可以同时包含分片和未分片的集合的 collection。�
 - 选择合适数据节点进行读写
 - 合并多个数据节点的返回
 
-一般，路由节点 mongos 建议至少 2个。
+一般，路由节点 mongos 建议至少 2 个。
 
 ## 分片 Key
 
@@ -135,7 +135,7 @@ Hash 分片策略会先计算分片 Key 字段值的哈希值；然后，根据�
 
 - **官方**
   - [MongoDB 官网](https://www.mongodb.com/)
-  - [MongoDBGithub](https://github.com/mongodb/mongo)
+  - [MongoDB Github](https://github.com/mongodb/mongo)
   - [MongoDB 官方免费教程](https://university.mongodb.com/)
 - **教程**
   - [MongoDB 教程](https://www.runoob.com/mongodb/mongodb-tutorial.html)

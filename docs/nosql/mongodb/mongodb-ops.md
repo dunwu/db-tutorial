@@ -295,7 +295,6 @@ $ mongoexport -h 127.0.0.1 --port 27017 -d test -c product --type csv -f name,pr
 ## 参考资料
 
 - [MongoDB 官网](https://www.mongodb.com/)
-- [MongoDBGithub](https://github.com/mongodb/mongo)
+- [MongoDB Github](https://github.com/mongodb/mongo)
 - [MongoDB 官方免费教程](https://university.mongodb.com/)
 - [MongoDB 教程](https://www.runoob.com/mongodb/mongodb-tutorial.html)
-

@@ -377,7 +377,7 @@ SQL 和 MongoDB 聚合方式对比：
 
 - **官方**
   - [MongoDB 官网](https://www.mongodb.com/)
-  - [MongoDBGithub](https://github.com/mongodb/mongo)
+  - [MongoDB Github](https://github.com/mongodb/mongo)
   - [MongoDB 官方免费教程](https://university.mongodb.com/)
 - **教程**
   - [MongoDB 教程](https://www.runoob.com/mongodb/mongodb-tutorial.html)
