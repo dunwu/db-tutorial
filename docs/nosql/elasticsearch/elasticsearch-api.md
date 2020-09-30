@@ -69,7 +69,32 @@ curl -X DELETE 'localhost:9200/user'
 可以通过 GET 请求查看索引信息
 
 ```bash
+# 查看索引相关信息
 curl -X GET 'localhost:9200/user'
+
+#查看索引的文档总数
+CURL -X 'localhost:9200/user/_count'
+
+#查看前10条文档，了解文档格式
+POST user/_search
+{
+}
+
+#_cat indices API
+#查看indices
+CURL -X /_cat/indices/kibana*?v&s=index
+
+#查看状态为绿的索引
+CURL -X /_cat/indices?v&health=green
+
+#按照文档个数排序
+CURL -X /_cat/indices?v&s=docs.count:desc
+
+#查看具体的字段
+CURL -X /_cat/indices/kibana*?pri&v&h=health,index,pri,rep,docs.count,mt
+
+#How much memory is used per index?
+CURL -X /_cat/indices?v&h=i,tm&s=tm:desc
 ```
 
 #### 打开/关闭索引
