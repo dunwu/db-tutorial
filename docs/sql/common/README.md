@@ -2,9 +2,9 @@
 
 ## 📖 内容
 
-### [关系型数据库面试题 💯](sql/common/sql-interview.md)
+### [关系型数据库面试题 💯](sql-interview.md)
 
-### [SQL Cheat Sheet](sql/common/sql-cheat-sheet.md)
+### [SQL Cheat Sheet](sql-cheat-sheet.md)
 
 ![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
 
