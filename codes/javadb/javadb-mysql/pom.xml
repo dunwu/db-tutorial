@@ -23,7 +23,7 @@
 
     <spring.version>4.3.13.RELEASE</spring.version>
     <logback.version>1.2.3</logback.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
   </properties>
 
   <dependencies>
