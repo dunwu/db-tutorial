@@ -4,13 +4,13 @@
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
-- [一、基本配置](#一基本配置)
-- [二、配置项说明](#二配置项说明)
-- [参考资料](#参考资料)
+- [1. 基本配置](#1-基本配置)
+- [2. 配置项说明](#2-配置项说明)
+- [3. 参考资料](#3-参考资料)
 
 <!-- /TOC -->
 
-## 一、基本配置
+## 1. 基本配置
 
 ```ini
 [mysqld]
@@ -55,7 +55,7 @@ socket  = /var/lib/mysql/mysql.sock
 port = 3306
 ```
 
-## 二、配置项说明
+## 2. 配置项说明
 
 ```ini
 [client]
@@ -477,7 +477,7 @@ auto-rehash
 socket = /var/lib/mysql/mysql.sock
 ```
 
-## 参考资料
+## 3. 参考资料
 
 - [《高性能 MySQL》](https://item.jd.com/11220393.html)
 - [Mysql 配置文件/etc/my.cnf 解析](https://www.jianshu.com/p/5f39c486561b)

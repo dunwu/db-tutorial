@@ -16,7 +16,8 @@
   - [2.6. 优化查询方式](#26-优化查询方式)
 - [3. 执行计划（`EXPLAIN`）](#3-执行计划explain)
 - [4. optimizer trace](#4-optimizer-trace)
-- [5. 参考资料](#5-参考资料)
+- [5. 数据模型和业务](#5-数据模型和业务)
+- [6. 参考资料](#6-参考资料)
 
 <!-- /TOC -->
 
@@ -322,10 +323,17 @@ SELECT * FROM information_schema.OPTIMIZER_TRACE;
 SET optimizer_trace="enabled=off";
 ```
 
-## 5. 参考资料
+## 5. 数据模型和业务
+
+- 表字段比较复杂、易变动、结构难以统一的情况下，可以考虑使用 Nosql 来代替关系数据库表存储，如 ElasticSearch、MongoDB。
+- 在高并发情况下的查询操作，可以使用缓存（如 Redis）代替数据库操作，提高并发性能。
+- 数据量增长较快的表，需要考虑水平分表或分库，避免单表操作的性能瓶颈。
+- 除此之外，我们应该通过一些优化，尽量避免比较复杂的 JOIN 查询操作，例如冗余一些字段，减少 JOIN 查询；创建一些中间表，减少 JOIN 查询。
+
+## 6. 参考资料
 
 - [《高性能 MySQL》](https://book.douban.com/subject/23008813/)
-- [Java 性能调优实战](https://time.geekbang.org/column/intro/100028001)
+- [《Java 性能调优实战》](https://time.geekbang.org/column/intro/100028001)
 - [我必须得告诉大家的 MySQL 优化原理](https://www.jianshu.com/p/d7665192aaaf)
 - [20+ 条 MySQL 性能优化的最佳经验](https://www.jfox.info/20-tiao-mysql-xing-nen-you-hua-de-zui-jia-jing-yan.html)
 - [MySQL 性能优化神器 Explain 使用分析](https://segmentfault.com/a/1190000008131735)

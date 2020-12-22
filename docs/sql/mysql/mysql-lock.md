@@ -4,22 +4,22 @@
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
-- [一、悲观锁和乐观锁](#一悲观锁和乐观锁)
-- [二、表级锁和行级锁](#二表级锁和行级锁)
-- [三、读写锁](#三读写锁)
-- [四、意向锁](#四意向锁)
-- [五、MVCC](#五mvcc)
-  - [MVCC 思想](#mvcc-思想)
-  - [版本号](#版本号)
-  - [Undo 日志](#undo-日志)
-  - [ReadView](#readview)
-  - [快照读与当前读](#快照读与当前读)
-- [六、Next-key 锁](#六next-key-锁)
-- [参考资料](#参考资料)
+- [1. 悲观锁和乐观锁](#1-悲观锁和乐观锁)
+- [2. 表级锁和行级锁](#2-表级锁和行级锁)
+- [3. 读写锁](#3-读写锁)
+- [4. 意向锁](#4-意向锁)
+- [5. MVCC](#5-mvcc)
+    - [5.1. MVCC 思想](#51-mvcc-思想)
+    - [5.2. 版本号](#52-版本号)
+    - [5.3. Undo 日志](#53-undo-日志)
+    - [5.4. ReadView](#54-readview)
+    - [5.5. 快照读与当前读](#55-快照读与当前读)
+- [6. 行锁](#6-行锁)
+- [7. 参考资料](#7-参考资料)
 
 <!-- /TOC -->
 
-## 一、悲观锁和乐观锁
+## 1. 悲观锁和乐观锁
 
 确保在多个事务同时存取数据库中同一数据时不破坏事务的隔离性和统一性以及数据库的统一性，**乐观锁和悲观锁是并发控制主要采用的技术手段。**
 
@@ -44,7 +44,7 @@ where id=#{id} and version=#{version};
 
 > 更详细的乐观锁说可以参考：[使用 mysql 乐观锁解决并发问题](https://www.cnblogs.com/laoyeye/p/8097684.html)
 
-## 二、表级锁和行级锁
+## 2. 表级锁和行级锁
 
 从数据库的锁粒度来看，MySQL 中提供了两种封锁粒度：行级锁和表级锁。
 
@@ -57,7 +57,7 @@ where id=#{id} and version=#{version};
 
 在 `InnoDB` 中，**行锁是通过给索引上的索引项加锁来实现的**。**如果没有索引，`InnoDB` 将会通过隐藏的聚簇索引来对记录加锁**。
 
-## 三、读写锁
+## 3. 读写锁
 
 - 独享锁（Exclusive），简写为 X 锁，又称写锁。使用方式：`SELECT ... FOR UPDATE;`
 - 共享锁（Shared），简写为 S 锁，又称读锁。使用方式：`SELECT ... LOCK IN SHARE MODE;`
@@ -66,7 +66,7 @@ where id=#{id} and version=#{version};
 
 **`InnoDB` 下的行锁、间隙锁、next-key 锁统统属于独享锁**。
 
-## 四、意向锁
+## 4. 意向锁
 
 **当存在表级锁和行级锁的情况下，必须先申请意向锁（表级锁，但不是真的加锁），再获取行级锁**。使用意向锁（Intention Locks）可以更容易地支持多粒度封锁。
 
@@ -97,13 +97,13 @@ where id=#{id} and version=#{version};
 - 任意 IS/IX 锁之间都是兼容的，因为它们只表示想要对表加锁，而不是真正加锁；
 - 这里兼容关系针对的是表级锁，而表级的 IX 锁和行级的 X 锁兼容，两个事务可以对两个数据行加 X 锁。（事务 T1 想要对数据行 R1 加 X 锁，事务 T2 想要对同一个表的数据行 R2 加 X 锁，两个事务都需要对该表加 IX 锁，但是 IX 锁是兼容的，并且 IX 锁与行级的 X 锁也是兼容的，因此两个事务都能加锁成功，对同一个表中的两个数据行做修改。）
 
-## 五、MVCC
+## 5. MVCC
 
 **多版本并发控制（Multi-Version Concurrency Control, MVCC）可以视为行级锁的一个变种。它在很多情况下都避免了加锁操作，因此开销更低**。不仅是 Mysql，包括 Oracle、PostgreSQL 等其他数据库都实现了各自的 MVCC，实现机制没有统一标准。
 
 MVCC 是 `InnoDB` 存储引擎实现隔离级别的一种具体方式，**用于实现提交读和可重复读这两种隔离级别**。而未提交读隔离级别总是读取最新的数据行，要求很低，无需使用 MVCC。可串行化隔离级别需要对所有读取的行都加锁，单纯使用 MVCC 无法实现。
 
-### MVCC 思想
+### 5.1. MVCC 思想
 
 加锁能解决多个事务同时执行时出现的并发一致性问题。在实际场景中读操作往往多于写操作，因此又引入了读写锁来避免不必要的加锁操作，例如读和读没有互斥关系。读写锁中读和写操作仍然是互斥的。
 
@@ -112,14 +112,14 @@ MVCC 的思想是：
 - **保存数据在某个时间点的快照，写操作（DELETE、INSERT、UPDATE）更新最新的版本快照；而读操作去读旧版本快照，没有互斥关系**。这一点和 `CopyOnWrite` 类似。
 - 脏读和不可重复读最根本的原因是**事务读取到其它事务未提交的修改**。在事务进行读取操作时，为了解决脏读和不可重复读问题，**MVCC 规定只能读取已经提交的快照**。当然一个事务可以读取自身未提交的快照，这不算是脏读。
 
-### 版本号
+### 5.2. 版本号
 
 InnoDB 的 MVCC 实现是：在每行记录后面保存两个隐藏列，一个列保存行的创建时间，另一个列保存行的过期时间（这里的时间是指系统版本号）。每开始一个新事务，系统版本号会自动递增，事务开始时刻的系统版本号会作为事务的版本号，用来和查询到的每行记录的版本号进行比较。
 
 - 系统版本号 `SYS_ID`：是一个递增的数字，每开始一个新的事务，系统版本号就会自动递增。
 - 事务版本号 `TRX_ID` ：事务开始时的系统版本号。
 
-### Undo 日志
+### 5.3. Undo 日志
 
 MVCC 的多版本指的是多个版本的快照，快照存储在 Undo 日志中，该日志通过回滚指针 `ROLL_PTR` 把一个数据行的所有快照连接起来。
 
@@ -135,7 +135,7 @@ UPDATE t SET x="c" WHERE id=1;
 
 `INSERT`、`UPDATE`、`DELETE` 操作会创建一个日志，并将事务版本号 `TRX_ID` 写入。`DELETE` 可以看成是一个特殊的 `UPDATE`，还会额外将 DEL 字段设置为 1。
 
-### ReadView
+### 5.4. ReadView
 
 MVCC 维护了一个一致性读视图 `consistent read view` ，主要包含了当前系统**未提交的事务列表** `TRX_IDs {TRX_ID_1, TRX_ID_2, ...}`，还有该列表的最小值 `TRX_ID_MIN` 和 `TRX_ID_MAX`。
 
@@ -159,7 +159,7 @@ MVCC 维护了一个一致性读视图 `consistent read view` ，主要包含了
 
 在数据行快照不可使用的情况下，需要沿着 Undo Log 的回滚指针 ROLL_PTR 找到下一个快照，再进行上面的判断。
 
-### 快照读与当前读
+### 5.5. 快照读与当前读
 
 快照读
 
@@ -186,25 +186,26 @@ SELECT * FROM table WHERE ? lock in share mode;
 SELECT * FROM table WHERE ? for update;
 ```
 
-## 六、Next-key 锁
+## 6. 行锁
 
-Next-Key 锁是 MySQL 的 `InnoDB` 存储引擎的一种锁实现。
-
-MVCC 不能解决幻读问题，**Next-Key 锁就是为了解决幻读问题**。在可重复读（`REPEATABLE READ`）隔离级别下，使用 **MVCC + Next-Key 锁** 可以解决幻读问题。
-
-另外，根据针对 SQL 语句检索条件的不同，加锁又有以下三种情形需要我们掌握。
+行锁的具体实现算法有三种：record lock、gap lock 以及 next-key lock。
 
 - `Record Lock` - **行锁对索引项加锁，若没有索引则使用表锁**。
-- `Gap Lock` - 对索引项之间的间隙加锁。锁定索引之间的间隙，但是不包含索引本身。例如当一个事务执行以下语句，其它事务就不能在 t.c 中插入 15。`SELECT c FROM t WHERE c BETWEEN 10 and 20 FOR UPDATE;`
+- `Gap Lock` - **对索引项之间的间隙加锁**。锁定索引之间的间隙，但是不包含索引本身。例如当一个事务执行以下语句，其它事务就不能在 t.c 中插入 15：`SELECT c FROM t WHERE c BETWEEN 10 and 20 FOR UPDATE;`。在 MySQL 中，gap lock 默认是开启的，即 `innodb_locks_unsafe_for_binlog` 参数值是 disable 的，且 MySQL 中默认的是 RR 事务隔离级别。
 - `Next-key lock` -它是 `Record Lock` 和 `Gap Lock` 的结合，不仅锁定一个记录上的索引，也锁定索引之间的间隙。它锁定一个前开后闭区间。
+
+只在可重复读或以上隔离级别下的特定操作才会取得 gap lock 或 next-key lock。在 `Select`、`Update` 和 `Delete` 时，除了基于唯一索引的查询之外，其它索引查询时都会获取 gap lock 或 next-key lock，即锁住其扫描的范围。主键索引也属于唯一索引，所以主键索引是不会使用 gap lock 或 next-key lock。
+
+MVCC 不能解决幻读问题，**Next-Key 锁就是为了解决幻读问题**。在可重复读（`REPEATABLE READ`）隔离级别下，使用 **MVCC + Next-Key 锁** 可以解决幻读问题。
 
 索引分为主键索引和非主键索引两种，如果一条 SQL 语句操作了主键索引，MySQL 就会锁定这条主键索引；如果一条语句操作了非主键索引，MySQL 会先锁定该非主键索引，再锁定相关的主键索引。在 `UPDATE`、`DELETE` 操作时，MySQL 不仅锁定 `WHERE` 条件扫描过的所有索引记录，而且会锁定相邻的键值，即所谓的 `next-key lock`。
 
 当两个事务同时执行，一个锁住了主键索引，在等待其他相关索引。另一个锁定了非主键索引，在等待主键索引。这样就会发生死锁。发生死锁后，`InnoDB` 一般都可以检测到，并使一个事务释放锁回退，另一个获取锁完成事务。
 
-## 参考资料
+## 7. 参考资料
 
 - [《高性能 MySQL》](https://book.douban.com/subject/23008813/)
+- [《Java 性能调优实战》](https://time.geekbang.org/column/intro/100028001)
 - [数据库系统原理](https://github.com/CyC2018/Interview-Notebook/blob/master/notes/数据库系统原理.md)
 - [数据库两大神器【索引和锁】](https://juejin.im/post/5b55b842f265da0f9e589e79)
 - [使用 mysql 乐观锁解决并发问题](https://www.cnblogs.com/laoyeye/p/8097684.html)

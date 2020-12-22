@@ -22,7 +22,7 @@
   - [2.9. 备份与恢复](#29-备份与恢复)
   - [2.10. 卸载](#210-卸载)
   - [2.11. 主从节点部署](#211-主从节点部署)
-- [3. 配置](#3-配置)
+- [3. 服务器配置](#3-服务器配置)
   - [3.1. 配置文件路径](#31-配置文件路径)
   - [3.2. 配置项语法](#32-配置项语法)
   - [3.3. 常用配置项说明](#33-常用配置项说明)
@@ -646,9 +646,11 @@ mysql> show global variables like "%read_only%";
 
 > 注：设置 slave 服务器为只读，并不影响主从同步。
 
-## 3. 配置
+## 3. 服务器配置
 
 > **_大部分情况下，默认的基本配置已经足够应付大多数场景，不要轻易修改 Mysql 服务器配置，除非你明确知道修改项是有益的。_**
+>
+> 尽量不要使用 Mysql 的缓存功能，因为其要求每次请求参数完全相同，才能命中缓存。这种方式实际上并不高效，还会增加额外开销，实际业务场景中一般使用 Redis 等 key-value 存储来解决缓存问题，性能远高于 Mysql 的查询缓存。
 
 ### 3.1. 配置文件路径
 
@@ -739,7 +741,7 @@ port = 3306
   - `default_storage_engine` - mysql 5.1 之后，默认引擎是 InnoDB
   - `default_time_zone` - 默认时区。中国大部分地区在东八区，即 `+8:00`
   - `character_set_server` - 数据库默认字符集
-  - `collation_server` - 数据库字符集对应一些排序等规则，注意要和 character_set_server 对应
+  - `collation_server` - 数据库字符集对应一些排序等规则，注意要和 `character_set_server` 对应
 - LOG
   - `log_error` - 错误日志文件地址
   - `slow_query_log` - 错误日志文件地址
@@ -774,7 +776,7 @@ port = 3306
   - `open_files_limit` - MySQL 打开的文件描述符限制，默认最小 1024;
     - 当 open_files_limit 没有被配置的时候，比较 max_connections\*5 和 ulimit -n 的值，哪个大用哪个，
     - 当 open_file_limit 被配置的时候，比较 open_files_limit 和 max_connections\*5 的值，哪个大用哪个
-    - 注意：仍然可能出现报错信息 Can't create a new thread；此时观察系统 cat /proc/mysql 进程号/limits，观察进程 ulimit 限制情况
+    - 注意：仍然可能出现报错信息 Can't create a new thread；此时观察系统 `cat /proc/mysql` 进程号/limits，观察进程 ulimit 限制情况
     - 过小的话，考虑修改系统配置表，`/etc/security/limits.conf` 和 `/etc/security/limits.d/90-nproc.conf`
 
 ## 4. 常见问题
