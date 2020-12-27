@@ -17,7 +17,7 @@ MongoDB 提供以下操作向一个 collection 插入 document
 
 > 注：以上操作都是原子操作。
 
-![](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200924112342.svg)
+![](http://dunwu.test.upcdn.net/snap/20200924112342.svg)
 
 插入操作的特性：
 
@@ -66,7 +66,7 @@ db.inventory.insertMany([
 
 MongoDB 提供 [`db.collection.find()`](https://docs.mongodb.com/manual/reference/method/db.collection.find/#db.collection.find) 方法来检索 document。
 
-![](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200924113832.svg)
+![](http://dunwu.test.upcdn.net/snap/20200924113832.svg)
 
 ### Update 操作
 
@@ -82,7 +82,7 @@ MongoDB 提供以下操作来更新 collection 中的 document
 - [`db.collection.updateMany(<filter>, <update>, <options>)`](https://docs.mongodb.com/manual/reference/method/db.collection.updateMany/#db.collection.updateMany)
 - [`db.collection.replaceOne(<filter>, <update>, <options>)`](https://docs.mongodb.com/manual/reference/method/db.collection.replaceOne/#db.collection.replaceOne)
 
-![](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200924114043.svg)
+![](http://dunwu.test.upcdn.net/snap/20200924114043.svg)
 
 【示例】插入测试数据
 
@@ -191,7 +191,7 @@ MongoDB 提供以下操作来删除 collection 中的 document
 - [`db.collection.deleteOne()`](https://docs.mongodb.com/manual/reference/method/db.collection.deleteOne/#db.collection.deleteOne)：删除一条 document
 - [`db.collection.deleteMany()`](https://docs.mongodb.com/manual/reference/method/db.collection.deleteMany/#db.collection.deleteMany)：删除多条 document
 
-![](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200924120007.svg)
+![](http://dunwu.test.upcdn.net/snap/20200924120007.svg)
 
 删除操作的特性：
 

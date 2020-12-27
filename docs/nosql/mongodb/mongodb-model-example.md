@@ -371,7 +371,7 @@ review collection 存储所有的评论
 
 ## 树形结构模型
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200911194846.svg)
+![img](http://dunwu.test.upcdn.net/snap/20200911194846.svg)
 
 ### 具有父节点的树形结构模型
 
@@ -525,7 +525,7 @@ db.categories.insertMany([
 
 ### 具有嵌套集的树形结构模型
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200911204252.svg)
+![img](http://dunwu.test.upcdn.net/snap/20200911204252.svg)
 
 ```javascript
 db.categories.insertMany([
