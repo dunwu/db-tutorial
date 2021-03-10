@@ -171,7 +171,7 @@ j2ee特别牛
 
 ### 写数据底层原理
 
-[![es-write-detail](https://github.com/doocs/advanced-java/raw/master/docs/high-concurrency/images/es-write-detail.png)](https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/images/es-write-detail.png)
+[![es-write-detail](https://github.com/doocs/advanced-java/raw/master/docs/high-concurrency/images/es-write-detail.png)](https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/images/es-write-detail.png)
 
 先写入内存 buffer，在 buffer 里的时候数据是搜索不到的；同时将数据写入 translog 日志文件。
 
