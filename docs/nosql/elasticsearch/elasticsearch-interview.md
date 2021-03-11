@@ -14,7 +14,7 @@ ES 部署情况：
 
 你往 es 里写的数据，实际上都写到磁盘文件里去了，**查询的时候**，操作系统会将磁盘文件里的数据自动缓存到 `filesystem cache` 里面去。
 
-[![es-search-process](https://github.com/doocs/advanced-java/raw/master/docs/high-concurrency/images/es-search-process.png)](https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/images/es-search-process.png)
+[![es-search-process](https://github.com/doocs/advanced-java/raw/main/docs/high-concurrency/images/es-search-process.png)](https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/images/es-search-process.png)
 
 es 的搜索引擎严重依赖于底层的 `filesystem cache` ，你如果给 `filesystem cache` 更多的内存，尽量让内存可以容纳所有的 `idx segment file`索引数据文件，那么你搜索的时候就基本都是走内存的，性能会非常高。
 
@@ -139,7 +139,7 @@ scroll 会一次性给你生成**所有数据的一个快照**，然后每次滑
 - 实际的 node 上的 `primary shard` 处理请求，然后将数据同步到 `replica node` 。
 - `coordinating node` 如果发现 `primary node` 和所有 `replica node` 都搞定之后，就返回响应结果给客户端。
 
-[![es-write](https://github.com/doocs/advanced-java/raw/master/docs/high-concurrency/images/es-write.png)](https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/images/es-write.png)
+[![es-write](https://github.com/doocs/advanced-java/raw/main/docs/high-concurrency/images/es-write.png)](https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/images/es-write.png)
 
 ### es 读数据过程
 
@@ -171,7 +171,7 @@ j2ee特别牛
 
 ### 写数据底层原理
 
-[![es-write-detail](https://github.com/doocs/advanced-java/raw/master/docs/high-concurrency/images/es-write-detail.png)](https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/images/es-write-detail.png)
+[![es-write-detail](https://github.com/doocs/advanced-java/raw/master/docs/high-concurrency/images/es-write-detail.png)](https://github.com/doocs/advanced-java/blob/main/docs/high-concurrency/images/es-write-detail.png)
 
 先写入内存 buffer，在 buffer 里的时候数据是搜索不到的；同时将数据写入 translog 日志文件。
 
