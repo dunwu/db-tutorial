@@ -1,6 +1,6 @@
 # Mysql 教程
 
-![img](http://dunwu.test.upcdn.net/snap/20200716103611.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716103611.png)
 
 ## 📖 内容
 
@@ -10,19 +10,19 @@
 
 > 关键词：`Hash`、`B 树`、`聚簇索引`、`回表`
 
-![img](http://dunwu.test.upcdn.net/snap/20200715172009.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200715172009.png)
 
 ### [Mysql 锁](mysql-lock.md)
 
 > 关键词：`乐观锁`、`表级锁`、`行级锁`、`意向锁`、`MVCC`、`Next-key 锁`
 
-![img](http://dunwu.test.upcdn.net/snap/20200716064947.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716064947.png)
 
 ### [Mysql 事务](mysql-transaction.md)
 
 > 关键词：`ACID`、`AUTOCOMMIT`、`事务隔离级别`、`死锁`、`分布式事务`
 
-![img](http://dunwu.test.upcdn.net/snap/20200716074533.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716074533.png)
 
 ### [Mysql 性能优化](mysql-optimization.md)
 

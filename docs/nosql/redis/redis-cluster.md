@@ -8,7 +8,7 @@
 > - Redis 集群采用主从模型，提供复制和故障转移功能，来保证 Redis 集群的高可用。
 > - 根据 CAP 理论，Consistency、Availability、Partition tolerance 三者不可兼得，而 Redis 集群的选择是 AP。Redis 集群节点间采用异步通信方式，不保证强一致性，尽力达到最终一致性。
 
-![img](http://dunwu.test.upcdn.net/snap/20200713100613.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200713100613.png)
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
@@ -108,7 +108,7 @@ Redis 集群的重新分片操作由 Redis 集群管理软件 **redis-trib** 负
 
 重新分片的实现原理如下图所示：
 
-![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-cluster-trib.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-cluster-trib.png)
 
 ### ASK 错误
 
@@ -116,7 +116,7 @@ Redis 集群的重新分片操作由 Redis 集群管理软件 **redis-trib** 负
 
 判断 ASK 错误的过程如下图所示：
 
-![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-ask.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-ask.png)
 
 ## 二、Redis Cluster 故障转移
 

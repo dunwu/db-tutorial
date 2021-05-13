@@ -1,6 +1,6 @@
 # Mysql 锁
 
-![img](http://dunwu.test.upcdn.net/snap/20200716064947.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716064947.png)
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
@@ -139,7 +139,7 @@ UPDATE t SET x="c" WHERE id=1;
 
 MVCC 维护了一个一致性读视图 `consistent read view` ，主要包含了当前系统**未提交的事务列表** `TRX_IDs {TRX_ID_1, TRX_ID_2, ...}`，还有该列表的最小值 `TRX_ID_MIN` 和 `TRX_ID_MAX`。
 
-![img](http://dunwu.test.upcdn.net/snap/20200715135809.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200715135809.png)
 
 这样，对于当前事务的启动瞬间来说，一个数据版本的 row trx_id，有以下几种可能：
 

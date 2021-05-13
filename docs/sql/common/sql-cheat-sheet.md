@@ -4,7 +4,7 @@
 >
 > 本文语法主要针对 Mysql，但大部分的语法对其他关系型数据库也适用。
 
-![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200115160512.png)
 
 ## 一、基本概念
 
@@ -218,7 +218,7 @@ SELECT * FROM mytable LIMIT 2, 3;
 - 内部查询首先在其父查询之前执行，以便可以将内部查询的结果传递给外部查询。执行过程可以参考下图：
 
   <p align="center">
-    <img src="http://dunwu.test.upcdn.net/cs/database/mysql/sql-subqueries.gif!zp" alt="sql-subqueries">
+    <img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/mysql/sql-subqueries.gif!zp" alt="sql-subqueries">
   </p>
 
 **子查询的子查询**
@@ -371,7 +371,7 @@ WHERE prod_name LIKE '__ inch teddy bear';
 `JOIN` 有两种连接类型：内连接和外连接。
 
 <div align="center">
-  <img src="http://dunwu.test.upcdn.net/cs/database/mysql/sql-join.png!zp" alt="sql-join">
+  <img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/mysql/sql-join.png!zp" alt="sql-join">
 </div>
 
 #### 内连接（INNER JOIN）

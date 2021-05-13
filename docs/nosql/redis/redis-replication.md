@@ -4,7 +4,7 @@
 >
 > Redis 2.8 以前的复制不能高效处理断线后重复制的情况，而 Redis 2.8 新添的部分重同步可以解决这个问题。
 
-![img](http://dunwu.test.upcdn.net/snap/20200712182603.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200712182603.png)
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
@@ -68,7 +68,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 3. 主服务器执行 `BGSAVE` 完毕后，主服务器会将生成的 RDB 文件发送给从服务器。从服务器接收并载入 RDB 文件，更新自己的数据库状态。
 4. 主服务器将记录在缓冲区中的所有写命令发送给从服务器，从服务器执行这些写命令，更新自己的数据库状态。
 
-![img](http://dunwu.test.upcdn.net/snap/20200224220353.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200224220353.png)
 
 ### 命令传播
 
@@ -113,7 +113,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 - 如果主从服务器的复制偏移量相同，则说明二者的数据库状态一致；
 - 反之，则说明二者的数据库状态不一致。
 
-![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-replication-offset.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-replication-offset.png)
 
 #### 复制积压缓冲区
 
@@ -160,7 +160,7 @@ Redis 的复制功能分为同步（sync）和命令传播（command propagate�
 - 假如主从服务器的 **master run id 相同**，并且**指定的偏移量（offset）在内存缓冲区中还有效**，复制就会从上次中断的点开始继续。
 - 如果其中一个条件不满足，就会进行完全重新同步（在 2.8 版本之前就是直接进行完全重新同步）。
 
-![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-psync-workflow.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-psync-workflow.png)
 
 ## 四、心跳检测
 

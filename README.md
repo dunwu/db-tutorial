@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://dunwu.github.io/db-tutorial/" target="_blank" rel="noopener noreferrer">
-        <img src="http://dunwu.test.upcdn.net/common/logo/dunwu-logo.png" alt="logo" width="150px"/>
+        <img src="https://raw.githubusercontent.com/dunwu/images/dev/common/dunwu-logo-200.png" alt="logo" width="150px"/>
     </a>
 </p>
 
@@ -31,7 +31,7 @@
 
 #### [Mysql](docs/sql/mysql) 📚
 
-![img](http://dunwu.test.upcdn.net/snap/20200716103611.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716103611.png)
 
 - [Mysql 应用指南](docs/sql/mysql/mysql-quickstart.md) ⚡
 - [Mysql 工作流](docs/sql/mysql/mysql-index.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`
@@ -57,7 +57,7 @@
 
 #### [Redis](docs/nosql/redis) 📚
 
-![img](http://dunwu.test.upcdn.net/snap/20200713105627.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200713105627.png)
 
 - [Redis 面试总结](docs/nosql/redis/redis-interview.md) 💯
 - [Redis 应用指南](docs/nosql/redis/redis-quickstart.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`

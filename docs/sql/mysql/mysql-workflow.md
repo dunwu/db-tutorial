@@ -27,7 +27,7 @@
 
 **存储引擎层负责数据的存储和提取**。其架构模式是插件式的，支持 InnoDB、MyISAM、Memory 等多个存储引擎。现在最常用的存储引擎是 InnoDB，它从 MySQL 5.5.5 版本开始成为了默认存储引擎。
 
-![img](http://dunwu.test.upcdn.net/snap/20200227201908.jpg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200227201908.jpg)
 
 ## 2. 查询过程
 
@@ -146,7 +146,7 @@ MySQL 更新过程和 MySQL 查询过程类似，也会将流程走一遍。不�
 
 InnoDB 的 redo log 是固定大小的，比如可以配置为一组 4 个文件，每个文件的大小是 1GB，那么这块“粉板”总共就可以记录 4GB 的操作。从头开始写，写到末尾就又回到开头循环写。
 
-![img](http://dunwu.test.upcdn.net/snap/20200630180342.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200630180342.png)
 
 有了 redo log，InnoDB 就可以保证即使数据库发生异常重启，之前提交的记录都不会丢失，这个能力称为**crash-safe**。
 
@@ -178,7 +178,7 @@ binlog 是可以追加写入的，即写到一定大小后会切换到下一个�
 
 这里我给出这个 update 语句的执行流程图，图中浅色框表示是在 InnoDB 内部执行的，深色框表示是在执行器中执行的。
 
-![img](http://dunwu.test.upcdn.net/snap/20200714133806.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200714133806.png)
 
 ### 3.4. 两阶段提交
 

@@ -6,11 +6,11 @@
 
 ### [SQL Cheat Sheet](sql-cheat-sheet.md)
 
-![img](http://dunwu.test.upcdn.net/snap/20200115160512.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200115160512.png)
 
 ### [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage.md)
 
-![img](http://dunwu.test.upcdn.net/snap/20200716110854.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716110854.png)
 
 ### [分布式事务基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-transaction.md)
 

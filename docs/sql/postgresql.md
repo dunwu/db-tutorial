@@ -4,7 +4,7 @@
 >
 > 关键词：Database, RDBM, psql
 
-![img](http://dunwu.test.upcdn.net/snap/20180920181010182614.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20180920181010182614.png)
 
 ## 安装
 
@@ -14,7 +14,7 @@
 
 官方下载页面要求用户选择相应版本，然后动态的给出安装提示，如下图所示：
 
-![img](http://dunwu.test.upcdn.net/snap/20180920181010174348.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20180920181010174348.png)
 
 前 3 步要求用户选择，后 4 步是根据选择动态提示的安装步骤
 

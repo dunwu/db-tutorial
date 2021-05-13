@@ -13,7 +13,7 @@
 
 ### [Mysql](mysql/README.md)
 
-![img](http://dunwu.test.upcdn.net/snap/20200716103611.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716103611.png)
 
 - [Mysql 应用指南](mysql/mysql-quickstart.md) ⚡
 - [Mysql 工作流](mysql/mysql-index.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`

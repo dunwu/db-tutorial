@@ -14,7 +14,7 @@ MongoDB Pipeline 由多个阶段（[stages](https://docs.mongodb.com/manual/refe
 
 同一个阶段可以在 pipeline 中出现多次，但 [`$out`](https://docs.mongodb.com/manual/reference/operator/aggregation/out/#pipe._S_out)、[`$merge`](https://docs.mongodb.com/manual/reference/operator/aggregation/merge/#pipe._S_merge),和 [`$geoNear`](https://docs.mongodb.com/manual/reference/operator/aggregation/geoNear/#pipe._S_geoNear) 阶段除外。所有可用 pipeline 阶段可以参考：[Aggregation Pipeline Stages](https://docs.mongodb.com/manual/reference/operator/aggregation-pipeline/#aggregation-pipeline-operator-reference)。
 
-![img](http://dunwu.test.upcdn.net/snap/20200921092725.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200921092725.png)
 
 - 第一阶段：[`$match`](https://docs.mongodb.com/manual/reference/operator/aggregation/match/#pipe._S_match) 阶段按状态字段过滤 document，然后将状态等于“ A”的那些 document 传递到下一阶段。
 - 第二阶段：[`$group`](https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pipe._S_group) 阶段按 cust_id 字段对 document 进行分组，以计算每个唯一 cust_id 的金额总和。
@@ -224,7 +224,7 @@ Pipeline 的内存限制为 100 MB。
 
 Map-reduce 是一种数据处理范式，用于将大量数据汇总为有用的聚合结果。为了执行 map-reduce 操作，MongoDB 提供了 [`mapReduce`](https://docs.mongodb.com/manual/reference/command/mapReduce/#dbcmd.mapReduce) 数据库命令。
 
-![img](http://dunwu.test.upcdn.net/snap/20200921155546.svg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200921155546.svg)
 
 在上面的操作中，MongoDB 将 map 阶段应用于每个输入 document（即 collection 中与查询条件匹配的 document）。 map 函数分发出多个键-值对。对于具有多个值的那些键，MongoDB 应用 reduce 阶段，该阶段收集并汇总聚合的数据。然后，MongoDB 将结果存储在 collection 中。可选地，reduce 函数的输出可以通过 finalize 函数来进一步汇总聚合结果。
 
@@ -240,7 +240,7 @@ MongoDB 支持一下单一目的的聚合操作：
 
 所有这些操作都汇总了单个 collection 中的 document。尽管这些操作提供了对常见聚合过程的简单访问，但是它们相比聚合 pipeline 和 map-reduce，缺少灵活性和丰富的功能性。
 
-![img](http://dunwu.test.upcdn.net/snap/20200921155935.svg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200921155935.svg)
 
 ## SQL 和 MongoDB 聚合对比
 
@@ -371,7 +371,7 @@ db.orders.insertMany([
 
 SQL 和 MongoDB 聚合方式对比：
 
-![img](http://dunwu.test.upcdn.net/snap/20200921200556.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200921200556.png)
 
 ## 参考资料
 

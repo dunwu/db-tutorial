@@ -15,7 +15,7 @@ module.exports = {
     },
   },
   themeConfig: {
-    logo: 'images/dunwu-logo-100.png',
+    logo: 'https://raw.githubusercontent.com/dunwu/images/dev/common/dunwu-logo-200.png',
     repo: 'dunwu/db-tutorial',
     repoLabel: 'Github',
     docsDir: 'docs',
@@ -75,6 +75,17 @@ module.exports = {
       {
         serviceWorker: true,
         updatePopup: true,
+      },
+    ],
+    [
+      '@vuepress/last-updated',
+      {
+        transformer: (timestamp, lang) => {
+          // 不要忘了安装 moment
+          const moment = require('moment')
+          moment.locale(lang)
+          return moment(timestamp).fromNow()
+        },
       },
     ],
     ['@vuepress/medium-zoom', true],

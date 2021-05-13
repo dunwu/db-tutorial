@@ -386,7 +386,7 @@ migrations 最常用的编写形式就是 SQL。
 
 为了被 Flyway 自动识别，SQL migrations 的文件命名必须遵循规定的模式：
 
-![img](http://dunwu.test.upcdn.net/cs/database/flyway/sql-migrations.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/flyway/sql-migrations.png)
 
 - **Prefix** - `V` 代表 versioned migrations (可配置), `U` 代表 undo migrations (可配置)、 `R` 代表 repeatable migrations (可配置)
 - **Version** - 版本号通过`.`(点)或`_`(下划线)分隔 (repeatable migrations 不需要)
@@ -405,7 +405,7 @@ migrations 最常用的编写形式就是 SQL。
 
 为了被 Flyway 自动识别，JAVA migrations 的文件命名必须遵循规定的模式：
 
-![img](http://dunwu.test.upcdn.net/cs/database/flyway/java-migrations.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/flyway/java-migrations.png)
 
 - **Prefix** - `V` 代表 versioned migrations (可配置), `U` 代表 undo migrations (可配置)、 `R` 代表 repeatable migrations (可配置)
 - **Version** - 版本号通过`.`(点)或`_`(下划线)分隔 (repeatable migrations 不需要)

@@ -28,15 +28,15 @@ MongoDB 中的副本集是一组维护相同数据集的 mongod 进程。一个�
 
 **主节点负责接收所有写操作**。副本集只能有一个主副本，能够以 [`{ w: "majority" }`](https://docs.mongodb.com/manual/reference/write-concern/#writeconcern."majority") 来确认集群中节点的写操作成功情况；尽管在某些情况下，另一个 MongoDB 实例可能会暂时认为自己也是主要的。主节点在其操作日志（即 [oplog](https://docs.mongodb.com/manual/core/replica-set-oplog/)）中记录了对其数据集的所有更改。
 
-![img](http://dunwu.test.upcdn.net/snap/20200920165054.svg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200920165054.svg)
 
 **从节点复制主节点的操作日志，并将操作应用于其数据集**，以便同步主节点的数据。如果主节点不可用，则符合条件的从节点将选举新的主节点。
 
-![img](http://dunwu.test.upcdn.net/snap/20200920165055.svg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200920165055.svg)
 
 在某些情况下（例如，有一个主节点和一个从节点，但由于成本限制，禁止添加另一个从节点），您可以选择将 mongod 实例作为仲裁节点添加到副本集。仲裁节点参加选举但不保存数据（即不提供数据冗余）。
 
-![img](http://dunwu.test.upcdn.net/snap/20200920165053.svg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200920165053.svg)
 
 仲裁节点将永远是仲裁节点。在选举期间，主节点可能会降级成为次节点，而次节点可能会升级成为主节点。
 
@@ -62,7 +62,7 @@ MongoDB 中的副本集是一组维护相同数据集的 mongod 进程。一个�
 
 当主节点与集群中的其他成员通信的时间超过配置的 `electionTimeoutMillis`（默认为 10 秒）时，符合选举要求的从节点将要求选举，并提名自己为新的主节点。集群尝试完成选举新主节点并恢复正常工作。
 
-![img](http://dunwu.test.upcdn.net/snap/20200920175429.svg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200920175429.svg)
 
 选举完成前，副本集无法处理写入操作。如果将副本集配置为：在主节点处于脱机状态时，在次节点上运行，则副本集可以继续提供读取查询。
 
@@ -80,7 +80,7 @@ MongoDB 中的副本集是一组维护相同数据集的 mongod 进程。一个�
 
 默认情况下，客户端从主节点读取数据；但是，客户端可以指定读取首选项，以将读取操作发送到从节点。
 
-![img](http://dunwu.test.upcdn.net/snap/20200920204024.svg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200920204024.svg)
 
 异步复制到从节点意味着向从节点读取数据可能会返回与主节点不一致的数据。
 

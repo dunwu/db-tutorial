@@ -209,7 +209,7 @@ Mysql 支持两种复制：基于行的复制和基于语句的复制。
 - **SQL 线程** ：负责读取中继日志并重放其中的 SQL 语句。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/mysql/master-slave.png" />
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/mysql/master-slave.png" />
 </div>
 
 ### 8.2. 读写分离
@@ -225,7 +225,7 @@ MySQL 读写分离能提高性能的原因在于：
 - 增加冗余，提高可用性。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/mysql/master-slave-proxy.png" />
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/mysql/master-slave-proxy.png" />
 </div>
 ------
 

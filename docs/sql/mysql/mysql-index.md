@@ -4,7 +4,7 @@
 >
 > 接下来将向你展示一系列创建高性能索引的策略，以及每条策略其背后的工作原理。但在此之前，先了解与索引相关的一些算法和数据结构，将有助于更好的理解后文的内容。
 
-![img](http://dunwu.test.upcdn.net/snap/20200715172009.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200715172009.png)
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
@@ -120,7 +120,7 @@ B+ 树索引适用于**全键值查找**、**键值范围查找**和**键前缀�
 - 第一，所有的关键字（可以理解为数据）都存储在叶子节点，非叶子节点并不存储真正的数据，所有记录节点都是按键值大小顺序存放在同一层叶子节点上。
 - 其次，所有的叶子节点由指针连接。如下图为简化了的`B+Tree`。
 
-![img](http://dunwu.test.upcdn.net/snap/20200304235424.jpg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200304235424.jpg)
 
 根据叶子节点的内容，索引类型分为主键索引和非主键索引。
 

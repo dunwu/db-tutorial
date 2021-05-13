@@ -1,13 +1,11 @@
 ---
 home: true
-heroImage: /images/dunwu-logo-200.png
+heroImage: https://raw.githubusercontent.com/dunwu/images/dev/common/dunwu-logo-200.png
 heroText: DB-TUTORIAL
 tagline: 💾 db-tutorial 是一个数据库教程。
 actionLink: /
 footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 ---
-
-# DB-TUTORIAL
 
 ![license](https://badgen.net/github/license/dunwu/db-tutorial)
 ![build](https://api.travis-ci.com/dunwu/db-tutorial.svg?branch=master)
@@ -32,7 +30,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 #### [Mysql](sql/mysql) 📚
 
-![img](http://dunwu.test.upcdn.net/snap/20200716103611.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716103611.png)
 
 - [Mysql 应用指南](sql/mysql/mysql-quickstart.md) ⚡
 - [Mysql 工作流](sql/mysql/mysql-index.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`
@@ -58,7 +56,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 #### [Redis](nosql/redis) 📚
 
-![img](http://dunwu.test.upcdn.net/snap/20200713105627.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200713105627.png)
 
 - [Redis 面试总结](nosql/redis/redis-interview.md) 💯
 - [Redis 应用指南](nosql/redis/redis-quickstart.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`

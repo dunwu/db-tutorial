@@ -45,17 +45,17 @@ HBase 表模型结构为：
 - 列族（column family）是列的集合。
 - 列（row）是键值对的集合。
 
-![img](http://dunwu.test.upcdn.net/cs/bigdata/hbase/1551164163369.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/bigdata/hbase/1551164163369.png)
 
 HBase 表的单元格（cell）由行和列的坐标交叉决定，是有版本的。默认情况下，版本号是自动分配的，为 HBase 插入单元格时的时间戳。单元格的内容是未解释的字节数组。
 
 行的键也是未解释的字节数组，所以理论上，任何数据都可以通过序列化表示成字符串或二进制，从而存为 HBase 的键值。
 
-![img](http://dunwu.test.upcdn.net/cs/bigdata/hbase/1551164224778.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/bigdata/hbase/1551164224778.png)
 
 ### HBase 架构
 
-![img](http://dunwu.test.upcdn.net/cs/bigdata/hbase/1551164744748.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/bigdata/hbase/1551164744748.png)
 
 和 HDFS、YARN 一样，HBase 也采用 master / slave 架构：
 
@@ -70,7 +70,7 @@ HBase 表按行键范围水平自动划分为区域（region）。每个区域�
 
 **区域只不过是表被拆分，并分布在区域服务器。**
 
-![img](http://dunwu.test.upcdn.net/cs/bigdata/hbase/1551165887616.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/bigdata/hbase/1551165887616.png)
 
 #### Master 服务器
 
@@ -81,7 +81,7 @@ HBase 表按行键范围水平自动划分为区域（region）。每个区域�
   - 监控集群中的所有 region 服务器
 - 支持 DDL 接口（创建、删除、更新表）
 
-![img](http://dunwu.test.upcdn.net/cs/bigdata/hbase/1551166513572.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/bigdata/hbase/1551166513572.png)
 
 #### Regin 服务器
 
@@ -93,13 +93,13 @@ HBase 表按行键范围水平自动划分为区域（region）。每个区域�
 - `MemStore` - 是写缓存。它存储尚未写入磁盘的新数据。在写入磁盘之前对其进行排序。每个区域每个列族有一个 MemStore。
 - `Hfiles` - 将行存储为磁盘上的排序键值对。
 
-![img](http://dunwu.test.upcdn.net/cs/bigdata/hbase/1551166602999.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/bigdata/hbase/1551166602999.png)
 
 #### ZooKeeper
 
 HBase 使用 ZooKeeper 作为分布式协调服务来维护集群中的服务器状态。Zookeeper 维护哪些服务器是活动的和可用的，并提供服务器故障通知。集群至少应该有 3 个节点。
 
-![img](http://dunwu.test.upcdn.net/cs/bigdata/hbase/1551166447147.png!zp)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/bigdata/hbase/1551166447147.png)
 
 ## HBase 和 RDBMS
 

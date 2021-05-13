@@ -101,7 +101,7 @@ RDB 文件是一个经过压缩的二进制文件，由多个部分组成。
 
 对于不同类型（STRING、HASH、LIST、SET、SORTED SET）的键值对，RDB 文件会使用不同的方式来保存它们。
 
-![img](http://dunwu.test.upcdn.net/cs/database/redis/redis-rdb-structure.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-rdb-structure.png)
 
 Redis 本身提供了一个 RDB 文件检查工具 redis-check-dump。
 
@@ -181,7 +181,7 @@ AOF 载入过程如下：
 6. 载入完毕。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-aof-flow.png" />
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-aof-flow.png" />
 </div>
 
 ### AOF 的重写
@@ -203,7 +203,7 @@ AOF 重写并非读取和分析现有 AOF 文件的内容，而是直接从数�
 - 由于彼此不是在同一个进程中工作，AOF 重写不影响 AOF 写入和同步。当子进程完成创建新 AOF 文件的工作之后，服务器会将重写缓冲区中的所有内容追加到新 AOF 文件的末尾，使得新旧两个 AOF 文件所保存的数据库状态一致。
 - 最后，服务器用新的 AOF 文件替换就的 AOF 文件，以此来完成 AOF 重写操作。
 
-![img](http://dunwu.test.upcdn.net/snap/20200130153716.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200130153716.png)
 
 可以通过设置 `auto-aof-rewrite-percentage` 和 `auto-aof-rewrite-min-size`，使得 Redis 在满足条件时，自动执行 `BGREWRITEAOF`。
 
@@ -295,7 +295,7 @@ Redis 的容灾备份基本上就是对数据进行备份，并将这些备份�
 
 ## 五、要点总结
 
-![img](http://dunwu.test.upcdn.net/snap/20200224214047.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200224214047.png)
 
 ## 参考资料
 

@@ -37,7 +37,7 @@
 
 ## 一、Redis 基本数据类型
 
-![Redis 数据类型](http://dunwu.test.upcdn.net/snap/20200226113813.png)
+![Redis 数据类型](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200226113813.png)
 
 | 数据类型 | 可以存储的值           | 操作                                                                                                             |
 | -------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -52,7 +52,7 @@
 ### STRING
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-string.png" width="400"/>
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-datatype-string.png" width="400"/>
 </div>
 **适用场景：缓存、计数器、共享 Session**
 
@@ -84,7 +84,7 @@ OK
 ### HASH
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-hash.png" width="400"/>
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-datatype-hash.png" width="400"/>
 </div>
 **适用场景：存储结构化数据**，如一个对象：用户信息、产品信息等。
 
@@ -129,7 +129,7 @@ OK
 ### LIST
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-list.png" width="400"/>
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-datatype-list.png" width="400"/>
 </div>
 **适用场景：用于存储列表型数据**。如：粉丝列表、商品列表等。
 
@@ -173,7 +173,7 @@ OK
 ### SET
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-set.png" width="400"/>
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-datatype-set.png" width="400"/>
 </div>
 **适用场景：用于存储去重的列表型数据**。
 
@@ -219,7 +219,7 @@ OK
 ### ZSET
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/redis/redis-datatype-zset.png" width="400"/>
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/redis/redis-datatype-zset.png" width="400"/>
 </div>
 
 适用场景：由于可以设置 score，且不重复。**适合用于存储各种排行数据**，如：按评分排序的有序商品集合、按时间排序的有序文章集合。
@@ -448,7 +448,7 @@ redis> PFCOUNT  databases    # 估计数量增一
 
 使用 `HASH` 类型存储文章信息。其中：key 是文章 ID；field 是文章的属性 key；value 是属性对应值。
 
-![img](http://dunwu.test.upcdn.net/snap/20200225143038.jpg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200225143038.jpg)
 
 操作：
 
@@ -460,7 +460,7 @@ redis> PFCOUNT  databases    # 估计数量增一
 
 使用 `ZSET` 类型分别存储按照时间排序和按照评分排序的文章 ID 集合。
 
-![img](http://dunwu.test.upcdn.net/snap/20200225145742.jpg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200225145742.jpg)
 
 操作：
 
@@ -470,7 +470,7 @@ redis> PFCOUNT  databases    # 估计数量增一
 
 （3）为了防止重复投票，使用 `SET` 类型记录每篇文章 ID 对应的投票集合。
 
-![img](http://dunwu.test.upcdn.net/snap/20200225150105.jpg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200225150105.jpg)
 
 操作：
 
@@ -479,7 +479,7 @@ redis> PFCOUNT  databases    # 估计数量增一
 
 （4）假设 user:115423 给 article:100408 投票，分别需要高更新评分排序集合以及投票集合。
 
-![img](http://dunwu.test.upcdn.net/snap/20200225150138.jpg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200225150138.jpg)
 
 当需要对一篇文章投票时，程序需要用 ZSCORE 命令检查记录文章发布时间的有序集合，判断文章的发布时间是否超过投票有效期（比如：一星期）。
 
@@ -595,7 +595,7 @@ redis> PFCOUNT  databases    # 估计数量增一
 
 取出群组里的文章：
 
-![img](http://dunwu.test.upcdn.net/snap/20200225214210.jpg)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200225214210.jpg)
 
 - 通过对存储群组文章的集合和存储文章评分的有序集合执行 `ZINTERSTORE` 命令，可以得到按照文章评分排序的群组文章。
 - 通过对存储群组文章的集合和存储文章发布时间的有序集合执行 `ZINTERSTORE` 命令，可以得到按照文章发布时间排序的群组文章。

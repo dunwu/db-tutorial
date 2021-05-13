@@ -72,7 +72,7 @@
 对于任意结点，其内部的关键字 Key 是升序排列的。每个节点中都包含了 data。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/RDB/B-TREE.png" />
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/B-TREE.png" />
 </div>
 
 对于每个结点，主要包含一个关键字数组 `Key[]`，一个指针数组（指向儿子）`Son[]`。
@@ -91,7 +91,7 @@ B+Tree 是 B-Tree 的变种：
 - 非叶子节点不存储 data，只存储 key；叶子节点不存储指针。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/RDB/B+TREE.png" />
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/B+TREE.png" />
 </div>
 
 由于并不是所有节点都具有相同的域，因此 B+Tree 中叶节点和内节点一般大小不同。这点与 B-Tree 不同，虽然 B-Tree 中不同节点存放的 key 和指针可能数量不一致，但是每个节点的域和上限是一致的，所以在实现中 B-Tree 往往对每个节点申请同等大小的空间。
@@ -101,7 +101,7 @@ B+Tree 是 B-Tree 的变种：
 一般在数据库系统或文件系统中使用的 B+Tree 结构都在经典 B+Tree 的基础上进行了优化，增加了顺序访问指针。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/RDB/带有顺序访问指针的B+Tree.png" />
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/带有顺序访问指针的B+Tree.png" />
 </div>
 
 在 B+Tree 的每个叶子节点增加一个指向相邻叶子节点的指针，就形成了带有顺序访问指针的 B+Tree。
@@ -327,7 +327,7 @@ MVCC 不能解决幻读问题，**Next-Key 锁就是为了解决幻读问题**�
 
 > 事务简单来说：**一个 Session 中所进行所有的操作，要么同时成功，要么同时失败**。具体来说，事务指的是满足 ACID 特性的一组操作，可以通过 `Commit` 提交一个事务，也可以使用 `Rollback` 进行回滚。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库事务.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库事务.png)
 
 ### ACID
 
@@ -340,7 +340,7 @@ ACID — 数据库事务正确执行的四个基本要素：
 
 **一个支持事务（Transaction）中的数据库系统，必需要具有这四种特性，否则在事务过程（Transaction processing）当中无法保证数据的正确性，交易过程极可能达不到交易。**
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库ACID.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库ACID.png)
 
 ### 并发一致性问题
 
@@ -350,25 +350,25 @@ ACID — 数据库事务正确执行的四个基本要素：
 
 T<sub>1</sub> 和 T<sub>2</sub> 两个事务都对一个数据进行修改，T<sub>1</sub> 先修改，T<sub>2</sub> 随后修改，T<sub>2</sub> 的修改覆盖了 T<sub>1</sub> 的修改。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-丢失修改.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库并发一致性-丢失修改.png)
 
 - **脏读**
 
 T<sub>1</sub> 修改一个数据，T<sub>2</sub> 随后读取这个数据。如果 T<sub>1</sub> 撤销了这次修改，那么 T<sub>2</sub> 读取的数据是脏数据。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-脏数据.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库并发一致性-脏数据.png)
 
 - **不可重复读**
 
 T<sub>2</sub> 读取一个数据，T<sub>1</sub> 对该数据做了修改。如果 T<sub>2</sub> 再次读取这个数据，此时读取的结果和第一次读取的结果不同。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-不可重复读.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库并发一致性-不可重复读.png)
 
 - **幻读**
 
 T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插入新的数据，T<sub>1</sub> 再次读取这个范围的数据，此时读取的结果和和第一次读取的结果不同。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-幻读.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库并发一致性-幻读.png)
 
 并发一致性解决方案：
 
@@ -448,7 +448,7 @@ T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插�
 
 > **垂直切分**，是 **把一个有很多字段的表给拆分成多个表，或者是多个库上去**。一般来说，会 **将较少的、访问频率较高的字段放到一个表里去**，然后 **将较多的、访问频率较低的字段放到另外一个表里去**。因为数据库是有缓存的，访问频率高的行字段越少，就可以在缓存里缓存更多的行，性能就越好。这个一般在表层面做的较多一些。
 
-![image-20200114211639899](http://dunwu.test.upcdn.net/snap/image-20200114211639899.png)
+![image-20200114211639899](https://raw.githubusercontent.com/dunwu/images/dev/snap/image-20200114211639899.png)
 
 一般来说，满足下面的条件就可以考虑扩容了：
 
@@ -461,7 +461,7 @@ T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插�
 
 > **水平拆分** 又称为 **Sharding**，它是将同一个表中的记录拆分到多个结构相同的表中。当 **单表数据量太大** 时，会极大影响 **SQL 执行的性能** 。分表是将原来一张表的数据分布到数据库集群的不同节点上，从而缓解单点的压力。
 
-![image-20200114211203589](http://dunwu.test.upcdn.net/snap/image-20200114211203589.png)
+![image-20200114211203589](https://raw.githubusercontent.com/dunwu/images/dev/snap/image-20200114211203589.png)
 
 一般来说，**单表有 200 万条数据** 的时候，性能就会相对差一些了，需要考虑分表了。但是，这也要视具体情况而定，可能是 100 万条，也可能是 500 万条，SQL 越复杂，就最好让单表行数越少。
 
@@ -580,7 +580,7 @@ Mysql 支持两种复制：基于行的复制和基于语句的复制。
 - **I/O 线程** ：负责从主服务器上读取二进制日志文件，并写入从服务器的日志中。
 - **SQL 线程** ：负责读取日志并执行 SQL 语句以更新数据。
 
-![img](http://dunwu.test.upcdn.net/cs/database/mysql/master-slave.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/mysql/master-slave.png)
 
 ### 读写分离
 
@@ -594,7 +594,7 @@ MySQL 读写分离能提高性能的原因在于：
 - 从服务器可以配置 `MyISAM` 引擎，提升查询性能以及节约系统开销；
 - 增加冗余，提高可用性。
 
-![img](http://dunwu.test.upcdn.net/cs/database/mysql/master-slave-proxy.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/mysql/master-slave-proxy.png)
 
 ## 六、数据库优化
 
@@ -866,7 +866,7 @@ SQL 关键字尽量大写，如：Oracle 默认会将 SQL 语句中的关键字�
 高级别范式的依赖于低级别的范式，1NF 是最低级别的范式。
 
 <div align="center">
-<img src="http://dunwu.test.upcdn.net/cs/database/RDB/数据库范式.png"/>
+<img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库范式.png"/>
 </div>
 
 

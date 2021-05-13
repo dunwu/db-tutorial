@@ -4,7 +4,7 @@
 >
 > 用户可以根据业务是否需要事务处理（事务处理可以保证数据安全，但会增加系统开销），选择合适的存储引擎。
 
-![img](http://dunwu.test.upcdn.net/snap/20200716074533.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716074533.png)
 
 <!-- TOC depthFrom:2 depthTo:3 -->
 
@@ -37,7 +37,7 @@
 
 > 事务简单来说：**一个 Session 中所进行所有的操作，要么同时成功，要么同时失败**。进一步说，事务指的是满足 ACID 特性的一组操作，可以通过 `Commit` 提交一个事务，也可以使用 `Rollback` 进行回滚。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库事务.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库事务.png)
 
 **事务就是一组原子性的 SQL 语句**。具体来说，事务指的是满足 ACID 特性的一组操作。
 
@@ -49,7 +49,7 @@
 
 T<sub>1</sub> 和 T<sub>2</sub> 两个线程都对一个数据进行修改，T<sub>1</sub> 先修改，T<sub>2</sub> 随后修改，T<sub>2</sub> 的修改覆盖了 T<sub>1</sub> 的修改。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-丢失修改.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库并发一致性-丢失修改.png)
 
 ## 2. 事务用法
 
@@ -155,7 +155,7 @@ ACID 是数据库事务正确执行的四个基本要素。
 - 在并发的情况下，多个事务并行执行，事务不仅要满足原子性，还需要满足隔离性，才能满足一致性。
 - 事务满足持久化是为了能应对系统崩溃的情况。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库ACID.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库ACID.png)
 
 > MySQL 默认采用自动提交模式（`AUTO COMMIT`）。也就是说，如果不显式使用 `START TRANSACTION` 语句来开始一个事务，那么每个查询操作都会被当做一个事务并自动提交。
 
@@ -204,7 +204,7 @@ SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 
 T<sub>1</sub> 修改一个数据，T<sub>2</sub> 随后读取这个数据。如果 T<sub>1</sub> 撤销了这次修改，那么 T<sub>2</sub> 读取的数据是脏数据。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-脏数据.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库并发一致性-脏数据.png)
 
 ### 4.3. 提交读
 
@@ -216,7 +216,7 @@ T<sub>1</sub> 修改一个数据，T<sub>2</sub> 随后读取这个数据。如�
 
 T<sub>2</sub> 读取一个数据，T<sub>1</sub> 对该数据做了修改。如果 T<sub>2</sub> 再次读取这个数据，此时读取的结果和第一次读取的结果不同。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-不可重复读.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库并发一致性-不可重复读.png)
 
 ### 4.4. 可重复读
 
@@ -228,7 +228,7 @@ T<sub>2</sub> 读取一个数据，T<sub>1</sub> 对该数据做了修改。如�
 
 T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插入新的数据，T<sub>1</sub> 再次读取这个范围的数据，此时读取的结果和和第一次读取的结果不同。
 
-![img](http://dunwu.test.upcdn.net/cs/database/RDB/数据库并发一致性-幻读.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/cs/database/RDB/数据库并发一致性-幻读.png)
 
 ### 4.5. 串行化
 
@@ -280,17 +280,17 @@ T<sub>1</sub> 读取某个范围的数据，T<sub>2</sub> 在这个范围内插�
 
 > INSERT INTO `demo`.`order_record`(`order_no`, `status`, `create_date`) VALUES (5, 1, ‘2019-07-13 10:57:03’);
 
-![img](http://dunwu.test.upcdn.net/snap/20200630153139.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200630153139.png)
 
 **另一个死锁场景**
 
 InnoDB 存储引擎的主键索引为聚簇索引，其它索引为辅助索引。如果使用辅助索引来更新数据库，就需要使用聚簇索引来更新数据库字段。如果两个更新事务使用了不同的辅助索引，或一个使用了辅助索引，一个使用了聚簇索引，就都有可能导致锁资源的循环等待。由于本身两个事务是互斥，也就构成了以上死锁的四个必要条件了。
 
-![img](http://dunwu.test.upcdn.net/snap/20200630154606.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200630154606.png)
 
 出现死锁的步骤：
 
-![img](http://dunwu.test.upcdn.net/snap/20200630154619.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200630154619.png)
 
 综上可知，在更新操作时，我们应该尽量使用主键来更新表字段，这样可以有效避免一些不必要的死锁发生。
 
@@ -374,7 +374,7 @@ MySQLQueryInterruptedException: Query execution was interrupted
 
 又因为锁的竞争是不公平的，当多个事务同时对一条记录进行更新时，极端情况下，一个更新操作进去排队系统后，可能会一直拿不到锁，最后因超时被系统打断踢出。
 
-![img](http://dunwu.test.upcdn.net/snap/20200630112600.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200630112600.png)
 
 如上图中的操作，虽然都是在一个事务中，但锁的申请在不同时间，只有当其他操作都执行完，才会释放所有锁。因为扣除库存是更新操作，属于行锁，这将会影响到其他操作该数据的事务，所以我们应该尽量避免长时间地持有该锁，尽快释放该锁。又因为先新建订单和先扣除库存都不会影响业务，所以我们可以将扣除库存操作放到最后，也就是使用执行顺序 1，以此尽量减小锁的持有时间。
 

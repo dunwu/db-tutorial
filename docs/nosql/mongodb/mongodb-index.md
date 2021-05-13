@@ -12,7 +12,7 @@
 
 索引是特殊的数据结构，索引存储在一个易于遍历读取的数据集合中，索引是对数据库表中一列或多列的值进行排序的一种结构。
 
-![](http://dunwu.test.upcdn.net/snap/20200921210621.svg)
+![](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200921210621.svg)
 
 ### createIndex() 方法
 
