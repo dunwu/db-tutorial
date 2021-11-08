@@ -16,6 +16,7 @@ cd ${ROOT_DIR}/docs
 
 # 生成静态文件
 npm install
+npm audit fix
 npm run build
 
 # 进入生成的文件夹

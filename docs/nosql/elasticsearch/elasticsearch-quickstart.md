@@ -100,14 +100,14 @@ Document 使用 JSON 格式表示，下面是一个例子。
 - 实际的 node 上的 `primary shard` 处理请求，然后将数据同步到 `replica node`。
 - `coordinating node` 如果发现 `primary node` 和所有 `replica node` 都搞定之后，就返回响应结果给客户端。
 
-[![es-write](https://github.com/doocs/advanced-java/raw/master/docs/high-concurrency/images/es-write.png)](https://github.com/doocs/advanced-java/blob/master/docs/high-concurrency/images/es-write.png)
+![](https://raw.githubusercontent.com/dunwu/images/dev/snap/20210712104055.png)
 
 ### ES 读数据过程
 
 可以通过 `doc id` 来查询，会根据 `doc id` 进行 hash，判断出来当时把 `doc id` 分配到了哪个 shard 上面去，从那个 shard 去查询。
 
 - 客户端发送请求到**任意**一个 node，成为 `coordinate node`。
-- `coordinate node` 对 `doc id` 进行哈希路由，将请求转发到对应的 node，此时会使用 `round-robin` **随机轮询算法**，在 `primary shard` 以及其所有 replica 中随机选择一个，让读请求负载均衡。
+- `coordinate node` 对 `doc id` 进行哈希路由，将请求转发到对应的 node，此时会使用 `round-robin` **轮询算法**，在 `primary shard` 以及其所有 replica 中随机选择一个，让读请求负载均衡。
 - 接收请求的 node 返回 document 给 `coordinate node`。
 - `coordinate node` 返回 document 给客户端。
 

@@ -371,7 +371,7 @@ WHERE prod_name LIKE '__ inch teddy bear';
 `JOIN` 有两种连接类型：内连接和外连接。
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/mysql/sql-join.png!zp" alt="sql-join">
+  <img src="https://raw.githubusercontent.com/dunwu/images/dev/cs/database/mysql/sql-join.png" alt="sql-join">
 </div>
 
 #### 内连接（INNER JOIN）

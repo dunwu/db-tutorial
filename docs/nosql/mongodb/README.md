@@ -37,6 +37,8 @@
   - [MongoDB 高手课](https://time.geekbang.org/course/intro/100040001)
 - **数据**
   - [mongodb-json-files](https://github.com/ozlerhakan/mongodb-json-files)
+- **文章**
+  - [Introduction to MongoDB](https://www.slideshare.net/mdirolf/introduction-to-mongodb)
 
 ## 🚪 传送
 

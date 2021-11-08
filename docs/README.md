@@ -81,10 +81,10 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 > [HBase](https://dunwu.github.io/bigdata-tutorial/hbase) 📚 因为常用于大数据项目，所以将其文档和源码整理在 [bigdata-tutorial](https://dunwu.github.io/bigdata-tutorial/) 项目中。
 
-- [HBase 应用指南](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/hbase-quickstart.md) ⚡
-- [HBase 命令](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/hbase-cli.md)
-- [HBase Java API](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/hbase-api.md)
-- [HBase 配置](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/hbase-ops.md)
+- [HBase 原理](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/HBase原理.md) ⚡
+- [HBase 命令](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/HBase命令.md)
+- [HBase 应用](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/HBase应用.md)
+- [HBase 运维](https://github.com/dunwu/bigdata-tutorial/blob/master/docs/hbase/HBase运维.md)
 
 #### MongoDB
 

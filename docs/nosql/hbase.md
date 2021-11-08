@@ -30,7 +30,7 @@ HBase 适用场景：实时地随机访问超大数据集。
 
 ## 基础
 
-[HBase 维护](hbase-ops.md)
+[HBase 维护](HBase运维.md)
 
 ## 原理
 
@@ -113,20 +113,20 @@ HBase 使用 ZooKeeper 作为分布式协调服务来维护集群中的服务器
 
 ## API
 
-Java API 归纳总结在这里：[Hbase Java API](hbase-api-java.md)
+Java API 归纳总结在这里：[HBase 应用](hbase-api-java.md)
 
 ## 附录
 
 ### 命令行
 
-HBase 命令行可以参考这里：[HBase 命令行](hbase-cli.md)
+HBase 命令行可以参考这里：[HBase 命令行](HBase命令.md)
 
 ## 更多内容
 
 ### 扩展阅读
 
-- [HBase 命令](hbase-cli.md)
-- [HBase 配置](hbase-ops.md)
+- [HBase 命令](HBase命令.md)
+- [HBase 运维](HBase运维.md)
 
 ### 参考资料
 
