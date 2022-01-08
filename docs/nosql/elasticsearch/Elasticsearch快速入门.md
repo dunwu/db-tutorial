@@ -1,10 +1,10 @@
-# Elasticsearch 应用指南
+# Elasticsearch 快速入门
 
 > **[Elasticsearch](https://github.com/elastic/elasticsearch) 是一个分布式、RESTful 风格的搜索和数据分析引擎**，能够解决不断涌现出的各种用例。 作为 Elastic Stack 的核心，它集中存储您的数据，帮助您发现意料之中以及意料之外的情况。
 >
 > [Elasticsearch](https://github.com/elastic/elasticsearch) 基于搜索库 [Lucene](https://github.com/apache/lucene-solr) 开发。ElasticSearch 隐藏了 Lucene 的复杂性，提供了简单易用的 REST API / Java API 接口（另外还有其他语言的 API 接口）。
 >
-> *以下简称 ES*。
+> _以下简称 ES_。
 
 ## 一、Elasticsearch 简介
 
@@ -121,7 +121,7 @@ java好难学啊
 j2ee特别牛
 ```
 
-你根据 `java` 关键词来搜索，将包含 `java` 的 `document` 给搜索出来。es 就会给你返回：java真好玩儿啊，java好难学啊。
+你根据 `java` 关键词来搜索，将包含 `java` 的 `document` 给搜索出来。es 就会给你返回：java 真好玩儿啊，java 好难学啊。
 
 - 客户端发送请求到一个 `coordinate node` 。
 - 协调节点将搜索请求转发到**所有**的 shard 对应的 `primary shard` 或 `replica shard` ，都可以。
@@ -208,7 +208,7 @@ buffer 每 refresh 一次，就会产生一个 `segment file`，所以默认情�
 | 8      | 拉斯     | 3,5       |
 | 9      | 离开     | 3         |
 | 10     | 与       | 4         |
-| ..    | ..      | ..       |
+| ..     | ..       | ..        |
 
 另外，实用的倒排索引还可以记录更多的信息，比如文档频率信息，表示在文档集合中有多少个文档包含某个单词。
 

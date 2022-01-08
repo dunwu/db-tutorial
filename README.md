@@ -75,7 +75,7 @@
 
 - [Elasticsearch 面试总结](docs/nosql/elasticsearch/elasticsearch-interview.md) 💯
 - [ElasticSearch 应用指南](docs/nosql/elasticsearch/elasticsearch-quickstart.md)
-- [ElasticSearch API](docs/nosql/elasticsearch/elasticsearch-api.md)
+- [ElasticSearch API](docs/nosql/elasticsearch/ElasticSearchRestApi.md)
 - [ElasticSearch 运维](docs/nosql/elasticsearch/elasticsearch-ops.md)
 
 #### HBase

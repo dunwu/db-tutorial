@@ -74,7 +74,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 - [Elasticsearch 面试总结](nosql/elasticsearch/elasticsearch-interview.md) 💯
 - [ElasticSearch 应用指南](nosql/elasticsearch/elasticsearch-quickstart.md)
-- [ElasticSearch API](nosql/elasticsearch/elasticsearch-api.md)
+- [ElasticSearch API](nosql/elasticsearch/ElasticSearchRestApi.md)
 - [ElasticSearch 运维](nosql/elasticsearch/elasticsearch-ops.md)
 
 #### HBase
