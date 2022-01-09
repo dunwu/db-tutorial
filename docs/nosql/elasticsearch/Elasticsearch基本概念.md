@@ -69,6 +69,10 @@ Setting 定义不同的数据分布
 }
 ```
 
+### 倒排索引
+
+![](https://raw.githubusercontent.com/dunwu/images/dev/snap/20220108215559.PNG)
+
 ## 节点
 
 ### 节点简介
@@ -161,7 +165,7 @@ Elasticsearch 的集群监控信息中包含了许多的统计数据，其中最
 
 Elasticsearch 是利用分片将数据分发到集群内各处的。分片是数据的容器，文档保存在分片内，分片又被分配到集群内的各个节点里。 当你的集群规模扩大或者缩小时， Elasticsearch 会自动的在各节点中迁移分片，使得数据仍然均匀分布在集群里。
 
-### 主分片和副分片
+### 主分片和副分片 
 
 分片分为主分片（Primary Shard）和副分片（Replica Shard）。
 

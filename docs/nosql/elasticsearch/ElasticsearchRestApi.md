@@ -125,113 +125,296 @@ POST kibana_sample_data_ecommerce/_close
 
 ## 文档
 
-#### 新增记录
-
-向指定的 `/Index/type` 发送 PUT 请求，就可以在 Index 里面新增一条记录。比如，向 `/user/admin` 发送请求，就可以新增一条人员记录。
-
-```bash
-$ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user/admin/1' -d '
+```
+############Create Document############
+#create document. 自动生成 _id
+POST users/_doc
 {
-"user": "张三",
-"title": "工程师",
-"desc": "数据库管理"
-}'
+	"user" : "Mike",
+    "post_date" : "2019-04-15T14:12:12",
+    "message" : "trying out Kibana"
+}
+
+#create document. 指定Id。如果id已经存在，报错
+PUT users/_doc/1?op_type=create
+{
+    "user" : "Jack",
+    "post_date" : "2019-05-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+#create document. 指定 ID 如果已经存在，就报错
+PUT users/_create/1
+{
+     "user" : "Jack",
+    "post_date" : "2019-05-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+### Get Document by ID
+#Get the document by ID
+GET users/_doc/1
+
+
+###  Index & Update
+#Update 指定 ID  (先删除，在写入)
+GET users/_doc/1
+
+PUT users/_doc/1
+{
+	"user" : "Mike"
+
+}
+
+
+#GET users/_doc/1
+#在原文档上增加字段
+POST users/_update/1/
+{
+    "doc":{
+        "post_date" : "2019-05-15T14:12:12",
+        "message" : "trying out Elasticsearch"
+    }
+}
+
+
+
+### Delete by Id
+# 删除文档
+DELETE users/_doc/1
+
+
+### Bulk 操作
+#执行两次，查看每次的结果
+
+#执行第1次
+POST _bulk
+{ "index" : { "_index" : "test", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_id" : "2" } }
+{ "create" : { "_index" : "test2", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+
+
+#执行第2次
+POST _bulk
+{ "index" : { "_index" : "test", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_id" : "2" } }
+{ "create" : { "_index" : "test2", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+
+### mget 操作
+GET /_mget
+{
+    "docs" : [
+        {
+            "_index" : "test",
+            "_id" : "1"
+        },
+        {
+            "_index" : "test",
+            "_id" : "2"
+        }
+    ]
+}
+
+
+#URI中指定index
+GET /test/_mget
+{
+    "docs" : [
+        {
+
+            "_id" : "1"
+        },
+        {
+
+            "_id" : "2"
+        }
+    ]
+}
+
+
+GET /_mget
+{
+    "docs" : [
+        {
+            "_index" : "test",
+            "_id" : "1",
+            "_source" : false
+        },
+        {
+            "_index" : "test",
+            "_id" : "2",
+            "_source" : ["field3", "field4"]
+        },
+        {
+            "_index" : "test",
+            "_id" : "3",
+            "_source" : {
+                "include": ["user"],
+                "exclude": ["user.location"]
+            }
+        }
+    ]
+}
+
+### msearch 操作
+POST kibana_sample_data_ecommerce/_msearch
+{}
+{"query" : {"match_all" : {}},"size":1}
+{"index" : "kibana_sample_data_flights"}
+{"query" : {"match_all" : {}},"size":2}
+
+
+### 清除测试数据
+#清除数据
+DELETE users
+DELETE test
+DELETE test2
 ```
 
-服务器返回的 JSON 对象，会给出 Index、Type、Id、Version 等信息。
+### 创建文档
 
-```json
+#### 指定 ID
+
+语法格式：
+
+```bash
+PUT /_index/_type/_create/_id
+```
+
+示例：
+
+```bash
+PUT /user/_doc/_create/1
 {
-  "_index": "user",
-  "_type": "admin",
-  "_id": "1",
-  "_version": 1,
-  "result": "created",
-  "_shards": { "total": 3, "successful": 1, "failed": 0 },
-  "_seq_no": 0,
-  "_primary_term": 2
+  "user": "张三",
+  "title": "工程师",
+  "desc": "数据库管理"
 }
 ```
 
-如果你仔细看，会发现请求路径是`/user/admin/1`，最后的`1`是该条记录的 Id。它不一定是数字，任意字符串（比如`abc`）都可以。
+> 注意：指定 Id，如果 id 已经存在，则报错
+
+#### 自动生成 ID
 
 新增记录的时候，也可以不指定 Id，这时要改成 POST 请求。
 
+语法格式：
+
 ```bash
-$ curl -X POST -H 'Content-Type: application/json' 'localhost:9200/user/admin' -d '
-{
-"user": "李四",
-"title": "工程师",
-"desc": "系统管理"
-}'
+POST /_index/_type
 ```
 
-上面代码中，向`/user/admin`发出一个 POST 请求，添加一个记录。这时，服务器返回的 JSON 对象里面，`_id`字段就是一个随机字符串。
+示例：
 
-```json
+```bash
+POST /user/_doc
 {
-  "_index": "user",
-  "_type": "admin",
-  "_id": "WWuoDG8BHwECs7SiYn93",
-  "_version": 1,
-  "result": "created",
-  "_shards": { "total": 3, "successful": 1, "failed": 0 },
-  "_seq_no": 1,
-  "_primary_term": 2
+  "user": "张三",
+  "title": "工程师",
+  "desc": "超级管理员"
 }
 ```
 
-注意，如果没有先创建 Index（这个例子是`accounts`），直接执行上面的命令，Elastic 也不会报错，而是直接生成指定的 Index。所以，打字的时候要小心，不要写错 Index 的名称。
+### 删除文档
 
-#### 删除记录
-
-删除记录就是发出 `DELETE` 请求。
+语法格式：
 
 ```bash
-curl -X DELETE 'localhost:9200/user/admin/2'
+DELETE /_index/_doc/_id
 ```
 
-#### 更新记录
-
-更新记录就是使用 `PUT` 请求，重新发送一次数据。
+示例：
 
 ```bash
-$ curl -X PUT -H 'Content-Type: application/json' 'localhost:9200/user/admin/1' -d '
+DELETE /user/_doc/1
+```
+
+### 更新文档
+
+#### 先删除，再写入
+
+语法格式：
+
+```bash
+PUT /_index/_type/_id
+```
+
+示例：
+
+```bash
+PUT /user/_doc/1
 {
-"user": "张三",
-"title": "工程师",
-"desc": "超级管理员"
-}'
+  "user": "李四",
+  "title": "工程师",
+  "desc": "超级管理员"
+}
 ```
 
-#### 查询记录
+#### 在原文档上增加字段
 
-向`/Index/Type/Id`发出 GET 请求，就可以查看这条记录。
+语法格式：
 
 ```bash
-curl 'localhost:9200/user/admin/1?pretty'
+POST /_index/_update/_id
 ```
 
-上面代码请求查看 `/user/admin/1` 这条记录，URL 的参数 `pretty=true` 表示以易读的格式返回。
+示例：
 
-返回的数据中，`found` 字段表示查询成功，`_source`字段返回原始记录。
+```bash
+POST /user/_update/1
+{
+    "doc":{
+        "age" : "30"
+    }
+}
+```
+
+### 查询文档
+
+#### 指定 ID 查询
+
+语法格式：
+
+```
+GET /_index/_type/_id
+```
+
+示例：
+
+```bash
+GET /user/_doc/1
+```
+
+结果：
 
 ```json
 {
   "_index": "user",
-  "_type": "admin",
+  "_type": "_doc",
   "_id": "1",
-  "_version": 2,
+  "_version": 1,
+  "_seq_no": 536248,
+  "_primary_term": 2,
   "found": true,
   "_source": {
     "user": "张三",
     "title": "工程师",
-    "desc": "超级管理员"
+    "desc": "数据库管理"
   }
 }
 ```
 
-如果 Id 不正确，就查不到数据，`found` 字段就是 `false`
+返回的数据中，`found` 字段表示查询成功，`_source` 字段返回原始记录。
+
+如果 id 不正确，就查不到数据，`found` 字段就是 `false`
 
 #### 查询所有记录
 
@@ -287,7 +470,7 @@ $ curl 'localhost:9200/user/admin/_search?pretty'
 
 返回的记录中，每条记录都有一个`_score`字段，表示匹配的程序，默认是按照这个字段降序排列。
 
-#### 全文搜索
+### 全文搜索
 
 ES 的查询非常特别，使用自己的[查询语法](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/query-dsl.html)，要求 GET 请求带有数据体。
 
@@ -354,7 +537,7 @@ $ curl 'localhost:9200/user/admin/_search'  -d '
 
 上面代码指定，从位置 1 开始（默认是从位置 0 开始），只返回一条结果。
 
-#### 逻辑运算
+### 逻辑运算
 
 如果有多个搜索关键字， Elastic 认为它们是`or`关系。
 
@@ -383,6 +566,106 @@ $ curl -H 'Content-Type: application/json' 'localhost:9200/user/admin/_search?pr
 }'
 ```
 
+### 批量执行
+
+支持在一次 API 调用中，对不同的索引进行操作
+
+支持四种类型操作
+
+- index
+- create
+- update
+- delete
+
+操作中单条操作失败，并不会影响其他操作。
+
+返回结果包括了每一条操作执行的结果。
+
+```bash
+POST _bulk
+{ "index" : { "_index" : "test", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_id" : "2" } }
+{ "create" : { "_index" : "test2", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+```
+
+> 说明：上面的示例如果执行多次，执行结果都不一样。
+
+### 批量读取
+
+读多个索引
+
+```bash
+GET /_mget
+{
+    "docs" : [
+        {
+            "_index" : "test",
+            "_id" : "1"
+        },
+        {
+            "_index" : "test",
+            "_id" : "2"
+        }
+    ]
+}
+```
+
+读一个索引
+
+```bash
+GET /test/_mget
+{
+    "docs" : [
+        {
+
+            "_id" : "1"
+        },
+        {
+
+            "_id" : "2"
+        }
+    ]
+}
+
+GET /_mget
+{
+    "docs" : [
+        {
+            "_index" : "test",
+            "_id" : "1",
+            "_source" : false
+        },
+        {
+            "_index" : "test",
+            "_id" : "2",
+            "_source" : ["field3", "field4"]
+        },
+        {
+            "_index" : "test",
+            "_id" : "3",
+            "_source" : {
+                "include": ["user"],
+                "exclude": ["user.location"]
+            }
+        }
+    ]
+}
+```
+
+### 批量查询
+
+```bash
+POST kibana_sample_data_ecommerce/_msearch
+{}
+{"query" : {"match_all" : {}},"size":1}
+{"index" : "kibana_sample_data_flights"}
+{"query" : {"match_all" : {}},"size":2}
+```
+
 ## 集群 API
 
 > [Elasticsearch 官方之 Cluster API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster.html)
@@ -394,8 +677,8 @@ $ curl -H 'Content-Type: application/json' 'localhost:9200/user/admin/_search?pr
 - `_all`：将所有节点添加到子集
 - `_local`：将本地节点添加到子集
 - `_master`：将当前主节点添加到子集
-- 根据节点ID或节点名将匹配节点添加到子集
-- 根据IP地址或主机名将匹配节点添加到子集
+- 根据节点 ID 或节点名将匹配节点添加到子集
+- 根据 IP 地址或主机名将匹配节点添加到子集
 - 使用通配符，将节点名、地址名或主机名匹配的节点添加到子集
 - `master:true`, `data:true`, `ingest:true`, `voting_only:true`, `ml:true` 或 `coordinating_only:true`, 分别意味着将所有主节点、所有数据节点、所有摄取节点、所有仅投票节点、所有机器学习节点和所有协调节点添加到子集中。
 - `master:false`, `data:false`, `ingest:false`, `voting_only:true`, `ml:false` 或 `coordinating_only:false`, 分别意味着将所有主节点、所有数据节点、所有摄取节点、所有仅投票节点、所有机器学习节点和所有协调节点排除在子集外。
@@ -443,8 +726,6 @@ GET /_cluster/health/kibana_sample_data_flights?level=shards
 ```bash
 GET /_cluster/state
 ```
-
-
 
 ## 节点 API
 
