@@ -16,66 +16,63 @@ import java.sql.*;
  */
 public class MysqlDemoTest {
 
-	private static final String DB_HOST = "localhost";
+    private static final String DB_HOST = "localhost";
 
-	private static final String DB_PORT = "3306";
+    private static final String DB_PORT = "3306";
 
-	private static final String DB_SCHEMA = "sakila";
+    private static final String DB_SCHEMA = "db_tutorial";
 
-	private static final String DB_USER = "root";
+    private static final String DB_USER = "root";
 
-	private static final String DB_PASSWORD = "root";
+    private static final String DB_PASSWORD = "root";
 
-	private static Logger logger = LoggerFactory.getLogger(MysqlDemoTest.class);
+    private static Logger logger = LoggerFactory.getLogger(MysqlDemoTest.class);
 
-	private static Statement statement;
+    private static Statement statement;
 
-	private static Connection connection;
+    private static Connection connection;
 
-	@BeforeClass
-	public static void beforeClass() {
-		try {
-			final String DB_URL = String.format("jdbc:mysql://%s:%s/%s", DB_HOST, DB_PORT, DB_SCHEMA);
-			connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-			// connection =
-			// DriverManager.getConnection("jdbc:mysql://localhost:3306/sakila?" +
-			// "user=root&password=root");
-			statement = connection.createStatement();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    @BeforeClass
+    public static void beforeClass() {
+        try {
+            final String DB_URL = String.format("jdbc:mysql://%s:%s/%s", DB_HOST, DB_PORT, DB_SCHEMA);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            statement = connection.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	@AfterClass
-	public static void afterClass() {
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    @AfterClass
+    public static void afterClass() {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Test
-	public void testString() {
-		final String sql = "select * from actor limit 10";
-		try {
-			ResultSet rs = statement.executeQuery(sql);
-			// 展开结果集数据库
-			while (rs.next()) {
-				// 通过字段检索
-				int id = rs.getInt("actor_id");
-				String firstName = rs.getString("first_name");
-				String lastName = rs.getString("last_name");
-				Date lastUpdate = rs.getDate("last_update");
-				// 输出数据
-				logger.debug("actor_id: {}, first_name: {}, last_name: {}, last_update: {}", id, firstName, lastName,
-					lastUpdate.toLocalDate());
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    @Test
+    public void testQuery() {
+        final String sql = "SELECT * FROM `user` LIMIT 10";
+        try {
+            ResultSet rs = statement.executeQuery(sql);
+            // 展开结果集数据库
+            while (rs.next()) {
+                // 通过字段检索
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int age = rs.getInt("age");
+                String address = rs.getString("address");
+                String email = rs.getString("email");
+                // 输出数据
+                logger.info("id: {}, name: {}, age: {}, address: {}, email: {}", id, name, age, address, email);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

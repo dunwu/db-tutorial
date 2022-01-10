@@ -16,7 +16,7 @@
 
 		<logback.version>1.2.3</logback.version>
 		<jedis.version>2.9.0</jedis.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 	</properties>
 
 	<dependencies>
