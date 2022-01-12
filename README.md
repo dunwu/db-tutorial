@@ -69,14 +69,14 @@
 - [Redis 实战](docs/nosql/redis/redis-action.md) - 关键词：`缓存`、`分布式锁`、`布隆过滤器`
 - [Redis 运维](docs/nosql/redis/redis-ops.md) 🔨 - 关键词：`安装`、`命令`、`集群`、`客户端`
 
-#### Elasticsearch
-
-> [Elasticsearch](docs/nosql/elasticsearch) 📚
+#### [Elasticsearch](docs/nosql/elasticsearch) 📚
 
 - [Elasticsearch 面试总结](docs/nosql/elasticsearch/elasticsearch-interview.md) 💯
-- [ElasticSearch 应用指南](docs/nosql/elasticsearch/elasticsearch-quickstart.md)
-- [ElasticSearch API](docs/nosql/elasticsearch/ElasticSearchRestApi.md)
-- [ElasticSearch 运维](docs/nosql/elasticsearch/elasticsearch-ops.md)
+- [Elasticsearch 简介](docs/nosql/elasticsearch/Elasticsearch简介.md)
+- [Elasticsearch 快速入门](docs/nosql/elasticsearch/Elasticsearch快速入门.md)
+- [Elasticsearch 基本概念](docs/nosql/elasticsearch/Elasticsearch基本概念.md)
+- [Elasticsearch Rest API](docs/nosql/elasticsearch/ElasticsearchRestApi.md)
+- [Elasticsearch 运维](docs/nosql/elasticsearch/Elasticsearch运维.md)
 
 #### HBase
 

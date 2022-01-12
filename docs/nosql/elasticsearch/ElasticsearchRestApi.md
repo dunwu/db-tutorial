@@ -666,6 +666,295 @@ POST kibana_sample_data_ecommerce/_msearch
 {"query" : {"match_all" : {}},"size":2}
 ```
 
+### URI Search 查询语义
+
+Elasticsearch URI Search 遵循 QueryString 查询语义，其形式如下：
+
+```bash
+GET /movies/_search?q=2012&df=title&sort=year:desc&from=0&size=10&timeout=1s
+{
+	"profile": true
+}
+```
+
+- **`q`** 指定查询语句，使用 QueryString 语义
+- **`df`** 默认字段，不指定时
+- **`sort`** 排序：from 和 size 用于分页
+- **`profile`** 可以查看查询时如何被执行的
+
+```bash
+GET /movies/_search?q=title:2012&sort=year:desc&from=0&size=10&timeout=1s
+{
+	"profile":"true"
+}
+```
+
+#### Term 和 Phrase
+
+Beautiful Mind 等效于 Beautiful OR Mind
+
+"Beautiful Mind" 等效于 Beautiful AND Mind
+
+```bash
+# Term 查询
+GET /movies/_search?q=title:Beautiful Mind
+{
+	"profile":"true"
+}
+
+# 使用引号，Phrase 查询
+GET /movies/_search?q=title:"Beautiful Mind"
+{
+	"profile":"true"
+}
+```
+
+#### 分组与引号
+
+title:(Beautiful AND Mind)
+
+title="Beautiful Mind"
+
+#### AND、OR、NOT 或者 &&、||、!
+
+> 注意：AND、OR、NOT 必须大写
+
+```bash
+# 布尔操作符
+GET /movies/_search?q=title:(Beautiful AND Mind)
+{
+	"profile":"true"
+}
+
+GET /movies/_search?q=title:(Beautiful NOT Mind)
+{
+	"profile":"true"
+}
+```
+
+#### 范围查询
+
+- `[]` 表示闭区间
+- `{}` 表示开区间
+
+示例：
+
+```bash
+# 范围查询 ,区间写法
+GET /movies/_search?q=title:beautiful AND year:{2010 TO 2018%7D
+{
+	"profile":"true"
+}
+
+GET /movies/_search?q=title:beautiful AND year:[* TO 2018]
+{
+	"profile":"true"
+}
+```
+
+#### 算数符号
+
+```bash
+# 2010 年以后的记录
+GET /movies/_search?q=year:>2010
+{
+	"profile":"true"
+}
+
+# 2010 年到 2018 年的记录
+GET /movies/_search?q=year:(>2010 && <=2018)
+{
+	"profile":"true"
+}
+
+# 2010 年到 2018 年的记录
+GET /movies/_search?q=year:(+>2010 +<=2018)
+{
+	"profile":"true"
+}
+```
+
+#### 通配符查询
+
+- `?` 代表 1 个字符
+- `*` 代表 0 或多个字符
+
+示例：
+
+```bash
+GET /movies/_search?q=title:mi?d
+{
+	"profile":"true"
+}
+
+GET /movies/_search?q=title:b*
+{
+	"profile":"true"
+}
+```
+
+#### 正则表达式
+
+title:[bt]oy
+
+#### 模糊匹配与近似查询
+
+示例：
+
+```bash
+# 相似度在 1 个字符以内
+GET /movies/_search?q=title:beautifl~1
+{
+	"profile":"true"
+}
+
+# 相似度在 2 个字符以内
+GET /movies/_search?q=title:"Lord Rings"~2
+{
+	"profile":"true"
+}
+```
+
+### Request Body & DSL
+
+Elasticsearch 除了 URI Search 查询方式，还支持将查询语句通过 Http Request Body 发起查询。
+
+```bash
+GET /kibana_sample_data_ecommerce/_search?ignore_unavailable=true
+{
+	"profile":"true",
+	"query": {
+	  "match_all": {}
+	}
+}
+```
+
+#### 分页
+
+```bash
+GET /kibana_sample_data_ecommerce/_search?ignore_unavailable=true
+{
+  "profile": "true",
+  "from": 0,
+  "size": 10,
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+#### 排序
+
+最好在数字型或日期型字段上排序
+
+因为对于多值类型或分析过的字段排序，系统会选一个值，无法得知该值
+
+```bash
+GET /kibana_sample_data_ecommerce/_search?ignore_unavailable=true
+{
+  "profile": "true",
+  "sort": [
+    {
+      "order_date": "desc"
+    }
+  ],
+  "from": 1,
+  "size": 10,
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+#### \_source 过滤
+
+如果 `_source` 没有存储，那就只返回匹配的文档的元数据
+
+`_source` 支持使用通配符，如：`_source["name*", "desc*"]`
+
+示例：
+
+```bash
+GET /kibana_sample_data_ecommerce/_search?ignore_unavailable=true
+{
+  "profile": "true",
+  "_source": [
+    "order_date",
+    "category.keyword"
+  ],
+  "from": 1,
+  "size": 10,
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+#### 脚本字段
+
+```bash
+GET /kibana_sample_data_ecommerce/_search?ignore_unavailable=true
+{
+  "profile": "true",
+  "script_fields": {
+    "new_field": {
+      "script": {
+        "lang": "painless",
+        "source":"doc['order_date'].value+' hello'"
+      }
+    }
+  },
+  "from": 1,
+  "size": 10,
+  "query": {
+    "match_all": {}
+  }
+}
+
+```
+
+#### 使用查询表达式 - Match
+
+```bash
+POST movies/_search
+{
+  "query": {
+    "match": {
+      "title": "last christmas"
+    }
+  }
+}
+
+POST movies/_search
+{
+  "query": {
+    "match": {
+      "title": {
+        "query": "last christmas",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+```
+
+#### 短语搜索 - Match Phrase
+
+```bash
+POST movies/_search
+{
+  "query": {
+    "match_phrase": {
+      "title":{
+        "query": "last christmas"
+
+      }
+    }
+  }
+}
+```
+
 ## 集群 API
 
 > [Elasticsearch 官方之 Cluster API](https://www.elastic.co/guide/en/elasticsearch/reference/current/cluster.html)

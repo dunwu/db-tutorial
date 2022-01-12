@@ -159,7 +159,7 @@ buffer 每 refresh 一次，就会产生一个 `segment file`，所以默认情�
 | 8      | 拉斯     | 3,5       |
 | 9      | 离开     | 3         |
 | 10     | 与       | 4         |
-| ..    | ..      | ..       |
+| ..     | ..       | ..        |
 
 另外，实用的倒排索引还可以记录更多的信息，比如文档频率信息，表示在文档集合中有多少个文档包含某个单词。
 
@@ -217,7 +217,7 @@ Beats 有多种类型，可以根据实际应用需要选择合适的类型。
 
 ### 4.1. Filebeat 简介
 
-> *由于本人仅接触过 Filebeat，所以本文只介绍 Beats 组件中的 Filebeat*。
+> _由于本人仅接触过 Filebeat，所以本文只介绍 Beats 组件中的 Filebeat_。
 
 相比 Logstash，FileBeat 更加轻量化。
 
@@ -250,7 +250,7 @@ Filebeat 将每个事件的传递状态存储在注册表文件中。所以它�
 
 ## 5. 运维
 
-- [ElasticSearch 运维](nosql/elasticsearch/elasticsearch-ops.md)
+- [ElasticSearch 运维](nosql/elasticsearch/Elasticsearch运维.md)
 - [Logstash 运维](nosql/elasticsearch/elastic/elastic-logstash-ops.mdstic/elastic-logstash-ops.md)
 - [Kibana 运维](nosql/elasticsearch/elastic/elastic-kibana-ops.mdlastic/elastic-kibana-ops.md)
 - [Beats 运维](nosql/elasticsearch/elastic/elastic-beats-ops.mdelastic/elastic-beats-ops.md)
