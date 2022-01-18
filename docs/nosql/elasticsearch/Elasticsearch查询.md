@@ -6,6 +6,12 @@ Elasticsearch 查询语句采用基于 RESTful 风格的接口封装成 JSON 格
 
 ES 全文查询主要用于在全文字段上，主要考虑查询词与文档的相关性（Relevance）。
 
+### intervals query
+
+[**`intervals query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-intervals-query.html) 根据匹配词的顺序和近似度返回文档。
+
+intervals query 使用**匹配规则**，这些规则应用于指定字段中的 term。
+
 ### match query
 
 match query **用于搜索单个字段**，首先会针对查询语句进行解析（经过 analyzer），主要是对查询语句进行分词，分词后查询语句的任何一个词项被匹配，文档就会被搜到，默认情况下相当于对分词后词项进行 or 匹配操作。
@@ -241,13 +247,24 @@ GET books/_search
 
 ## 词项查询
 
-全文查询在执行查询之前会分析查询字符串，词项查询时对倒排索引中存储的词项进行**精确匹配操作**。词项级别的查询通常用于结构化数据，如数字、日期和枚举类型。
-
 **`Term`（词项）是表达语意的最小单位**。搜索和利用统计语言模型进行自然语言处理都需要处理 Term。
 
-在 ES 中，term 查询，对输入不做分词。会将输入作为一个整体，在倒排索引中查找准确的词项。并且使用相关度计算公式为每个包含该词项的文档进行相关度计算。
+全文查询在执行查询之前会分析查询字符串。
 
-可以通过 Constant Score 将查询转换成一个 Filtering，避免算法，并利用缓存，提高性能。
+与全文查询不同，词项查询不会分词，而是将输入作为一个整体，在倒排索引中查找准确的词项。并且使用相关度计算公式为每个包含该词项的文档进行相关度计算。一言以概之：**词项查询是对词项进行精确匹配**。词项查询通常用于结构化数据，如数字、日期和枚举类型。
+
+词项查询有以下类型：
+
+- **[`exists` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html)**
+- **[`fuzzy` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html)**
+- **[`ids` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html)**
+- **[`prefix` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html)**
+- **[`range` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html)**
+- **[`regexp` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html)**
+- **[`term` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html)**
+- **[`terms` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html)**
+- **[`type` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html)**
+- **[`wildcard` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html)**
 
 ### exists query
 
@@ -301,133 +318,63 @@ GET kibana_sample_data_ecommerce/_search
 
 为了找到相似的词条，fuzzy query 会在指定的编辑距离内创建搜索词条的所有可能变体或扩展集。然后返回完全匹配任意扩展的文档。
 
-```
+```bash
 GET books/_search
 {
-	"query": {
-		"fuzzy": {
-			"title": "javascritp"
-		}
-	}
+  "query": {
+    "fuzzy": {
+      "user.id": {
+        "value": "ki",
+        "fuzziness": "AUTO",
+        "max_expansions": 50,
+        "prefix_length": 0,
+        "transpositions": true,
+        "rewrite": "constant_score"
+      }
+    }
+  }
 }
 ```
 
 注意：如果配置了 [`search.allow_expensive_queries`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html#query-dsl-allow-expensive-queries) ，则 fuzzy query 不能执行。
 
-### term query
+### ids query
 
-[term query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html) 用来查找指定字段中包含给定单词的文档，term 查询不被解析，只有查询词和文档中的词精确匹配才会被搜索到，应用场景为查询人名、地名等需要精准匹配的需求。
-
-示例：
+[**`ids query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html) 根据 ID 返回文档。 此查询使用存储在 `_id` 字段中的文档 ID。
 
 ```bash
-# 1. 创建一个索引
-DELETE my-index-000001
-PUT my-index-000001
-{
-  "mappings": {
-    "properties": {
-      "full_text": { "type": "text" }
-    }
-  }
-}
-
-# 2. 使用 "Quick Brown Foxes!" 关键字查 "full_text" 字段
-PUT my-index-000001/_doc/1
-{
-  "full_text": "Quick Brown Foxes!"
-}
-
-# 3. 使用 term 查询
-GET my-index-000001/_search?pretty
+GET /_search
 {
   "query": {
-    "term": {
-      "full_text": "Quick Brown Foxes!"
+    "ids" : {
+      "values" : ["1", "4", "100"]
     }
   }
 }
-# 因为 full_text 字段不再包含确切的 Term —— "Quick Brown Foxes!"，所以 term query 搜索不到任何结果
-
-# 4. 使用 match 查询
-GET my-index-000001/_search?pretty
-{
-  "query": {
-    "match": {
-      "full_text": "Quick Brown Foxes!"
-    }
-  }
-}
-
-DELETE my-index-000001
 ```
 
-> :warning: 注意：应避免 term 查询对 text 字段使用查询。
->
-> 默认情况下，Elasticsearch 针对 text 字段的值进行解析分词，这会使查找 text 字段值的精确匹配变得困难。
->
-> 要搜索 text 字段值，需改用 match 查询。
+### prefix query
 
-### terms query
+[**`prefix query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html#prefix-query-ex-request) 用于查询某个字段中包含指定前缀的文档。
 
-**`terms query`** 与 **`term query`** 相同，但可以搜索多个值。
-
-terms query 查询参数：
-
-- **`index`**：索引名
-- **`id`**：文档 ID
-- **`path`**：要从中获取字段值的字段的名称，即搜索关键字
-- **`routing`**（选填）：要从中获取 term 值的文档的自定义路由值。如果在索引文档时提供了自定义路由值，则此参数是必需的。
-
-示例：
+比如查询 `user.id` 中含有以 `ki` 为前缀的关键词的文档，那么含有 `kind`、`kid` 等所有以 `ki` 开头关键词的文档都会被匹配。
 
 ```bash
-# 1. 创建一个索引
-DELETE my-index-000001
-PUT my-index-000001
-{
-  "mappings": {
-    "properties": {
-      "color": { "type": "keyword" }
-    }
-  }
-}
-
-# 2. 写入一个文档
-PUT my-index-000001/_doc/1
-{
-  "color": [
-    "blue",
-    "green"
-  ]
-}
-
-# 3. 写入另一个文档
-PUT my-index-000001/_doc/2
-{
-  "color": "blue"
-}
-
-# 3. 使用 terms query
-GET my-index-000001/_search?pretty
+GET /_search
 {
   "query": {
-    "terms": {
-      "color": {
-        "index": "my-index-000001",
-        "id": "2",
-        "path": "color"
+    "prefix": {
+      "user.id": {
+        "value": "ki"
       }
     }
   }
 }
-
-DELETE my-index-000001
 ```
 
 ### range query
 
-**`range query`** 即范围查询，用于匹配在某一范围内的数值型、日期类型或者字符串型字段的文档。比如搜索哪些书籍的价格在 50 到 100 之间、哪些书籍的出版时间在 2015 年到 2019 年之间。**使用 range 查询只能查询一个字段，不能作用在多个字段上**。
+[**`range query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html) 即范围查询，用于匹配在某一范围内的数值型、日期类型或者字符串型字段的文档。比如搜索哪些书籍的价格在 50 到 100 之间、哪些书籍的出版时间在 2015 年到 2019 年之间。**使用 range 查询只能查询一个字段，不能作用在多个字段上**。
 
 range 查询支持的参数有以下几种：
 
@@ -482,89 +429,187 @@ GET kibana_sample_data_ecommerce/_search
 }
 ```
 
-### prefix query
+### regexp query
 
-**`prefix`** 查询用于查询某个字段中以给定前缀开始的文档，比如查询 title 中含有以 java 为前缀的关键词的文档，那么含有 java、javascript、javaee 等所有以 java 开头关键词的文档都会被匹配。查询 description 字段中包含有以 win 为前缀的关键词的文档，查询语句如下：
+[**`regexp query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html) 返回与正则表达式相匹配的 term 所属的文档。
 
-```
-GET books/_search
+[正则表达式](https://zh.wikipedia.org/zh-hans/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F)是一种使用占位符字符匹配数据模式的方法，称为运算符。
+
+示例：以下搜索返回 `user.id` 字段包含任何以 `k` 开头并以 `y` 结尾的文档。 `.*` 运算符匹配任何长度的任何字符，包括无字符。匹配项可以包括 `ky`、`kay` 和 `kimchy`。
+
+```bash
+GET /_search
 {
-	"query": {
-		"prefix": {
-			"description": "win"
-		}
-	}
+  "query": {
+    "regexp": {
+      "user.id": {
+        "value": "k.*y",
+        "flags": "ALL",
+        "case_insensitive": true,
+        "max_determinized_states": 10000,
+        "rewrite": "constant_score"
+      }
+    }
+  }
+}
+```
+
+> 注意：如果配置了[`search.allow_expensive_queries`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html#query-dsl-allow-expensive-queries) ，则 [**`regexp query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html) 会被禁用。
+
+### term query
+
+[**`term query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html) 用来查找指定字段中包含给定单词的文档，term 查询不被解析，只有查询词和文档中的词精确匹配才会被搜索到，应用场景为查询人名、地名等需要精准匹配的需求。
+
+示例：
+
+```bash
+# 1. 创建一个索引
+DELETE my-index-000001
+PUT my-index-000001
+{
+  "mappings": {
+    "properties": {
+      "full_text": { "type": "text" }
+    }
+  }
+}
+
+# 2. 使用 "Quick Brown Foxes!" 关键字查 "full_text" 字段
+PUT my-index-000001/_doc/1
+{
+  "full_text": "Quick Brown Foxes!"
+}
+
+# 3. 使用 term 查询
+GET my-index-000001/_search?pretty
+{
+  "query": {
+    "term": {
+      "full_text": "Quick Brown Foxes!"
+    }
+  }
+}
+# 因为 full_text 字段不再包含确切的 Term —— "Quick Brown Foxes!"，所以 term query 搜索不到任何结果
+
+# 4. 使用 match 查询
+GET my-index-000001/_search?pretty
+{
+  "query": {
+    "match": {
+      "full_text": "Quick Brown Foxes!"
+    }
+  }
+}
+
+DELETE my-index-000001
+```
+
+> :warning: 注意：应避免 term 查询对 text 字段使用查询。
+>
+> 默认情况下，Elasticsearch 针对 text 字段的值进行解析分词，这会使查找 text 字段值的精确匹配变得困难。
+>
+> 要搜索 text 字段值，需改用 match 查询。
+
+### terms query
+
+[**`terms query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html) 与 [**`term query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html) 相同，但可以搜索多个值。
+
+terms query 查询参数：
+
+- **`index`**：索引名
+- **`id`**：文档 ID
+- **`path`**：要从中获取字段值的字段的名称，即搜索关键字
+- **`routing`**（选填）：要从中获取 term 值的文档的自定义路由值。如果在索引文档时提供了自定义路由值，则此参数是必需的。
+
+示例：
+
+```bash
+# 1. 创建一个索引
+DELETE my-index-000001
+PUT my-index-000001
+{
+  "mappings": {
+    "properties": {
+      "color": { "type": "keyword" }
+    }
+  }
+}
+
+# 2. 写入一个文档
+PUT my-index-000001/_doc/1
+{
+  "color": [
+    "blue",
+    "green"
+  ]
+}
+
+# 3. 写入另一个文档
+PUT my-index-000001/_doc/2
+{
+  "color": "blue"
+}
+
+# 3. 使用 terms query
+GET my-index-000001/_search?pretty
+{
+  "query": {
+    "terms": {
+      "color": {
+        "index": "my-index-000001",
+        "id": "2",
+        "path": "color"
+      }
+    }
+  }
+}
+
+DELETE my-index-000001
+```
+
+### type query
+
+> 7.0.0 后废弃
+
+[**`type query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html) 用于查询具有指定类型的文档。
+
+示例：
+
+```bash
+GET /_search
+{
+  "query": {
+    "type": {
+      "value": "_doc"
+    }
+  }
 }
 ```
 
 ### wildcard query
 
-wildcard query 中文译为通配符查询，支持单字符通配符和多字符通配符，`?` 用来匹配一个任意字符，`*` 用来匹配零个或者多个字符。
+[**`wildcard query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html) 即通配符查询，返回与通配符模式匹配的文档。
 
-以 H?tland 为例，Hatland、Hbtland 等都可以匹配，但是不能匹配 Htland，`?` 只能代表一位。H*tland 可以匹配 Htland、Habctland 等，`*` 可以代表 0 至多个字符。**和 prefix 查询一样，wildcard 查询的查询性能也不是很高，需要消耗较多的 CPU 资源。**
+`?` 用来匹配一个任意字符，`*` 用来匹配零个或者多个字符。
 
-下面举一个 wildcard 查询的例子，假设需要找某一作者写的书，但是忘记了作者名字的全称，只记住了前两个字，那么就可以使用通配符查询，查询语句如下：
+示例：以下搜索返回 `user.id` 字段包含以 `ki` 开头并以 `y` 结尾的术语的文档。这些匹配项可以包括 `kiy`、`kity` 或 `kimchy`。
 
-```
-GET books/_search
+```bash
+GET /_search
 {
   "query": {
     "wildcard": {
-      "author": "李永*"
+      "user.id": {
+        "value": "ki*y",
+        "boost": 1.0,
+        "rewrite": "constant_score"
+      }
     }
   }
 }
 ```
 
-### regexp query
-
-Elasticsearch 也支持正则表达式查询，通过 regexp query 可以查询指定字段包含与指定正则表达式匹配的文档。可以代表任意字符, “a.c.e” 和 “ab...” 都可以匹配 “abcde”，a{3}b{3}、a{2,3}b{2,4}、a{2,}{2,} 都可以匹配字符串 “aaabbb”。
-
-例如需要匹配以 W 开头紧跟着数字的邮政编码，使用正则表达式查询构造查询语句如下：
-
-```
-GET books/_search
-{
-	"query": {
-		"regexp": {
-			"postcode": "W[0-9].+"
-		}
-	}
-}
-```
-
-### type query
-
-type query 用于查询具有指定类型的文档。例如查询 Elasticsearch 中 type 为 computer 的文档，查询语句如下：
-
-```
-GET books/_search
-{
-	"query": {
-		"type": {
-			"value": "computer"
-		}
-	}
-}
-```
-
-### ids query
-
-ids query 用于查询具有指定 id 的文档。类型是可选的，也可以省略，也可以接受一个数组。如果未指定任何类型，则会查询索引中的所有类型。例如，查询类型为 computer，id 为 1、3、5 的文档，**本质上是对文档 `_id` 的查询，所以对应的 value 是字符串类型**，查询语句如下：
-
-```
-GET books/_search
-{
-  "query": {
-    "ids": {
-      "type": "computer",
-      "values": ["1", "3", "5"]
-    }
-  }
-}
-```
-
-ES 查询中如果要排除一些指定的 id 列表可以结合 ids query 和 bool 查询的 must_not，具体参照 [Elasticsearch（ES）不匹配或排除指定的 id 列表](https://www.knowledgedict.com/tutorial/elasticsearch-query-exclude-ids.html)。
+> 注意：如果配置了[`search.allow_expensive_queries`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html#query-dsl-allow-expensive-queries) ，则[**`wildcard query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html) 会被禁用。
 
 ## 复合查询
 
