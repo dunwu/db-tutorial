@@ -72,6 +72,167 @@ Elasticsearch 使用 [_JSON_](http://en.wikipedia.org/wiki/Json) 作为文档的
 
 ![](https://raw.githubusercontent.com/dunwu/images/dev/snap/20220108215559.PNG)
 
+### index template
+
+**`index template`**（索引模板）帮助用户设定 Mapping 和 Setting，并按照一定的规则，自动匹配到新创建的索引之上。
+
+- 模板仅在一个索引被创建时，才会产生作用。修改模板不会影响已创建的索引。
+- 你可以设定多个索引模板，这些设置会被 merge 在一起。
+- 你可以指定 order 的数值，控制 merge 的过程。
+
+当新建一个索引时
+
+- 应用 ES 默认的 Mapping 和 Setting
+- 应用 order 数值低的 index template 中的设定
+- 应用 order 数值高的 index template 中的设定，之前的设定会被覆盖
+- 应用创建索引是，用户所指定的 Mapping 和 Setting，并覆盖之前模板中的设定。
+
+示例：创建默认索引模板
+
+```bash
+PUT _template/template_default
+{
+  "index_patterns": ["*"],
+  "order": 0,
+  "version": 1,
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  }
+}
+
+PUT /_template/template_test
+{
+  "index_patterns": ["test*"],
+  "order": 1,
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 2
+  },
+  "mappings": {
+    "date_detection": false,
+    "numeric_detection": true
+  }
+}
+
+# 查看索引模板
+GET /_template/template_default
+GET /_template/temp*
+
+#写入新的数据，index以test开头
+PUT testtemplate/_doc/1
+{
+  "someNumber": "1",
+  "someDate": "2019/01/01"
+}
+GET testtemplate/_mapping
+GET testtemplate/_settings
+
+PUT testmy
+{
+	"settings":{
+		"number_of_replicas":5
+	}
+}
+
+PUT testmy/_doc/1
+{
+  "key": "value"
+}
+
+GET testmy/_settings
+DELETE testmy
+DELETE /_template/template_default
+DELETE /_template/template_test
+```
+
+### dynamic template
+
+- 根据 ES 识别的数据类型，结合字段名称，来动态设定字段类型
+  - 所有的字符串类型都设定成 Keyword，或者关闭 keyword 字段。
+  - is 开头的字段都设置成 boolean
+  - long_ 开头的都设置成 long 类型
+- dynamic template 是定义在某个索引的 Mapping 中
+- template 有一个名称
+- 匹配规则是一个数组
+- 为匹配到字段设置 Mapping
+
+示例：
+
+```bash
+#Dynaminc Mapping 根据类型和字段名
+DELETE my_index
+
+PUT my_index/_doc/1
+{
+  "firstName": "Ruan",
+  "isVIP": "true"
+}
+
+GET my_index/_mapping
+
+DELETE my_index
+PUT my_index
+{
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "strings_as_boolean": {
+          "match_mapping_type": "string",
+          "match": "is*",
+          "mapping": {
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "strings_as_keywords": {
+          "match_mapping_type": "string",
+          "mapping": {
+            "type": "keyword"
+          }
+        }
+      }
+    ]
+  }
+}
+GET my_index/_mapping
+
+DELETE my_index
+#结合路径
+PUT my_index
+{
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "full_name": {
+          "path_match": "name.*",
+          "path_unmatch": "*.middle",
+          "mapping": {
+            "type": "text",
+            "copy_to": "full_name"
+          }
+        }
+      }
+    ]
+  }
+}
+GET my_index/_mapping
+
+
+PUT my_index/_doc/1
+{
+  "name": {
+    "first": "John",
+    "middle": "Winston",
+    "last": "Lennon"
+  }
+}
+
+GET my_index/_search?q=full_name:John
+DELETE my_index
+```
+
 ## Mapping
 
 在 Elasticsearch 中，**`Mapping`**（映射），用来定义一个文档以及其所包含的字段如何被存储和索引，可以在映射中事先定义字段的数据类型、字段的权重、分词器等属性，就如同在关系型数据库中创建数据表时会设置字段的类型。

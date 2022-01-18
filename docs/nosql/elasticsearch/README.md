@@ -11,6 +11,9 @@
 - [Elasticsearch 快速入门](Elasticsearch快速入门.md)
 - [Elasticsearch 基本概念](Elasticsearch基本概念.md)
 - [Elasticsearch Rest API](ElasticsearchRestApi.md)
+- [Elasticsearch 查询](Elasticsearch查询.md)
+- Elasticsearch 聚合
+- Elasticsearch 分词
 - [Elasticsearch 运维](Elasticsearch运维.md)
 
 ### Elastic 技术栈

@@ -46,6 +46,10 @@ module.exports = {
             link: '/nosql/redis/',
           },
           {
+            text: 'Elasticsearch',
+            link: '/nosql/elasticsearch/',
+          },
+          {
             text: 'MongoDB',
             link: '/nosql/mongodb/',
           },

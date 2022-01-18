@@ -14,7 +14,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
-    <spring.version>5.2.8.RELEASE</spring.version>
+    <spring.version>5.2.9.RELEASE</spring.version>
     <logback.version>1.2.3</logback.version>
     <jedis.version>2.9.0</jedis.version>
     <redisson.version>3.7.2</redisson.version>
