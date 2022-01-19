@@ -2,19 +2,106 @@
 
 Elasticsearch 查询语句采用基于 RESTful 风格的接口封装成 JSON 格式的对象，称之为 Query DSL。Elasticsearch 查询分类大致分为**全文查询**、**词项查询**、**复合查询**、**嵌套查询**、**位置查询**、**特殊查询**。Elasticsearch 查询从机制分为两种，一种是根据用户输入的查询词，通过排序模型计算文档与查询词之间的**相关度**，并根据评分高低排序返回；另一种是**过滤机制**，只根据过滤条件对文档进行过滤，不计算评分，速度相对较快。
 
-## 全文查询
+<!-- TOC depthFrom:2 depthTo:3 -->
+
+- [1. 全文查询](#1-全文查询)
+  - [1.1. intervals query](#11-intervals-query)
+  - [1.2. match query](#12-match-query)
+  - [1.3. match_bool_prefix query](#13-match_bool_prefix-query)
+  - [1.4. match_phrase query](#14-match_phrase-query)
+  - [1.5. match_phrase_prefix query](#15-match_phrase_prefix-query)
+  - [1.6. multi_match query](#16-multi_match-query)
+  - [1.7. combined_fields query](#17-combined_fields-query)
+  - [1.8. common_terms query](#18-common_terms-query)
+  - [1.9. query_string query](#19-query_string-query)
+  - [1.10. simple_query_string](#110-simple_query_string)
+  - [1.11. 全文查询完整示例](#111-全文查询完整示例)
+- [2. 词项查询](#2-词项查询)
+  - [2.1. exists query](#21-exists-query)
+  - [2.2. fuzzy query](#22-fuzzy-query)
+  - [2.3. ids query](#23-ids-query)
+  - [2.4. prefix query](#24-prefix-query)
+  - [2.5. range query](#25-range-query)
+  - [2.6. regexp query](#26-regexp-query)
+  - [2.7. term query](#27-term-query)
+  - [2.8. terms query](#28-terms-query)
+  - [2.9. type query](#29-type-query)
+  - [2.10. wildcard query](#210-wildcard-query)
+  - [2.11. 词项查询完整示例](#211-词项查询完整示例)
+- [3. 复合查询](#3-复合查询)
+  - [3.1. bool query](#31-bool-query)
+  - [3.2. boosting query](#32-boosting-query)
+  - [3.3. constant_score query](#33-constant_score-query)
+  - [3.4. dis_max query](#34-dis_max-query)
+  - [3.5. function_score query](#35-function_score-query)
+  - [3.6. indices query](#36-indices-query)
+- [4. 嵌套查询](#4-嵌套查询)
+  - [4.1. nested query](#41-nested-query)
+  - [4.2. has_child query](#42-has_child-query)
+  - [4.3. has_parent query](#43-has_parent-query)
+- [5. 位置查询](#5-位置查询)
+  - [5.1. geo_distance query](#51-geo_distance-query)
+  - [5.2. geo_bounding_box query](#52-geo_bounding_box-query)
+  - [5.3. geo_polygon query](#53-geo_polygon-query)
+  - [5.4. geo_shape query](#54-geo_shape-query)
+- [6. 特殊查询](#6-特殊查询)
+  - [6.1. more_like_this query](#61-more_like_this-query)
+  - [6.2. script query](#62-script-query)
+  - [6.3. percolate query](#63-percolate-query)
+
+<!-- /TOC -->
+
+## 1. 全文查询
 
 ES 全文查询主要用于在全文字段上，主要考虑查询词与文档的相关性（Relevance）。
 
-### intervals query
+### 1.1. intervals query
 
 [**`intervals query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-intervals-query.html) 根据匹配词的顺序和近似度返回文档。
 
 intervals query 使用**匹配规则**，这些规则应用于指定字段中的 term。
 
-### match query
+示例：下面示例搜索 `query` 字段，搜索值是 `my favorite food`，没有任何间隙；然后是 `my_text` 字段搜索匹配 `hot water`、`cold porridge` 的 term。
 
-match query **用于搜索单个字段**，首先会针对查询语句进行解析（经过 analyzer），主要是对查询语句进行分词，分词后查询语句的任何一个词项被匹配，文档就会被搜到，默认情况下相当于对分词后词项进行 or 匹配操作。
+当 my_text 中的值为 `my favorite food is cold porridge` 时，会匹配成功，但是 `when it's cold my favorite food is porridge` 则匹配失败
+
+```bash
+POST _search
+{
+  "query": {
+    "intervals" : {
+      "my_text" : {
+        "all_of" : {
+          "ordered" : true,
+          "intervals" : [
+            {
+              "match" : {
+                "query" : "my favorite food",
+                "max_gaps" : 0,
+                "ordered" : true
+              }
+            },
+            {
+              "any_of" : {
+                "intervals" : [
+                  { "match" : { "query" : "hot water" } },
+                  { "match" : { "query" : "cold porridge" } }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+### 1.2. match query
+
+[**`match query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html) **用于搜索单个字段**，首先会针对查询语句进行解析（经过 analyzer），主要是对查询语句进行分词，分词后查询语句的任何一个词项被匹配，文档就会被搜到，默认情况下相当于对分词后词项进行 or 匹配操作。
+
+[**`match query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html) 是执行全文搜索的标准查询，包括模糊匹配选项。
 
 ```bash
 GET kibana_sample_data_ecommerce/_search
@@ -45,7 +132,26 @@ GET kibana_sample_data_ecommerce/_search
 }
 ```
 
-如果想查询匹配所有关键词的文档，可以用 and 操作符连接，如下：
+#### match query 简写
+
+可以通过组合 `<field>` 和 `query` 参数来简化匹配查询语法。
+
+示例：
+
+```bash
+GET /_search
+{
+  "query": {
+    "match": {
+      "message": "this is a test"
+    }
+  }
+}
+```
+
+#### match query 如何工作
+
+匹配查询是布尔类型。这意味着会对提供的文本进行分析，分析过程从提供的文本构造一个布尔查询。 `operator` 参数可以设置为 `or` 或 `and` 来控制布尔子句（默认为 `or`）。可以使用 [`minimum_should_match`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-minimum-should-match.html) 参数设置要匹配的可选 `should` 子句的最小数量。
 
 ```bash
 GET kibana_sample_data_ecommerce/_search
@@ -61,11 +167,92 @@ GET kibana_sample_data_ecommerce/_search
 }
 ```
 
-### match_phrase 查询
+可以设置 `analyzer` 来控制哪个分析器将对文本执行分析过程。它默认为字段显式映射定义或默认搜索分析器。
 
-> 参考：https://www.elastic.co/guide/cn/elasticsearch/guide/current/phrase-matching.html
+`lenient` 参数可以设置为 `true` 以忽略由数据类型不匹配导致的异常，例如尝试使用文本查询字符串查询数字字段。默认为 `false`。
 
-**`match_phrase`** 查询即短语匹配，首先会把 query 内容分词，分词器可以自定义，同时文档还要满足以下两个条件才会被搜索到：
+#### match query 的模糊查询
+
+`fuzziness` 允许基于被查询字段的类型进行模糊匹配。请参阅 [Fuzziness](https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html#fuzziness) 的配置。
+
+在这种情况下可以设置 `prefix_length` 和 `max_expansions` 来控制模糊匹配。如果设置了模糊选项，查询将使用 `top_terms_blended_freqs_${max_expansions}` 作为其重写方法，`fuzzy_rewrite` 参数允许控制查询将如何被重写。
+
+默认情况下允许模糊倒转 (`ab` → `ba`)，但可以通过将 `fuzzy_transpositions` 设置为 `false` 来禁用。
+
+```bash
+GET /_search
+{
+  "query": {
+    "match": {
+      "message": {
+        "query": "this is a testt",
+        "fuzziness": "AUTO"
+      }
+    }
+  }
+}
+```
+
+#### zero terms 查询
+
+如果使用的分析器像 stop 过滤器一样删除查询中的所有标记，则默认行为是不匹配任何文档。可以使用 `zero_terms_query` 选项来改变默认行为，它接受 `none`（默认）和 `all` （相当于 `match_all` 查询）。
+
+```bash
+GET /_search
+{
+  "query": {
+    "match": {
+      "message": {
+        "query": "to be or not to be",
+        "operator": "and",
+        "zero_terms_query": "all"
+      }
+    }
+  }
+}
+```
+
+### 1.3. match_bool_prefix query
+
+[**`match_bool_prefix query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-bool-prefix-query.html) 分析其输入并根据这些词构造一个布尔查询。除了最后一个术语之外的每个术语都用于术语查询。最后一个词用于 `prefix query`。
+
+示例：
+
+```bash
+GET /_search
+{
+  "query": {
+    "match_bool_prefix" : {
+      "message" : "quick brown f"
+    }
+  }
+}
+```
+
+等价于
+
+```bash
+GET /_search
+{
+  "query": {
+    "bool" : {
+      "should": [
+        { "term": { "message": "quick" }},
+        { "term": { "message": "brown" }},
+        { "prefix": { "message": "f"}}
+      ]
+    }
+  }
+}
+```
+
+`match_bool_prefix query` 和 `match_phrase_prefix query` 之间的一个重要区别是：`match_phrase_prefix query` 将其 term 匹配为短语，但 `match_bool_prefix query` 可以在任何位置匹配其 term。
+
+上面的示例 `match_bool_prefix query` 查询可以匹配包含 `quick brown fox` 的字段，但它也可以快速匹配 `brown fox`。它还可以匹配包含 `quick`、`brown` 和以 `f` 开头的字段，出现在任何位置。
+
+### 1.4. match_phrase query
+
+[**`match_phrase query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase.html) 即短语匹配，首先会把 query 内容分词，分词器可以自定义，同时文档还要满足以下两个条件才会被搜索到：
 
 1. **分词后所有词项都要出现在该字段中（相当于 and 操作）**。
 2. **字段中的词项顺序要一致**。
@@ -100,9 +287,9 @@ GET demo/_search
 > - are 的位置应该比 How 的位置大 1 。
 > - you 的位置应该比 How 的位置大 2 。
 
-### match_phrase_prefix query
+### 1.5. match_phrase_prefix query
 
-**`match_phrase_prefix`** 和 **`match_phrase`** 类似，只不过 **`match_phrase_prefix`** 支持最后一个 term 的前缀匹配。
+[**`match_phrase_prefix query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase-prefix.html) 和 [**`match_phrase query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase.html) 类似，只不过 [**`match_phrase_prefix query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query-phrase-prefix.html) 最后一个 term 会被作为前缀匹配。
 
 ```bash
 GET demo/_search
@@ -115,9 +302,9 @@ GET demo/_search
 }
 ```
 
-### multi_match query
+### 1.6. multi_match query
 
-**`multi_match`** 是 **`match`** 的升级，**用于搜索多个字段**。
+[**`multi_match query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html) 是 **`match query`** 的升级，**用于搜索多个字段**。
 
 示例：
 
@@ -136,7 +323,7 @@ GET kibana_sample_data_ecommerce/_search
 }
 ```
 
-**`multi_match`** 支持对要搜索的**字段的名称使用通配符**，示例如下：
+**`multi_match query`** 的搜索字段可以使用通配符指定，示例如下：
 
 ```bash
 GET kibana_sample_data_ecommerce/_search
@@ -172,9 +359,32 @@ GET kibana_sample_data_ecommerce/_search
 }
 ```
 
-### common_terms query
+### 1.7. combined_fields query
 
-**`common_terms`** query 是一种在不牺牲性能的情况下替代停用词提高搜索准确率和召回率的方案。
+[**`combined_fields query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-combined-fields-query.html) 支持搜索多个文本字段，就好像它们的内容已被索引到一个组合字段中一样。该查询会生成以 term 为中心的输入字符串视图：首先它将查询字符串解析为独立的 term，然后在所有字段中查找每个 term。当匹配结果可能跨越多个文本字段时，此查询特别有用，例如文章的标题、摘要和正文：
+
+```bash
+GET /_search
+{
+  "query": {
+    "combined_fields" : {
+      "query":      "database systems",
+      "fields":     [ "title", "abstract", "body"],
+      "operator":   "and"
+    }
+  }
+}
+```
+
+#### 字段前缀权重
+
+字段前缀权重根据组合字段模型进行计算。例如，如果 title 字段的权重为 2，则匹配度打分时会将 title 中的每个 term 形成的组合字段，按出现两次进行打分。
+
+### 1.8. common_terms query
+
+> 7.3.0 废弃
+
+[**`common_terms query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-common-terms-query.html) 是一种在不牺牲性能的情况下替代停用词提高搜索准确率和召回率的方案。
 
 查询中的每个词项都有一定的代价，以搜索“The brown fox”为例，query 会被解析成三个词项“the”“brown”和“fox”，每个词项都会到索引中执行一次查询。很显然包含“the”的文档非常多，相比其他词项，“the”的重要性会低很多。传统的解决方案是把“the”当作停用词处理，去除停用词之后可以减少索引大小，同时在搜索时减少对停用词的收缩。
 
@@ -186,7 +396,7 @@ common_terms query 提供了一种解决方案，它把 query 分词后的词项
 
 例如，文档频率高于 0.1% 的词项将会被当作高频词项，词频之间可以用 low_freq_operator、high_freq_operator 参数连接。设置低频词操作符为“and”使所有的低频词都是必须搜索的，示例代码如下：
 
-```
+```bash
 GET books/_search
 {
 	"query": {
@@ -203,7 +413,7 @@ GET books/_search
 
 上述操作等价于：
 
-```
+```bash
 GET books/_search
 {
 	"query": {
@@ -223,29 +433,109 @@ GET books/_search
 }
 ```
 
-### query_string query
+### 1.9. query_string query
 
-**`query_string`** query 是与 Lucene 查询语句的语法结合非常紧密的一种查询，允许在一个查询语句中使用多个特殊条件关键字（如：AND | OR | NOT）对多个字段进行查询，建议熟悉 Lucene 查询语法的用户去使用。
+[**`query_string query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html) 是与 Lucene 查询语句的语法结合非常紧密的一种查询，允许在一个查询语句中使用多个特殊条件关键字（如：AND | OR | NOT）对多个字段进行查询，建议熟悉 Lucene 查询语法的用户去使用。
 
-### simple_query_string
+用户可以使用 query_string query 来创建包含通配符、跨多个字段的搜索等复杂搜索。虽然通用，但查询是严格的，如果查询字符串包含任何无效语法，则会返回错误。
 
-**`simple_query_string`** 是一种适合直接暴露给用户，并且具有非常完善的查询语法的查询语句，接受 Lucene 查询语法，解析过程中发生错误不会抛出异常。例子如下：
+示例：
 
-```
-GET books/_search
+```bash
+GET /_search
 {
   "query": {
-    "simple_query_string": {
-      "query": "\"fried eggs\" +(eggplant | potato) -frittata",
-      "analyzer": "snowball",
-      "fields": ["body^5", "_all"],
-      "default_operator": "and"
+    "query_string": {
+      "query": "(new york city) OR (big apple)",
+      "default_field": "content"
     }
   }
 }
 ```
 
-## 词项查询
+### 1.10. simple_query_string
+
+[**`simple_query_string query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html) 是一种适合直接暴露给用户，并且具有非常完善的查询语法的查询语句，接受 Lucene 查询语法，解析过程中发生错误不会抛出异常。
+
+虽然语法比 [**`query_string query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html) 更严格，但 [**`simple_query_string query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html) 不会返回无效语法的错误。相反，它会忽略查询字符串的任何无效部分。
+
+示例：
+
+```bash
+GET /_search
+{
+  "query": {
+    "simple_query_string" : {
+        "query": "\"fried eggs\" +(eggplant | potato) -frittata",
+        "fields": ["title^5", "body"],
+        "default_operator": "and"
+    }
+  }
+}
+```
+
+#### simple_query_string 语义
+
+- `+`：等价于 AND 操作
+- `|`：等价于 OR 操作
+- `-`：相当于 NOT 操作
+- `"`：包装一些标记以表示用于搜索的短语
+- `*`：词尾表示前缀查询
+- `(` and `)`：表示优先级
+- `~N`：词尾表示表示编辑距离（模糊性）
+- `~N`：在一个短语之后表示溢出量
+
+注意：要使用上面的字符，请使用反斜杠 `/` 对其进行转义。
+
+### 1.11. 全文查询完整示例
+
+```bash
+#设置 position_increment_gap
+DELETE groups
+PUT groups
+{
+  "mappings": {
+    "properties": {
+      "names":{
+        "type": "text",
+        "position_increment_gap": 0
+      }
+    }
+  }
+}
+
+GET groups/_mapping
+
+POST groups/_doc
+{
+  "names": [ "John Water", "Water Smith"]
+}
+
+POST groups/_search
+{
+  "query": {
+    "match_phrase": {
+      "names": {
+        "query": "Water Water",
+        "slop": 100
+      }
+    }
+  }
+}
+
+POST groups/_search
+{
+  "query": {
+    "match_phrase": {
+      "names": "Water Smith"
+    }
+  }
+}
+
+DELETE groups
+```
+
+## 2. 词项查询
 
 **`Term`（词项）是表达语意的最小单位**。搜索和利用统计语言模型进行自然语言处理都需要处理 Term。
 
@@ -266,7 +556,7 @@ GET books/_search
 - **[`type` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-type-query.html)**
 - **[`wildcard` query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html)**
 
-### exists query
+### 2.1. exists query
 
 [**`exists query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-exists-query.html) 会返回字段中至少有一个非空值的文档。
 
@@ -305,7 +595,7 @@ GET kibana_sample_data_ecommerce/_search
 - `{ "user" : [null] }` 虽然有 user 字段，但是值为空。
 - `{ "foo" : "bar" }` 没有 user 字段。
 
-### fuzzy query
+### 2.2. fuzzy query
 
 [**`fuzzy query`**（模糊查询）](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html)返回包含与搜索词相似的词的文档。ES 使用 [Levenshtein edit distance（Levenshtein 编辑距离）](https://en.wikipedia.org/wiki/Levenshtein_distance)测量相似度或模糊度。
 
@@ -338,7 +628,7 @@ GET books/_search
 
 注意：如果配置了 [`search.allow_expensive_queries`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html#query-dsl-allow-expensive-queries) ，则 fuzzy query 不能执行。
 
-### ids query
+### 2.3. ids query
 
 [**`ids query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-query.html) 根据 ID 返回文档。 此查询使用存储在 `_id` 字段中的文档 ID。
 
@@ -353,7 +643,7 @@ GET /_search
 }
 ```
 
-### prefix query
+### 2.4. prefix query
 
 [**`prefix query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-prefix-query.html#prefix-query-ex-request) 用于查询某个字段中包含指定前缀的文档。
 
@@ -372,7 +662,7 @@ GET /_search
 }
 ```
 
-### range query
+### 2.5. range query
 
 [**`range query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html) 即范围查询，用于匹配在某一范围内的数值型、日期类型或者字符串型字段的文档。比如搜索哪些书籍的价格在 50 到 100 之间、哪些书籍的出版时间在 2015 年到 2019 年之间。**使用 range 查询只能查询一个字段，不能作用在多个字段上**。
 
@@ -429,7 +719,7 @@ GET kibana_sample_data_ecommerce/_search
 }
 ```
 
-### regexp query
+### 2.6. regexp query
 
 [**`regexp query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html) 返回与正则表达式相匹配的 term 所属的文档。
 
@@ -456,7 +746,7 @@ GET /_search
 
 > 注意：如果配置了[`search.allow_expensive_queries`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html#query-dsl-allow-expensive-queries) ，则 [**`regexp query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html) 会被禁用。
 
-### term query
+### 2.7. term query
 
 [**`term query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html) 用来查找指定字段中包含给定单词的文档，term 查询不被解析，只有查询词和文档中的词精确匹配才会被搜索到，应用场景为查询人名、地名等需要精准匹配的需求。
 
@@ -510,7 +800,7 @@ DELETE my-index-000001
 >
 > 要搜索 text 字段值，需改用 match 查询。
 
-### terms query
+### 2.8. terms query
 
 [**`terms query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html) 与 [**`term query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html) 相同，但可以搜索多个值。
 
@@ -567,7 +857,7 @@ GET my-index-000001/_search?pretty
 DELETE my-index-000001
 ```
 
-### type query
+### 2.9. type query
 
 > 7.0.0 后废弃
 
@@ -586,7 +876,7 @@ GET /_search
 }
 ```
 
-### wildcard query
+### 2.10. wildcard query
 
 [**`wildcard query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html) 即通配符查询，返回与通配符模式匹配的文档。
 
@@ -611,11 +901,95 @@ GET /_search
 
 > 注意：如果配置了[`search.allow_expensive_queries`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html#query-dsl-allow-expensive-queries) ，则[**`wildcard query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html) 会被禁用。
 
-## 复合查询
+### 2.11. 词项查询完整示例
+
+```bash
+DELETE products
+PUT products
+{
+  "settings": {
+    "number_of_shards": 1
+  }
+}
+
+POST /products/_bulk
+{ "index": { "_id": 1 }}
+{ "productID" : "XHDK-A-1293-#fJ3","desc":"iPhone" }
+{ "index": { "_id": 2 }}
+{ "productID" : "KDKE-B-9947-#kL5","desc":"iPad" }
+{ "index": { "_id": 3 }}
+{ "productID" : "JODL-X-1937-#pV7","desc":"MBP" }
+
+GET /products
+
+POST /products/_search
+{
+  "query": {
+    "term": {
+      "desc": {
+        //"value": "iPhone"
+        "value":"iphone"
+      }
+    }
+  }
+}
+
+POST /products/_search
+{
+  "query": {
+    "term": {
+      "desc.keyword": {
+        //"value": "iPhone"
+        //"value":"iphone"
+      }
+    }
+  }
+}
+
+POST /products/_search
+{
+  "query": {
+    "term": {
+      "productID": {
+        "value": "XHDK-A-1293-#fJ3"
+      }
+    }
+  }
+}
+
+POST /products/_search
+{
+  //"explain": true,
+  "query": {
+    "term": {
+      "productID.keyword": {
+        "value": "XHDK-A-1293-#fJ3"
+      }
+    }
+  }
+}
+
+POST /products/_search
+{
+  "explain": true,
+  "query": {
+    "constant_score": {
+      "filter": {
+        "term": {
+          "productID.keyword": "XHDK-A-1293-#fJ3"
+        }
+      }
+
+    }
+  }
+}
+```
+
+## 3. 复合查询
 
 复合查询就是把一些简单查询组合在一起实现更复杂的查询需求，除此之外，复合查询还可以控制另外一个查询的行为。
 
-### bool query
+### 3.1. bool query
 
 bool 查询可以把任意多个简单查询组合在一起，使用 must、should、must_not、filter 选项来表示简单查询之间的逻辑，每个选项都可以出现 0 次到多次，它们的含义如下：
 
@@ -663,7 +1037,7 @@ GET books/_search
 
 有关布尔查询更详细的信息参考 [bool query（组合查询）详解](https://www.knowledgedict.com/tutorial/elasticsearch-query-bool.html)。
 
-### boosting query
+### 3.2. boosting query
 
 boosting 查询用于需要对两个查询的评分进行调整的场景，boosting 查询会把两个查询封装在一起并降低其中一个查询的评分。
 
@@ -694,7 +1068,7 @@ GET books/_search
 
 boosting 查询中指定了抑制因子为 0.2，publish_time 的值在 2015-01-01 之后的文档得分不变，publish_time 的值在 2015-01-01 之前的文档得分为原得分的 0.2 倍。
 
-### constant_score query
+### 3.3. constant_score query
 
 constant*score query 包装一个 filter query，并返回匹配过滤器查询条件的文档，且它们的相关性评分都等于 \_boost* 参数值（可以理解为原有的基于 tf-idf 或 bm25 的相关分固定为 1.0，所以最终评分为 _1.0 \* boost_，即等于 _boost_ 参数值）。下面的查询语句会返回 title 字段中含有关键词 _elasticsearch_ 的文档，所有文档的评分都是 1.8：
 
@@ -714,7 +1088,7 @@ GET books/_search
 }
 ```
 
-### dis_max query
+### 3.4. dis_max query
 
 dis_max query 与 bool query 有一定联系也有一定区别，dis_max query 支持多并发查询，可返回与任意查询条件子句匹配的任何文档类型。与 bool 查询可以将所有匹配查询的分数相结合使用的方式不同，dis_max 查询只使用最佳匹配查询条件的分数。请看下面的例子：
 
@@ -741,7 +1115,7 @@ GET books/_search
 }
 ```
 
-### function_score query
+### 3.5. function_score query
 
 function_score query 可以修改查询的文档得分，这个查询在有些情况下非常有用，比如通过评分函数计算文档得分代价较高，可以改用过滤器加自定义评分函数的方式来取代传统的评分方式。
 
@@ -787,7 +1161,7 @@ GET books/_search
 
 关于 function_score 的更多详细内容请查看 [Elasticsearch function_score 查询最强详解](https://www.knowledgedict.com/tutorial/elasticsearch-function_score.html)。
 
-### indices query
+### 3.6. indices query
 
 indices query 适用于需要在多个索引之间进行查询的场景，它允许指定一个索引名字列表和内部查询。indices query 中有 query 和 no_match_query 两部分，query 中用于搜索指定索引列表中的文档，no_match_query 中的查询条件用于搜索指定索引列表之外的文档。下面的查询语句实现了搜索索引 books、books2 中 title 字段包含关键字 javascript，其他索引中 title 字段包含 basketball 的文档，查询语句如下：
 
@@ -812,7 +1186,7 @@ GET books/_search
 }
 ```
 
-## 嵌套查询
+## 4. 嵌套查询
 
 在 Elasticsearch 这样的分布式系统中执行全 SQL 风格的连接查询代价昂贵，是不可行的。相应地，为了实现水平规模地扩展，Elasticsearch 提供了以下两种形式的 join：
 
@@ -824,7 +1198,7 @@ GET books/_search
 
   父子关系可以存在单个的索引的两个类型的文档之间。has_child 查询将返回其子文档能满足特定查询的父文档，而 has_parent 则返回其父文档能满足特定查询的子文档。
 
-### nested query
+### 4.1. nested query
 
 文档中可能包含嵌套类型的字段，这些字段用来索引一些数组对象，每个对象都可以作为一条独立的文档被查询出来（用嵌套查询）。
 
@@ -843,7 +1217,7 @@ PUT /my_index
 }
 ```
 
-### has_child query
+### 4.2. has_child query
 
 文档的父子关系创建索引时在映射中声明，这里以员工（employee）和工作城市（branch）为例，它们属于不同的类型，相当于数据库中的两张表，如果想把员工和他们工作的城市关联起来，需要告诉 Elasticsearch 文档之间的父子关系，这里 employee 是 child type，branch 是 parent type，在映射中声明，执行命令：
 
@@ -935,7 +1309,7 @@ GET company/branch/_search?pretty
 }
 ```
 
-### has_parent query
+### 4.3. has_parent query
 
 通过父文档查询子文档使用 has_parent 查询。比如，搜索哪些 employee 工作在 UK，查询命令如下：
 
@@ -953,7 +1327,7 @@ GET company/employee/_search
 }
 ```
 
-## 位置查询
+## 5. 位置查询
 
 Elasticsearch 可以对地理位置点 geo_point 类型和地理位置形状 geo_shape 类型的数据进行搜索。为了学习方便，这里准备一些城市的地理坐标作为测试数据，每一条文档都包含城市名称和地理坐标这两个字段，这里的坐标点取的是各个城市中心的一个位置。首先把下面的内容保存到 geo.json 文件中：
 
@@ -998,7 +1372,7 @@ PUT geo
 curl -XPOST "http://localhost:9200/_bulk?pretty" --data-binary @geo.json
 ```
 
-### geo_distance query
+### 5.1. geo_distance query
 
 geo_distance query 可以查找在一个中心点指定范围内的地理点文档。例如，查找距离天津 200km 以内的城市，搜索结果中会返回北京，命令如下：
 
@@ -1045,7 +1419,7 @@ GET geo/_search
 
 其中 location 对应的经纬度字段；unit 为 `km` 表示将距离以 `km` 为单位写入到每个返回结果的 sort 键中；distance_type 为 `plane` 表示使用快速但精度略差的 `plane` 计算方式。
 
-### geo_bounding_box query
+### 5.2. geo_bounding_box query
 
 geo_bounding_box query 用于查找落入指定的矩形内的地理坐标。查询中由两个点确定一个矩形，然后在矩形区域内查询匹配的文档。
 
@@ -1076,7 +1450,7 @@ GET geo/_search
 }
 ```
 
-### geo_polygon query
+### 5.3. geo_polygon query
 
 geo_polygon query 用于查找在指定**多边形**内的地理点。例如，呼和浩特、重庆、上海三地组成一个三角形，查询位置在该三角形区域内的城市，命令如下：
 
@@ -1109,7 +1483,7 @@ GET geo/_search
 }
 ```
 
-### geo_shape query
+### 5.4. geo_shape query
 
 geo_shape query 用于查询 geo_shape 类型的地理数据，地理形状之间的关系有相交、包含、不相交三种。创建一个新的索引用于测试，其中 location 字段的类型设为 geo_shape 类型。
 
@@ -1178,9 +1552,9 @@ GET geoshape/_search
 }
 ```
 
-## 特殊查询
+## 6. 特殊查询
 
-### more_like_this query
+### 6.1. more_like_this query
 
 more_like_this query 可以查询和提供文本类似的文档，通常用于近似文本的推荐等场景。查询命令如下：
 
@@ -1215,7 +1589,7 @@ GET books/_search
 - include 是否把输入文档作为结果返回。
 - boost 整个 query 的权重，默认为 1.0。
 
-### script query
+### 6.2. script query
 
 Elasticsearch 支持使用脚本进行查询。例如，查询价格大于 180 的文档，命令如下：
 
@@ -1233,7 +1607,7 @@ GET books/_search
 }
 ```
 
-### percolate query
+### 6.3. percolate query
 
 一般情况下，我们是先把文档写入到 Elasticsearch 中，通过查询语句对文档进行搜索。percolate query 则是反其道而行之的做法，它会先注册查询条件，根据文档来查询 query。例如，在 my-index 索引中有一个 laptop 类型，文档有 price 和 name 两个字段，在映射中声明一个 percolator 类型的 query，命令如下：
 

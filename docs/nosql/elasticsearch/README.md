@@ -12,7 +12,8 @@
 - [Elasticsearch 基本概念](Elasticsearch基本概念.md)
 - [Elasticsearch Rest API](ElasticsearchRestApi.md)
 - [Elasticsearch 查询](Elasticsearch查询.md)
-- Elasticsearch 聚合
+- [Elasticsearch 排序](Elasticsearch排序.md)
+- [Elasticsearch 聚合](Elasticsearch聚合.md)
 - Elasticsearch 分词
 - [Elasticsearch 运维](Elasticsearch运维.md)
 
