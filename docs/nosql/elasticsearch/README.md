@@ -1,4 +1,4 @@
-# Java 和搜索引擎
+# Elasticsearch 教程
 
 ## 📖 内容
 
@@ -15,7 +15,9 @@
 - [Elasticsearch 排序](Elasticsearch排序.md)
 - [Elasticsearch 聚合](Elasticsearch聚合.md)
 - Elasticsearch 分词
+- [Elasticsearch 分析器](Elasticsearch分析器.md)
 - [Elasticsearch 运维](Elasticsearch运维.md)
+- [Elasticsearch 性能优化](Elasticsearch性能优化.md)
 
 ### Elastic 技术栈
 
@@ -59,10 +61,11 @@
 - **教程**
   - [Elasticsearch 权威指南（中文版）](https://es.xiaoleilu.com/index.html)
   - [ELK Stack 权威指南](https://github.com/chenryn/logstash-best-practice-cn)
+  - [Elasticsearch 教程](https://www.knowledgedict.com/tutorial/elasticsearch-intro.html)
 - **博文**
   - [Elasticsearch+Logstash+Kibana 教程](https://www.cnblogs.com/xing901022/p/4704319.html)
   - [ELK（Elasticsearch、Logstash、Kibana）安装和配置](https://github.com/judasn/Linux-Tutorial/blob/master/ELK-Install-And-Settings.md)
 
 ## 🚪 传送
 
-◾ 🏠 [JAVACORE 首页](https://github.com/dunwu/javatech) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾
+◾ 🏠 [DB-TUTORIAL 首页](https://github.com/dunwu/db-tutorial) ◾ 🎯 [我的博客](https://github.com/dunwu/blog) ◾
