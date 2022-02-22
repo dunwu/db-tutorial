@@ -2,15 +2,27 @@
 
 > [Elasticsearch](https://github.com/elastic/elasticsearch) 是一个分布式、RESTful 风格的搜索和数据分析引擎，能够解决不断涌现出的各种用例。 作为 Elastic Stack 的核心，它集中存储您的数据，帮助您发现意料之中以及意料之外的情况。
 
-## 部署
+<!-- TOC depthFrom:2 depthTo:3 -->
 
-### 安装步骤
+- [1. Elasticsearch 安装](#1-elasticsearch-安装)
+- [2. Elasticsearch 集群规划](#2-elasticsearch-集群规划)
+- [3. Elasticsearch 配置](#3-elasticsearch-配置)
+- [4. Elasticsearch FAQ](#4-elasticsearch-faq)
+  - [4.1. elasticsearch 不允许以 root 权限来运行](#41-elasticsearch-不允许以-root-权限来运行)
+  - [4.2. vm.max_map_count 不低于 262144](#42-vmmax_map_count-不低于-262144)
+  - [4.3. nofile 不低于 65536](#43-nofile-不低于-65536)
+  - [4.4. nproc 不低于 2048](#44-nproc-不低于-2048)
+- [5. 参考资料](#5-参考资料)
 
-> [Elasticsearch 官方开源版本安装说明](https://www.elastic.co/cn/downloads/elasticsearch-oss)
+<!-- /TOC -->
+
+## 1. Elasticsearch 安装
+
+> [Elasticsearch 官方下载安装说明](https://www.elastic.co/cn/downloads/elasticsearch)
 
 （1）下载解压
 
-访问 [官方下载地址](https://www.elastic.co/cn/downloads/elasticsearch-oss) ，选择需要的版本，下载解压到本地。
+访问 [官方下载地址](https://www.elastic.co/cn/downloads/elasticsearch) ，选择需要的版本，下载解压到本地。
 
 （2）运行
 
@@ -20,7 +32,7 @@
 
 执行 `curl http://localhost:9200/` 测试服务是否启动
 
-### 集群规划
+## 2. Elasticsearch 集群规划
 
 ElasticSearch 集群需要根据业务实际情况去合理规划。
 
@@ -37,7 +49,7 @@ ElasticSearch 集群需要根据业务实际情况去合理规划。
 - 我们 es 集群的日增量数据大概是 2000 万条，每天日增量数据大概是 500MB，每月增量数据大概是 6 亿，15G。目前系统已经运行了几个月，现在 es 集群里数据总量大概是 100G 左右。
 - 目前线上有 5 个索引（这个结合你们自己业务来，看看自己有哪些数据可以放 es 的），每个索引的数据量大概是 20G，所以这个数据量之内，我们每个索引分配的是 8 个 shard，比默认的 5 个 shard 多了 3 个 shard。
 
-## ES 配置
+## 3. Elasticsearch 配置
 
 ES 的默认配置文件为 `config/elasticsearch.yml`
 
@@ -111,9 +123,9 @@ discovery.zen.ping.unicast.hosts: ['host1', 'host2:port', 'host3[portX-portY]']
 #设置集群中master节点的初始列表，可以通过这些节点来自动发现新加入集群的节点。
 ```
 
-## FAQ
+## 4. Elasticsearch FAQ
 
-### elasticsearch 不允许以 root 权限来运行
+### 4.1. elasticsearch 不允许以 root 权限来运行
 
 **问题：**在 Linux 环境中，elasticsearch 不允许以 root 权限来运行。
 
@@ -136,7 +148,7 @@ chown -R elk:elk /opt # 假设你的 elasticsearch 安装在 opt 目录下
 su elk
 ```
 
-### vm.max_map_count 不低于 262144
+### 4.2. vm.max_map_count 不低于 262144
 
 **问题：**`vm.max_map_count` 表示虚拟内存大小，它是一个内核参数。elasticsearch 默认要求 `vm.max_map_count` 不低于 262144。
 
@@ -165,7 +177,7 @@ sysctl -p
 >
 > 这种情况下，你只能选择直接修改宿主机上的参数了。
 
-### nofile 不低于 65536
+### 4.3. nofile 不低于 65536
 
 **问题：** `nofile` 表示进程允许打开的最大文件数。elasticsearch 进程要求可以打开的最大文件数不低于 65536。
 
@@ -182,7 +194,7 @@ echo "* soft nofile 65536" > /etc/security/limits.conf
 echo "* hard nofile 131072" > /etc/security/limits.conf
 ```
 
-### nproc 不低于 2048
+### 4.4. nproc 不低于 2048
 
 **问题：** `nproc` 表示最大线程数。elasticsearch 要求最大线程数不低于 2048。
 
@@ -199,10 +211,8 @@ echo "* soft nproc 2048" > /etc/security/limits.conf
 echo "* hard nproc 4096" > /etc/security/limits.conf
 ```
 
-## 参考资料
+## 5. 参考资料
 
-- [Elasticsearch 官网](https://www.elastic.co/cn/products/elasticsearch)
-- [Elasticsearch Github](https://github.com/elastic/elasticsearch)
-- [Elasticsearch 官方文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html)
+- [Elasticsearch 官方下载安装说明](https://www.elastic.co/cn/downloads/elasticsearch)
 - [Install Elasticsearch with RPM](https://www.elastic.co/guide/en/elasticsearch/reference/current/rpm.html#rpm)
 - [Elasticsearch 使用积累](http://siye1982.github.io/2015/09/17/es-optimize/)

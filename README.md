@@ -71,12 +71,20 @@
 
 #### [Elasticsearch](docs/nosql/elasticsearch) 📚
 
+> Elasticsearch 是一个基于 Lucene 的搜索和数据分析工具，它提供了一个分布式服务。Elasticsearch 是遵从 Apache 开源条款的一款开源产品，是当前主流的企业级搜索引擎。
+
 - [Elasticsearch 面试总结](docs/nosql/elasticsearch/elasticsearch-interview.md) 💯
-- [Elasticsearch 简介](docs/nosql/elasticsearch/Elasticsearch简介.md)
 - [Elasticsearch 快速入门](docs/nosql/elasticsearch/Elasticsearch快速入门.md)
-- [Elasticsearch 基本概念](docs/nosql/elasticsearch/Elasticsearch基本概念.md)
+- [Elasticsearch 简介](docs/nosql/elasticsearch/Elasticsearch简介.md)
 - [Elasticsearch Rest API](docs/nosql/elasticsearch/ElasticsearchRestApi.md)
+- [Elasticsearch 索引管理](docs/nosql/elasticsearch/Elasticsearch索引管理.md)
+- [Elasticsearch 查询](docs/nosql/elasticsearch/Elasticsearch查询.md)
+- [Elasticsearch 高亮](docs/nosql/elasticsearch/Elasticsearch高亮.md)
+- [Elasticsearch 排序](docs/nosql/elasticsearch/Elasticsearch排序.md)
+- [Elasticsearch 聚合](docs/nosql/elasticsearch/Elasticsearch聚合.md)
+- [Elasticsearch 分析器](docs/nosql/elasticsearch/Elasticsearch分析器.md)
 - [Elasticsearch 运维](docs/nosql/elasticsearch/Elasticsearch运维.md)
+- [Elasticsearch 性能优化](docs/nosql/elasticsearch/Elasticsearch性能优化.md)
 
 #### HBase
 

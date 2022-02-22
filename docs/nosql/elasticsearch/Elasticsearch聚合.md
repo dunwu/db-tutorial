@@ -1,8 +1,31 @@
 # Elasticsearch 聚合
 
-Elasticsearch 是一个分布式的全文搜索引擎，索引和搜索是 Elasticsearch 的基本功能。事实上，Elasticsearch 的聚合（Aggregations）功能也十分强大，允许在数据上做复杂的分析统计。Elasticsearch 提供的聚合分析功能主要有**指标聚合（metrics aggregations）**、**桶聚合（bucket aggregations）**、**管道聚合（pipeline aggregations）**和**矩阵聚合（matrix aggregations）**四大类，管道聚合和矩阵聚合官方说明是在试验阶段，后期会完全更改或者移除，这里不再对管道聚合和矩阵聚合进行讲解。
+Elasticsearch 是一个分布式的全文搜索引擎，索引和搜索是 Elasticsearch 的基本功能。事实上，Elasticsearch 的聚合（Aggregations）功能也十分强大，允许在数据上做复杂的分析统计。Elasticsearch 提供的聚合分析功能主要有**指标聚合(metrics aggregations)**、**桶聚合(bucket aggregations)**、**管道聚合(pipeline aggregations)** 和 **矩阵聚合(matrix aggregations)** 四大类，管道聚合和矩阵聚合官方说明是在试验阶段，后期会完全更改或者移除，这里不再对管道聚合和矩阵聚合进行讲解。
 
-## 聚合的具体结构
+<!-- TOC depthFrom:2 depthTo:3 -->
+
+- [1. 聚合的具体结构](#1-聚合的具体结构)
+- [2. 指标聚合](#2-指标聚合)
+  - [2.1. Max Aggregation](#21-max-aggregation)
+  - [2.2. Min Aggregation](#22-min-aggregation)
+  - [2.3. Avg Aggregation](#23-avg-aggregation)
+  - [2.4. Sum Aggregation](#24-sum-aggregation)
+  - [2.5. Value Count Aggregation](#25-value-count-aggregation)
+  - [2.6. Cardinality Aggregation](#26-cardinality-aggregation)
+  - [2.7. Stats Aggregation](#27-stats-aggregation)
+  - [2.8. Extended Stats Aggregation](#28-extended-stats-aggregation)
+  - [2.9. Percentiles Aggregation](#29-percentiles-aggregation)
+  - [2.10. Percentiles Ranks Aggregation](#210-percentiles-ranks-aggregation)
+- [3. 桶聚合](#3-桶聚合)
+  - [3.1. Terms Aggregation](#31-terms-aggregation)
+  - [3.2. Filter Aggregation](#32-filter-aggregation)
+  - [3.3. Filters Aggregation](#33-filters-aggregation)
+  - [3.4. Range Aggregation](#34-range-aggregation)
+- [4. 参考资料](#4-参考资料)
+
+<!-- /TOC -->
+
+## 1. 聚合的具体结构
 
 所有的聚合，无论它们是什么类型，都遵从以下的规则。
 
@@ -35,9 +58,7 @@ Elasticsearch 是一个分布式的全文搜索引擎，索引和搜索是 Elast
 >
 > 此外，脚本也可以被人可能利用进行恶意代码攻击，尽量使用沙盒（sandbox）内的脚本语言。
 
-### 示例
-
-查询所有球员的平均年龄是多少，并对球员的平均薪水加 188（也可以理解为每名球员加 188 后的平均薪水）。
+示例：查询所有球员的平均年龄是多少，并对球员的平均薪水加 188（也可以理解为每名球员加 188 后的平均薪水）。
 
 ```bash
 POST /player/_search?size=0
@@ -59,13 +80,13 @@ POST /player/_search?size=0
 }
 ```
 
-## 指标聚合
+## 2. 指标聚合
 
 指标聚合（又称度量聚合）主要从不同文档的分组中提取统计数据，或者，从来自其他聚合的文档桶来提取统计数据。
 
 这些统计数据通常来自数值型字段，如最小或者平均价格。用户可以单独获取每项统计数据，或者也可以使用 stats 聚合来同时获取它们。更高级的统计数据，如平方和或者是标准差，可以通过 extended stats 聚合来获取。
 
-### Max Aggregation
+### 2.1. Max Aggregation
 
 Max Aggregation 用于最大值统计。例如，统计 sales 索引中价格最高的是哪本书，并且计算出对应的价格的 2 倍值，查询语句如下：
 
@@ -108,7 +129,7 @@ GET /sales/_search?size=0
 }
 ```
 
-### Min Aggregation
+### 2.2. Min Aggregation
 
 Min Aggregation 用于最小值统计。例如，统计 sales 索引中价格最低的是哪本书，查询语句如下：
 
@@ -138,7 +159,7 @@ GET /sales/_search?size=0
 }
 ```
 
-### Avg Aggregation
+### 2.3. Avg Aggregation
 
 Avg Aggregation 用于计算平均值。例如，统计 exams 索引中考试的平均分数，如未存在分数，默认为 60 分，查询语句如下：
 
@@ -173,7 +194,7 @@ GET /exams/_search?size=0
 
 除了常规的平均值聚合计算外，elasticsearch 还提供了加权平均值的聚合计算，详情参见 [Elasticsearch 指标聚合之 Weighted Avg Aggregation](https://www.knowledgedict.com/tutorial/elasticsearch-aggregations-metrics-weighted-avg-aggregation.html)。
 
-### Sum Aggregation
+### 2.4. Sum Aggregation
 
 Sum Aggregation 用于计算总和。例如，统计 sales 索引中 type 字段中匹配 hat 的价格总和，查询语句如下：
 
@@ -208,7 +229,7 @@ GET /exams/_search?size=0
 }
 ```
 
-### Value Count Aggregation
+### 2.5. Value Count Aggregation
 
 Value Count Aggregation 可按字段统计文档数量。例如，统计 books 索引中包含 author 字段的文档数量，查询语句如下：
 
@@ -236,9 +257,9 @@ GET /books/_search?size=0
 }
 ```
 
-### Cardinality Aggregation
+### 2.6. Cardinality Aggregation
 
-Cardinality Aggregation 用于基数统计，其作用是先执行类似 SQL 中的 distinct 操作，去掉集合中的重复项，然后统计排重后的集合长度。例如，在 books 索引中对 language 字段进行 cardinality 操作可以统计出编程语言的种类数，查询语句如下：
+Cardinality Aggregation 用于基数统计，其作用是先执行类似 SQL 中的 distinct 操作，去掉集合中的重复项，然后统计去重后的集合长度。例如，在 books 索引中对 language 字段进行 cardinality 操作可以统计出编程语言的种类数，查询语句如下：
 
 ```
 GET /books/_search?size=0
@@ -272,7 +293,7 @@ GET /books/_search?size=0
 }
 ```
 
-### Stats Aggregation
+### 2.7. Stats Aggregation
 
 Stats Aggregation 用于基本统计，会一次返回 count、max、min、avg 和 sum 这 5 个指标。例如，在 exams 索引中对 grade 字段进行分数相关的基本统计，查询语句如下：
 
@@ -304,7 +325,7 @@ GET /exams/_search?size=0
 }
 ```
 
-### Extended Stats Aggregation
+### 2.8. Extended Stats Aggregation
 
 Extended Stats Aggregation 用于高级统计，和基本统计功能类似，但是会比基本统计多出以下几个统计结果，sum_of_squares（平方和）、variance（方差）、std_deviation（标准差）、std_deviation_bounds（平均值加/减两个标准差的区间）。在 exams 索引中对 grade 字段进行分数相关的高级统计，查询语句如下：
 
@@ -343,7 +364,7 @@ GET /exams/_search?size=0
 }
 ```
 
-### Percentiles Aggregation
+### 2.9. Percentiles Aggregation
 
 Percentiles Aggregation 用于百分位统计。百分位数是一个统计学术语，如果将一组数据从大到小排序，并计算相应的累计百分位，某一百分位所对应数据的值就称为这一百分位的百分位数。默认情况下，累计百分位为 [ 1, 5, 25, 50, 75, 95, 99 ]。以下例子给出了在 latency 索引中对 load_time 字段进行加载时间的百分位统计，查询语句如下：
 
@@ -401,7 +422,7 @@ GET latency/_search
 }
 ```
 
-### Percentiles Ranks Aggregation
+### 2.10. Percentiles Ranks Aggregation
 
 Percentiles Ranks Aggregation 与 Percentiles Aggregation 统计恰恰相反，就是想看当前数值处在什么范围内（百分位）， 假如你查一下当前值 500 和 600 所处的百分位，发现是 90.01 和 100，那么说明有 90.01 % 的数值都在 500 以内，100 % 的数值在 600 以内。
 
@@ -478,7 +499,7 @@ GET latency/_search
 }
 ```
 
-## 桶聚合
+## 3. 桶聚合
 
 bucket 可以理解为一个桶，它会遍历文档中的内容，凡是符合某一要求的就放入一个桶中，分桶相当于 SQL 中的 group by。从另外一个角度，可以将指标聚合看成单桶聚合，即把所有文档放到一个桶中，而桶聚合是多桶型聚合，它根据相应的条件进行分组。
 
@@ -496,7 +517,7 @@ bucket 可以理解为一个桶，它会遍历文档中的内容，凡是符合�
 | 空值聚合（Missing Aggregation）               | 空值聚合，可以把文档集中所有缺失字段的文档分到一个桶中。                                       |
 | 地理点范围聚合（Geo Distance Aggregation）    | 用于对地理点（geo point）做范围统计。                                                          |
 
-### Terms Aggregation
+### 3.1. Terms Aggregation
 
 Terms Aggregation 用于词项的分组聚合。最为经典的用例是获取 X 中最频繁（top frequent）的项目，其中 X 是文档中的某个字段，如用户的名称、标签或分类。由于 terms 聚集统计的是每个词条，而不是整个字段值，因此通常需要在一个非分析型的字段上运行这种聚集。原因是, 你期望“big data”作为词组统计，而不是“big”单独统计一次，“data”再单独统计一次。
 
@@ -586,7 +607,7 @@ Terms Aggregation 用于词项的分组聚合。最为经典的用例是获取 X
 
 默认情况下返回按文档计数从高到低的前 10 个分组，可以通过 size 参数指定返回的分组数。
 
-### Filter Aggregation
+### 3.2. Filter Aggregation
 
 Filter Aggregation 是过滤器聚合，可以把符合过滤器中的条件的文档分到一个桶中，即是单分组聚合。
 
@@ -607,7 +628,7 @@ Filter Aggregation 是过滤器聚合，可以把符合过滤器中的条件的�
 }
 ```
 
-### Filters Aggregation
+### 3.3. Filters Aggregation
 
 Filters Aggregation 是多过滤器聚合，可以把符合多个过滤条件的文档分到不同的桶中，即每个分组关联一个过滤条件，并收集所有满足自身过滤条件的文档。
 
@@ -647,7 +668,7 @@ Filters Aggregation 是多过滤器聚合，可以把符合多个过滤条件的
 }
 ```
 
-### Range Aggregation
+### 3.4. Range Aggregation
 
 Range Aggregation 范围聚合是一个基于多组值来源的聚合，可以让用户定义一系列范围，每个范围代表一个分组。在聚合执行的过程中，从每个文档提取出来的值都会检查每个分组的范围，并且使相关的文档落入分组中。注意，范围聚合的每个范围内包含 from 值但是排除 to 值。
 
@@ -718,6 +739,6 @@ Range Aggregation 范围聚合是一个基于多组值来源的聚合，可以�
 }
 ```
 
-## 参考资料
+## 4. 参考资料
 
 - [Elasticsearch 教程](https://www.knowledgedict.com/tutorial/elasticsearch-intro.html)

@@ -1,23 +1,32 @@
 # Elasticsearch 教程
 
+> Elasticsearch 是一个基于 Lucene 的搜索和数据分析工具，它提供了一个分布式服务。Elasticsearch 是遵从 Apache 开源条款的一款开源产品，是当前主流的企业级搜索引擎。
+
 ## 📖 内容
 
-### Elasticsearch
+### [Elasticsearch 面试总结](elasticsearch-interview.md) 💯
 
-> [Elasticsearch](https://www.elastic.co/products/elasticsearch) 是一个基于 [Lucene](http://lucene.apache.org/core/documentation.html) 构建的开源，分布式，RESTful 搜索引擎。
+### [Elasticsearch 快速入门](Elasticsearch快速入门.md)
 
-- [Elasticsearch 面试总结](elasticsearch-interview.md) 💯
-- [Elasticsearch 简介](Elasticsearch简介.md)
-- [Elasticsearch 快速入门](Elasticsearch快速入门.md)
-- [Elasticsearch 基本概念](Elasticsearch基本概念.md)
-- [Elasticsearch Rest API](ElasticsearchRestApi.md)
-- [Elasticsearch 查询](Elasticsearch查询.md)
-- [Elasticsearch 排序](Elasticsearch排序.md)
-- [Elasticsearch 聚合](Elasticsearch聚合.md)
-- Elasticsearch 分词
-- [Elasticsearch 分析器](Elasticsearch分析器.md)
-- [Elasticsearch 运维](Elasticsearch运维.md)
-- [Elasticsearch 性能优化](Elasticsearch性能优化.md)
+### [Elasticsearch 简介](Elasticsearch简介.md)
+
+### [Elasticsearch Rest API](ElasticsearchRestApi.md)
+
+### [Elasticsearch 索引管理](Elasticsearch索引管理.md)
+
+### [Elasticsearch 查询](Elasticsearch查询.md)
+
+### [Elasticsearch 高亮](Elasticsearch高亮.md)
+
+### [Elasticsearch 排序](Elasticsearch排序.md)
+
+### [Elasticsearch 聚合](Elasticsearch聚合.md)
+
+### [Elasticsearch 分析器](Elasticsearch分析器.md)
+
+### [Elasticsearch 运维](Elasticsearch运维.md)
+
+### [Elasticsearch 性能优化](Elasticsearch性能优化.md)
 
 ### Elastic 技术栈
 

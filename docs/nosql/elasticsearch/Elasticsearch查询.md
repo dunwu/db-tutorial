@@ -14,7 +14,7 @@ Elasticsearch 查询语句采用基于 RESTful 风格的接口封装成 JSON 格
   - [1.7. combined_fields query](#17-combined_fields-query)
   - [1.8. common_terms query](#18-common_terms-query)
   - [1.9. query_string query](#19-query_string-query)
-  - [1.10. simple_query_string](#110-simple_query_string)
+  - [1.10. simple_query_string query](#110-simple_query_string-query)
   - [1.11. 全文查询完整示例](#111-全文查询完整示例)
 - [2. 词项查询](#2-词项查询)
   - [2.1. exists query](#21-exists-query)
@@ -453,7 +453,7 @@ GET /_search
 }
 ```
 
-### 1.10. simple_query_string
+### 1.10. simple_query_string query
 
 [**`simple_query_string query`**](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html) 是一种适合直接暴露给用户，并且具有非常完善的查询语法的查询语句，接受 Lucene 查询语法，解析过程中发生错误不会抛出异常。
 
