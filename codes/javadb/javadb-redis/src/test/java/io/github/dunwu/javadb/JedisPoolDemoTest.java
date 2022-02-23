@@ -18,9 +18,9 @@ import java.util.Set;
 /**
  * @author Zhang Peng
  */
-@ActiveProfiles("dev")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:/applicationContext.xml" })
+@ActiveProfiles("dev")
+@ContextConfiguration(locations = {"classpath:/applicationContext.xml"})
 public class JedisPoolDemoTest {
 
     private static Logger logger = LoggerFactory.getLogger(JedisPoolDemoTest.class);

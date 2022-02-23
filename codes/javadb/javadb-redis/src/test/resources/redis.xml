@@ -2,20 +2,20 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-  <description>redis configuration</description>
+    <description>redis configuration</description>
 
-  <!-- redis配置 -->
-  <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
-    <property name="maxTotal" value="${jedis.pool.maxTotal}" />
-    <property name="maxIdle" value="${jedis.pool.maxIdle}" />
-    <property name="maxWaitMillis" value="${jedis.pool.maxWaitMillis}" />
-    <property name="testOnBorrow" value="${jedis.pool.testOnBorrow}" />
-  </bean>
+    <!-- redis配置 -->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxTotal" value="${jedis.pool.maxTotal}"/>
+        <property name="maxIdle" value="${jedis.pool.maxIdle}"/>
+        <property name="maxWaitMillis" value="${jedis.pool.maxWaitMillis}"/>
+        <property name="testOnBorrow" value="${jedis.pool.testOnBorrow}"/>
+    </bean>
 
-  <!-- jedis pool配置 -->
-  <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy" depends-on="jedisPoolConfig">
-    <constructor-arg ref="jedisPoolConfig" />
-    <constructor-arg type="java.lang.String" value="${redis.host}" />
-    <constructor-arg type="int" value="${redis.port}" />
-  </bean>
+    <!-- jedis pool配置 -->
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy" depends-on="jedisPoolConfig">
+        <constructor-arg ref="jedisPoolConfig"/>
+        <constructor-arg type="java.lang.String" value="${redis.host}"/>
+        <constructor-arg type="int" value="${redis.port}"/>
+    </bean>
 </beans>

@@ -4,9 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        default-lazy-init="false">
 
-  <description>Spring基础配置</description>
+    <description>Spring基础配置</description>
 
-  <import resource="classpath:/config.xml" />
-  <import resource="classpath:/redis.xml" />
+    <import resource="classpath:/config.xml"/>
+    <import resource="classpath:/redis.xml"/>
 
 </beans>

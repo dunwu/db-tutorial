@@ -1,9 +1,9 @@
 package io.github.dunwu.javadb;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
@@ -15,13 +15,12 @@ import java.util.Set;
 
 /**
  * Jedis 测试例
- *
  * @author Zhang Peng
  * @see https://github.com/xetorthio/jedis
  */
 public class JedisDemoTest {
 
-    private static final String REDIS_HOST = "192.168.28.32";
+    private static final String REDIS_HOST = "localhost";
 
     private static final int REDIS_PORT = 6379;
 
@@ -29,7 +28,7 @@ public class JedisDemoTest {
 
     private static Logger logger = LoggerFactory.getLogger(JedisDemoTest.class);
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         // Jedis 有多种构造方法，这里选用最简单的一种情况
         jedis = new Jedis(REDIS_HOST, REDIS_PORT);
@@ -43,7 +42,7 @@ public class JedisDemoTest {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         if (null != jedis) {
             jedis.close();
@@ -62,18 +61,18 @@ public class JedisDemoTest {
 
         // 新增 key
         jedis.set(key, value1);
-        Assert.assertEquals(value1, jedis.get(key));
+        Assertions.assertEquals(value1, jedis.get(key));
 
         // 修改 key
         jedis.set(key, value2);
-        Assert.assertEquals(value2, jedis.get(key));
+        Assertions.assertEquals(value2, jedis.get(key));
 
-        Assert.assertEquals(true, jedis.exists(key));
+        Assertions.assertEquals(true, jedis.exists(key));
 
         // 删除 key
         jedis.del(key);
-        Assert.assertEquals(null, jedis.get(key));
-        Assert.assertEquals(false, jedis.exists(key));
+        Assertions.assertEquals(null, jedis.get(key));
+        Assertions.assertEquals(false, jedis.exists(key));
     }
 
     /**
@@ -87,15 +86,15 @@ public class JedisDemoTest {
 
         // 新增 key
         jedis.set(key, value1);
-        Assert.assertArrayEquals(value1, jedis.get(key));
+        Assertions.assertArrayEquals(value1, jedis.get(key));
 
         // 修改 key
         jedis.set(key, value2);
-        Assert.assertArrayEquals(value2, jedis.get(key));
+        Assertions.assertArrayEquals(value2, jedis.get(key));
 
         // 删除 key
         jedis.del(key);
-        Assert.assertArrayEquals(null, jedis.get(key));
+        Assertions.assertArrayEquals(null, jedis.get(key));
     }
 
     /**
@@ -113,21 +112,21 @@ public class JedisDemoTest {
         // 新增 field
         jedis.hset(key, field1, value1);
         jedis.hset(key, field2, value2);
-        Assert.assertEquals(value1, jedis.hget(key, field1));
-        Assert.assertEquals(value2, jedis.hget(key, field2));
+        Assertions.assertEquals(value1, jedis.hget(key, field1));
+        Assertions.assertEquals(value2, jedis.hget(key, field2));
 
         // 修改 field
         jedis.hset(key, field1, value1_1);
-        Assert.assertEquals(value1_1, jedis.hget(key, field1));
+        Assertions.assertEquals(value1_1, jedis.hget(key, field1));
 
         jedis.hdel(key, field1, value1_1);
-        Assert.assertEquals(null, jedis.hget(key, field1));
+        Assertions.assertEquals(null, jedis.hget(key, field1));
 
-        Assert.assertEquals(false, jedis.hexists(key, field1));
-        Assert.assertEquals(true, jedis.hexists(key, field2));
+        Assertions.assertEquals(false, jedis.hexists(key, field1));
+        Assertions.assertEquals(true, jedis.hexists(key, field2));
 
         Map<String, String> results = jedis.hgetAll(key);
-        Assert.assertEquals(1, results.size());
+        Assertions.assertEquals(1, results.size());
     }
 
     /**
@@ -140,7 +139,7 @@ public class JedisDemoTest {
         jedis.lpush(key, "Red");
         jedis.lpush(key, "Yellow");
         jedis.lpush(key, "Blue");
-        Assert.assertEquals(3L, jedis.llen(key).longValue());
+        Assertions.assertEquals(3L, jedis.llen(key).longValue());
 
         // 获取存储的数据并输出
         List<String> list = jedis.lrange("colors", 0, 2);

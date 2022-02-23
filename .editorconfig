@@ -19,7 +19,7 @@ insert_final_newline = true
 [*.{bat, cmd}]
 end_of_line = crlf
 
-[*.{java, gradle, groovy, kt, sh}]
+[*.{java, gradle, groovy, kt, sh, xml}]
 indent_size = 4
 
 [*.md]
