@@ -15,5 +15,6 @@
         <module>javadb-redis</module>
         <module>javadb-sqlite</module>
         <module>javadb-mongodb</module>
+        <module>javadb-elasticsearch</module>
     </modules>
 </project>
