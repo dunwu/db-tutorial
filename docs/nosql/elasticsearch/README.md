@@ -26,6 +26,8 @@
 
 ### [Elasticsearch 分析器](Elasticsearch分析器.md)
 
+### [Elasticsearch 集群和分片](Elasticsearch集群和分片.md)
+
 ### [Elasticsearch 运维](Elasticsearch运维.md)
 
 ### [Elasticsearch 性能优化](Elasticsearch性能优化.md)
