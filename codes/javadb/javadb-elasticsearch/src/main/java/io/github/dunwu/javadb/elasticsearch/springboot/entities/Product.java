@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Data
 @ToString
@@ -11,12 +13,16 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class Product {
 
     @Id
+    @Field(type = FieldType.Keyword)
     private String id;
 
+    @Field(type = FieldType.Keyword)
     private String name;
 
+    @Field(type = FieldType.Text)
     private String description;
 
+    @Field(type = FieldType.Boolean)
     private boolean enabled;
 
     public Product(String id, String name, String description, boolean enabled) {

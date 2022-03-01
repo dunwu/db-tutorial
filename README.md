@@ -77,6 +77,7 @@
 - [Elasticsearch 快速入门](docs/nosql/elasticsearch/Elasticsearch快速入门.md)
 - [Elasticsearch 简介](docs/nosql/elasticsearch/Elasticsearch简介.md)
 - [Elasticsearch Rest API](docs/nosql/elasticsearch/ElasticsearchRestApi.md)
+- [ElasticSearch Java API 之 High Level REST Client](docs/nosql/elasticsearch/ElasticsearchHighLevelRestJavaApi.md)
 - [Elasticsearch 索引管理](docs/nosql/elasticsearch/Elasticsearch索引管理.md)
 - [Elasticsearch 查询](docs/nosql/elasticsearch/Elasticsearch查询.md)
 - [Elasticsearch 高亮](docs/nosql/elasticsearch/Elasticsearch高亮.md)

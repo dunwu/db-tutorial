@@ -76,6 +76,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 - [Elasticsearch 快速入门](nosql/elasticsearch/Elasticsearch快速入门.md)
 - [Elasticsearch 简介](nosql/elasticsearch/Elasticsearch简介.md)
 - [Elasticsearch Rest API](nosql/elasticsearch/ElasticsearchRestApi.md)
+- [ElasticSearch Java API 之 High Level REST Client](nosql/elasticsearch/ElasticsearchHighLevelRestJavaApi.md)
 - [Elasticsearch 索引管理](nosql/elasticsearch/Elasticsearch索引管理.md)
 - [Elasticsearch 查询](nosql/elasticsearch/Elasticsearch查询.md)
 - [Elasticsearch 高亮](nosql/elasticsearch/Elasticsearch高亮.md)

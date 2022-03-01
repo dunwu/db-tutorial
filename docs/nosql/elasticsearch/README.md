@@ -12,6 +12,8 @@
 
 ### [Elasticsearch Rest API](ElasticsearchRestApi.md)
 
+### [ElasticSearch Java API 之 High Level REST Client](ElasticsearchHighLevelRestJavaApi.md)
+
 ### [Elasticsearch 索引管理](Elasticsearch索引管理.md)
 
 ### [Elasticsearch 查询](Elasticsearch查询.md)
