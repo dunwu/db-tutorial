@@ -6,6 +6,8 @@
 
 ### [Mysql 应用指南](mysql-quickstart.md)
 
+### [Mysql 工作流](mysql-workflow.md)
+
 ### [Mysql 索引](mysql-index.md)
 
 > 关键词：`Hash`、`B 树`、`聚簇索引`、`回表`

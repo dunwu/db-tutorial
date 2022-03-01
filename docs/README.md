@@ -33,7 +33,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 ![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716103611.png)
 
 - [Mysql 应用指南](sql/mysql/mysql-quickstart.md) ⚡
-- [Mysql 工作流](sql/mysql/mysql-index.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`
+- [Mysql 工作流](sql/mysql/mysql-workflow.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`
 - [Mysql 索引](sql/mysql/mysql-index.md) - 关键词：`Hash`、`B 树`、`聚簇索引`、`回表`
 - [Mysql 锁](sql/mysql/mysql-lock.md) - 关键词：`乐观锁`、`表级锁`、`行级锁`、`意向锁`、`MVCC`、`Next-key 锁`
 - [Mysql 事务](sql/mysql/mysql-transaction.md) - 关键词：`ACID`、`AUTOCOMMIT`、`事务隔离级别`、`死锁`、`分布式事务`
