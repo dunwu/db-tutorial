@@ -54,10 +54,32 @@
 
 ## 📚 资料
 
+### Elasticsearch 资料
+
 - **官方**
   - [Elasticsearch 官网](https://www.elastic.co/cn/products/elasticsearch)
   - [Elasticsearch Github](https://github.com/elastic/elasticsearch)
   - [Elasticsearch 官方文档](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html)
+  - [Elasticsearch: The Definitive Guide](https://www.elastic.co/guide/en/elasticsearch/guide/master/index.html) - ElasticSearch 官方学习资料
+- **书籍**
+  - [《Elasticsearch 实战》](https://book.douban.com/subject/30380439/)
+- **教程**
+  - [ELK Stack 权威指南](https://github.com/chenryn/logstash-best-practice-cn)
+  - [Elasticsearch 教程](https://www.knowledgedict.com/tutorial/elasticsearch-intro.html)
+- **文章**
+  - [Elasticsearch+Logstash+Kibana 教程](https://www.cnblogs.com/xing901022/p/4704319.html)
+  - [ELK（Elasticsearch、Logstash、Kibana）安装和配置](https://github.com/judasn/Linux-Tutorial/blob/master/ELK-Install-And-Settings.md)
+  - **性能调优相关**的工程实践
+    - [Elasticsearch Performance Tuning Practice at eBay](https://www.ebayinc.com/stories/blogs/tech/elasticsearch-performance-tuning-practice-at-ebay/)
+    - [Elasticsearch at Kickstarter](https://kickstarter.engineering/elasticsearch-at-kickstarter-db3c487887fc)
+    - [9 tips on ElasticSearch configuration for high performance](https://www.loggly.com/blog/nine-tips-configuring-elasticsearch-for-high-performance/)
+    - [Elasticsearch In Production - Deployment Best Practices](https://medium.com/@abhidrona/elasticsearch-deployment-best-practices-d6c1323b25d7)
+- **更多资源**
+  - [GitHub: Awesome ElasticSearch](https://github.com/dzharii/awesome-elasticsearch)
+
+### Elastic 技术栈资料
+
+- **官方**
   - [Logstash 官网](https://www.elastic.co/cn/products/logstash)
   - [Logstash Github](https://github.com/elastic/logstash)
   - [Logstash 官方文档](https://www.elastic.co/guide/en/logstash/current/index.html)
@@ -67,15 +89,9 @@
   - [Beats 官网](https://www.elastic.co/cn/products/beats)
   - [Beats Github](https://github.com/elastic/beats)
   - [Beats 官方文档](https://www.elastic.co/guide/en/beats/libbeat/current/index.html)
-- **官方**
-  - [《Elasticsearch 实战》](https://item.jd.com/12454556.html)
 - **第三方工具**
   - [logstash-logback-encoder](https://github.com/logstash/logstash-logback-encoder)
-- **教程**
-  - [Elasticsearch 权威指南（中文版）](https://es.xiaoleilu.com/index.html)
-  - [ELK Stack 权威指南](https://github.com/chenryn/logstash-best-practice-cn)
-  - [Elasticsearch 教程](https://www.knowledgedict.com/tutorial/elasticsearch-intro.html)
-- **博文**
+- **文章**
   - [Elasticsearch+Logstash+Kibana 教程](https://www.cnblogs.com/xing901022/p/4704319.html)
   - [ELK（Elasticsearch、Logstash、Kibana）安装和配置](https://github.com/judasn/Linux-Tutorial/blob/master/ELK-Install-And-Settings.md)
 

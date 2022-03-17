@@ -44,7 +44,7 @@
 
 - **官方**
   - [Mysql 官网](https://www.mysql.com/)
-  - [Mysql 官方文档](https://dev.mysql.com/doc/refman/8.0/en/)
+  - [Mysql 官方文档](https://dev.mysql.com/doc/)
   - [Mysql 官方文档之命令行客户端](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)
 - **书籍**
   - [《高性能 MySQL》](https://book.douban.com/subject/23008813/) - 经典，适合 DBA 或作为开发者的参考手册
