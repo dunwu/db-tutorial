@@ -13,5 +13,6 @@
   "MD036": false,
   "fenced-code-language": false,
   "no-hard-tabs": false,
-  "whitespace": false
+  "whitespace": false,
+  "emphasis-style": { "style": "consistent" }
 }

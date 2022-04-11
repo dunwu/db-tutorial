@@ -1,0 +1,37 @@
+{
+  "name": "java-tutorial",
+  "version": "1.0.0",
+  "scripts": {
+    "clean": "rimraf docs/.temp",
+    "start": "vuepress dev docs",
+    "build": "vuepress build docs",
+    "deploy": "bash scripts/deploy.sh",
+    "updateTheme": "yarn remove vuepress-theme-vdoing && rm -rf node_modules && yarn && yarn add vuepress-theme-vdoing -D",
+    "editFm": "node utils/editFrontmatter.js",
+    "lint": "markdownlint -r markdownlint-rule-emphasis-style -c ./.markdownlint.json **/*.md -i node_modules",
+    "lint:fix": "markdownlint -f -r markdownlint-rule-emphasis-style -c ./.markdownlint.json **/*.md -i node_modules",
+    "show-help": "vuepress --help",
+    "view-info": "vuepress view-info ./ --temp docs/.temp"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "dayjs": "^1.9.7",
+    "inquirer": "^7.1.0",
+    "json2yaml": "^1.1.0",
+    "vuepress": "1.9.2",
+    "vuepress-plugin-baidu-tongji": "^1.0.1",
+    "vuepress-plugin-demo-block": "^0.7.2",
+    "vuepress-plugin-fulltext-search": "^2.2.1",
+    "vuepress-plugin-one-click-copy": "^1.0.2",
+    "vuepress-plugin-thirdparty-search": "^1.0.2",
+    "vuepress-plugin-zooming": "^1.1.7",
+    "vuepress-plugin-flowchart": "^1.4.2",
+    "vuepress-theme-vdoing": "^1.10.3",
+    "yamljs": "^0.3.0",
+    "markdownlint-cli": "^0.25.0",
+    "markdownlint-rule-emphasis-style": "^1.0.1",
+    "rimraf": "^3.0.1",
+    "vue-toasted": "^1.1.25"
+  },
+  "dependencies": {}
+}

@@ -7,40 +7,40 @@
 # ------------------------------------------------------------------------------
 
 # 装载其它库
-ROOT_DIR=$(cd `dirname $0`/..; pwd)
+ROOT_DIR=$(
+  cd $(dirname $0)/..
+  pwd
+)
 
 # 确保脚本抛出遇到的错误
 set -e
 
-cd ${ROOT_DIR}/docs
-
 # 生成静态文件
-npm install
 npm run build
 
 # 进入生成的文件夹
-cd dist
+cd ${ROOT_DIR}/docs/.temp
 
 # 如果是发布到自定义域名
 # echo 'www.example.com' > CNAME
 
-git init
-git checkout -b gh-pages && git add .
-git commit -m 'deploy'
-
-# 如果发布到 https://<USERNAME>.github.io/<REPO>
-GITHUB_REPO=github.com/dunwu/db-tutorial.git
-GITEE_REPO=gitee.com/turnon/db-tutorial.git
 if [[ ${GITHUB_TOKEN} && ${GITEE_TOKEN} ]]; then
-    echo "使用 token 公钥部署 gh-pages"
-    # ${GITHUB_TOKEN} 是 Github 私人令牌；${GITEE_TOKEN} 是 Gitee 私人令牌
-    # ${GITHUB_TOKEN} 和 ${GITEE_TOKEN} 都是环境变量；travis-ci 构建时会传入变量
-    git push --force --quiet "https://dunwu:${GITHUB_TOKEN}@${GITHUB_REPO}" gh-pages
-    git push --force --quiet "https://turnon:${GITEE_TOKEN}@${GITEE_REPO}" gh-pages
+  msg='自动部署'
+  GITHUB_URL=https://dunwu:${GITHUB_TOKEN}@github.com/dunwu/db-tutorial.git
+  GITEE_URL=https://turnon:${GITEE_TOKEN}@gitee.com/turnon/db-tutorial.git
+  git config --global user.name "dunwu"
+  git config --global user.email "forbreak@163.com"
 else
-    echo "使用 ssh 公钥部署 gh-pages"
-    git push -f git@github.com:dunwu/db-tutorial.git gh-pages
-    git push -f git@gitee.com:turnon/db-tutorial.git gh-pages
+  msg='手动部署'
+  GITHUB_URL=git@github.com:dunwu/db-tutorial.git
+  GITEE_URL=git@gitee.com:turnon/db-tutorial.git
 fi
+git init
+git add -A
+git commit -m "${msg}"
+# 推送到github gh-pages分支
+git push -f "${GITHUB_URL}" master:gh-pages
+git push -f "${GITEE_URL}" master:gh-pages
 
-cd ${ROOT_DIR}
+cd -
+rm -rf ${ROOT_DIR}/docs/.temp
