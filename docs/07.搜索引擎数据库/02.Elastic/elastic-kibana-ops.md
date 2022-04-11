@@ -1,6 +1,6 @@
 ---
 title: elastic-kibana-ops
-date: 2020-08-26 20:30:39
+date: 2020-06-16 07:10:44
 permalink: /pages/286fd3/
 ---
 # Kibana 运维
