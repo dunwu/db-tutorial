@@ -1,0 +1,62 @@
+
+// 原主题变量已弃用，以下是vdoing使用的变量，你可以在这个文件内修改它们。
+
+//***vdoing主题-变量***//
+
+// // 颜色
+ 
+// $bannerTextColor = #fff // 首页banner区(博客标题)文本颜色
+// $accentColor = #11A8CD
+// $arrowBgColor = #ccc
+// $badgeTipColor = #42b983
+// $badgeWarningColor = darken(#ffe564, 35%)
+// $badgeErrorColor = #DA5961
+
+// // 布局
+// $navbarHeight = 3.6rem
+// $sidebarWidth = 18rem
+// $contentWidth = 860px
+// $homePageWidth = 1100px
+// $rightMenuWidth = 230px // 右侧菜单
+
+// // 代码块
+// $lineNumbersWrapperWidth = 2.5rem
+
+// 浅色模式
+.theme-mode-light
+  --bodyBg: rgba(255,255,255,1)
+  --mainBg: rgba(255,255,255,1)
+  --sidebarBg: rgba(255,255,255,.8)
+  --blurBg: rgba(255,255,255,.9)
+  --textColor: #004050
+  --textLightenColor: #0085AD
+  --borderColor: rgba(0,0,0,.15)
+  --codeBg: #f6f6f6
+  --codeColor: #525252
+  codeThemeLight()
+
+// 深色模式
+.theme-mode-dark
+  --bodyBg: rgba(30,30,34,1)
+  --mainBg: rgba(30,30,34,1)
+  --sidebarBg: rgba(30,30,34,.8)
+  --blurBg: rgba(30,30,34,.8)
+  --textColor: rgb(140,140,150)
+  --textLightenColor: #0085AD
+  --borderColor: #2C2C3A
+  --codeBg: #252526
+  --codeColor: #fff
+  codeThemeDark()
+
+// 阅读模式
+.theme-mode-read
+  --bodyBg: rgba(245,245,213,1)
+  --mainBg: rgba(245,245,213,1)
+  --sidebarBg: rgba(245,245,213,.8)
+  --blurBg: rgba(245,245,213,.9)
+  --textColor: #004050
+  --textLightenColor: #0085AD
+  --borderColor: rgba(0,0,0,.15)
+  --codeBg: #282c34
+  --codeColor: #fff
+  codeThemeDark()
