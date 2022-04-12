@@ -1,12 +1,14 @@
 ---
 title: Elastic 技术栈
 date: 2022-04-11 16:52:35
-permalink: /pages/e6513d/
+categories: ['数据库', '搜索引擎数据库', 'Elastic']
+tags: ['数据库', '搜索引擎数据库', 'Elastic']
+permalink: /pages/0effac/
 ---
 
 # Elastic 技术栈
 
-> **Elastic 技术栈通常被用来作为日志采集、检索、可视化解决方案。**
+> **Elastic 技术栈通常被用来作为日志采集、检索、可视化的解决方案。**
 >
 > ELK 是 elastic 公司旗下三款产品 [Elasticsearch](https://www.elastic.co/products/elasticsearch) 、[Logstash](https://www.elastic.co/products/logstash) 、[Kibana](https://www.elastic.co/products/kibana) 的首字母组合。
 >
@@ -18,13 +20,13 @@ permalink: /pages/e6513d/
 
 ## 📖 内容
 
-- [Elastic 技术栈快速入门](elastic-quickstart.md)
-- [Beats 应用指南](elastic-beats.md)
-- [Beats 运维](elastic-beats-ops.md)
-- [Kibana 应用指南](elastic-kibana.md)
-- [Kibana 运维](elastic-kibana-ops.md)
-- [Logstash 应用指南](elastic-logstash.md)
-- [Logstash 运维](elastic-logstash-ops.md)
+- [Elastic 快速入门](01.Elastic快速入门.md)
+- [Elastic 技术栈之 Filebeat](02.Elastic技术栈之Filebeat.md)
+- [Filebeat 运维](03.Filebeat运维.md)
+- [Elastic 技术栈之 Kibana](04.Elastic技术栈之Kibana.md)
+- [Kibana 运维](05.Kibana运维.md)
+- [Elastic 技术栈之 Logstash](06.Elastic技术栈之Logstash.md)
+- [Logstash 运维](07.Logstash运维.md)
 
 ## 📚 资料
 

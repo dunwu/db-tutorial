@@ -1,6 +1,8 @@
 ---
 title: Elasticsearch 教程
 date: 2022-04-11 16:52:35
+categories: ['数据库', '搜索引擎数据库', 'Elasticsearch']
+tags: ['数据库', '搜索引擎数据库', 'Elasticsearch']
 permalink: /pages/d0a98e/
 ---
 
@@ -32,7 +34,7 @@ permalink: /pages/d0a98e/
 
 ### [Elasticsearch 分析器](09.Elasticsearch分析器.md)
 
-### [Elasticsearch 集群和分片](Elasticsearch集群和分片.md)
+### [Elasticsearch 集群和分片](13.Elasticsearch集群和分片.md)
 
 ### [Elasticsearch 运维](20.Elasticsearch运维.md)
 

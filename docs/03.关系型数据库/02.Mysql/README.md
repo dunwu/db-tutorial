@@ -1,6 +1,8 @@
 ---
 title: Mysql 教程
 date: 2020-02-10 14:27:39
+categories: ['数据库', '关系型数据库', 'Mysql']
+tags: ['数据库', '关系型数据库', 'Mysql']
 permalink: /pages/f29f7c/
 ---
 

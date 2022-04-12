@@ -1,6 +1,8 @@
 ---
 title: 数据库中间件
 date: 2022-04-11 16:52:35
+categories: ['数据库', '数据库中间件']
+tags: ['数据库', '中间件']
 permalink: /pages/057a1d/
 ---
 

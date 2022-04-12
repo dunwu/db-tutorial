@@ -158,7 +158,18 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 - [Elasticsearch 性能优化](07.搜索引擎数据库/01.Elasticsearch/10.Elasticsearch性能优化.md)
 - [Elasticsearch Rest API](07.搜索引擎数据库/01.Elasticsearch/11.ElasticsearchRestApi.md)
 - [ElasticSearch Java API 之 High Level REST Client](07.搜索引擎数据库/01.Elasticsearch/12.ElasticsearchHighLevelRestJavaApi.md)
+- [Elasticsearch 集群和分片](07.搜索引擎数据库/01.Elasticsearch/13.Elasticsearch集群和分片.md)
 - [Elasticsearch 运维](07.搜索引擎数据库/01.Elasticsearch/20.Elasticsearch运维.md)
+
+### Elastic
+
+- [Elastic 快速入门](07.搜索引擎数据库/02.Elastic/01.Elastic快速入门.md)
+- [Elastic 技术栈之 Filebeat](07.搜索引擎数据库/02.Elastic/02.Elastic技术栈之Filebeat.md)
+- [Filebeat 运维](07.搜索引擎数据库/02.Elastic/03.Filebeat运维.md)
+- [Elastic 技术栈之 Kibana](07.搜索引擎数据库/02.Elastic/04.Elastic技术栈之Kibana.md)
+- [Kibana 运维](07.搜索引擎数据库/02.Elastic/05.Kibana运维.md)
+- [Elastic 技术栈之 Logstash](07.搜索引擎数据库/02.Elastic/06.Elastic技术栈之Logstash.md)
+- [Logstash 运维](07.搜索引擎数据库/02.Elastic/07.Logstash运维.md)
 
 ## 资料 📚
 
