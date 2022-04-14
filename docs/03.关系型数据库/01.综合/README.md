@@ -1,9 +1,13 @@
 ---
 title: 关系型数据库综合知识
 date: 2020-07-16 11:14:07
-categories: ['数据库', '关系型数据库']
-tags: ['数据库', '关系型数据库']
-permalink: /pages/35fa72/
+categories: 
+  - 数据库
+  - 关系型数据库
+tags: 
+  - 数据库
+  - 关系型数据库
+permalink: /pages/1e2ee7/
 ---
 
 # 关系型数据库综合知识

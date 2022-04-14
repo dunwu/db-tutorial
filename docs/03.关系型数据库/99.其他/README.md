@@ -1,9 +1,13 @@
 ---
 title: 关系型数据库其他知识
 date: 2022-04-11 16:52:35
-categories: ['数据库', '关系型数据库']
-tags: ['数据库', '关系型数据库']
-permalink: /pages/d64774/
+categories: 
+  - 数据库
+  - 关系型数据库
+tags: 
+  - 数据库
+  - 关系型数据库
+permalink: /pages/b2560d/
 ---
 
 # 关系型数据库其他知识

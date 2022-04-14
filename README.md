@@ -18,7 +18,7 @@
       <img alt="commit" class="no-zoom" src="https://img.shields.io/github/workflow/status/dunwu/db-tutorial/CI?style=for-the-badge">
   </a>
 
-  <a href="https://www.apache.org/licenses/LICENSE-2.0">
+  <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
       <img alt="code style" class="no-zoom" src="https://img.shields.io/github/license/dunwu/db-tutorial?style=for-the-badge">
   </a>
 

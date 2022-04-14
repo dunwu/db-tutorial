@@ -1,6 +1,7 @@
 {
   "name": "java-tutorial",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "clean": "rimraf docs/.temp",
     "start": "vuepress dev docs",
@@ -8,12 +9,11 @@
     "deploy": "bash scripts/deploy.sh",
     "updateTheme": "yarn remove vuepress-theme-vdoing && rm -rf node_modules && yarn && yarn add vuepress-theme-vdoing -D",
     "editFm": "node utils/editFrontmatter.js",
-    "lint": "markdownlint -r markdownlint-rule-emphasis-style -c ./.markdownlint.json **/*.md -i node_modules",
-    "lint:fix": "markdownlint -f -r markdownlint-rule-emphasis-style -c ./.markdownlint.json **/*.md -i node_modules",
+    "lint": "markdownlint -r markdownlint-rule-emphasis-style -c docs/.markdownlint.json **/*.md -i node_modules",
+    "lint:fix": "markdownlint -f -r markdownlint-rule-emphasis-style -c docs/.markdownlint.json **/*.md -i node_modules",
     "show-help": "vuepress --help",
     "view-info": "vuepress view-info ./ --temp docs/.temp"
   },
-  "license": "MIT",
   "devDependencies": {
     "dayjs": "^1.9.7",
     "inquirer": "^7.1.0",
@@ -32,6 +32,5 @@
     "markdownlint-rule-emphasis-style": "^1.0.1",
     "rimraf": "^3.0.1",
     "vue-toasted": "^1.1.25"
-  },
-  "dependencies": {}
+  }
 }

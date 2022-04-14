@@ -1,9 +1,15 @@
 ---
 title: Redis 教程
 date: 2020-02-10 14:27:39
-categories: ['数据库', 'KV数据库', 'Redis']
-tags: ['数据库', 'KV数据库', 'Redis']
-permalink: /pages/9fdea9/
+categories: 
+  - 数据库
+  - KV数据库
+  - Redis
+tags: 
+  - 数据库
+  - KV数据库
+  - Redis
+permalink: /pages/b2487a/
 ---
 
 # Redis 教程

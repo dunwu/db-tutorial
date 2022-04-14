@@ -1,9 +1,13 @@
 ---
 title: 关系型数据库
 date: 2022-04-11 16:52:35
-categories: ['数据库', '关系型数据库']
-tags: ['数据库', '关系型数据库']
-permalink: /pages/ba3eb1/
+categories: 
+  - 数据库
+  - 关系型数据库
+tags: 
+  - 数据库
+  - 关系型数据库
+permalink: /pages/bdd9ad/
 ---
 
 # 关系型数据库

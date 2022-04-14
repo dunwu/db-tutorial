@@ -1,9 +1,15 @@
 ---
 title: Elasticsearch 教程
 date: 2022-04-11 16:52:35
-categories: ['数据库', '搜索引擎数据库', 'Elasticsearch']
-tags: ['数据库', '搜索引擎数据库', 'Elasticsearch']
-permalink: /pages/d0a98e/
+categories: 
+  - 数据库
+  - 搜索引擎数据库
+  - Elasticsearch
+tags: 
+  - 数据库
+  - 搜索引擎数据库
+  - Elasticsearch
+permalink: /pages/7324df/
 ---
 
 # Elasticsearch 教程
