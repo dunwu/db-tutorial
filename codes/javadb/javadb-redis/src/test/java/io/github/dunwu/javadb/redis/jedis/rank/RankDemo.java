@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import lombok.extern.slf4j.Slf4j;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Response;
 import redis.clients.jedis.Tuple;
 
 import java.util.*;
@@ -159,9 +160,9 @@ public class RankDemo {
     private List<RankElement> getRankElementListWithNoRegions(long begin, long end, boolean isAsc) {
         Set<Tuple> tuples;
         if (isAsc) {
-            tuples = jedis.zrevrangeWithScores(RANK, begin, end);
-        } else {
             tuples = jedis.zrangeWithScores(RANK, begin, end);
+        } else {
+            tuples = jedis.zrevrangeWithScores(RANK, begin, end);
         }
 
         if (CollectionUtil.isEmpty(tuples)) {
@@ -214,16 +215,32 @@ public class RankDemo {
      */
     public RankRegionElement getRankByMemberWithRegions(String member) {
         long totalRank = TOTAL_RANK_LENGTH;
-        for (RankRegion region : REGIONS) {
-            // 计算排行榜分区的 Redis Key
-            Long rank = jedis.zrevrank(region.getRegionKey(), member);
 
-            if (rank != null) {
+        // pipeline 合并查询
+        List<Response<Long>> responseList = new LinkedList<>();
+        Pipeline pipeline = jedis.pipelined();
+        for (RankRegion region : REGIONS) {
+            responseList.add(pipeline.zrevrank(region.getRegionKey(), member));
+        }
+        pipeline.syncAndReturnAll();
+
+        if (CollectionUtil.isEmpty(responseList)) {
+            log.error("【排行榜】getRankByMemberWithRegions pipeline 结果为空！");
+            return null;
+        }
+
+        // 处理 pipeline 查询结果
+        for (int i = 0; i < responseList.size(); i++) {
+            Response<Long> response = responseList.get(i);
+            if (response != null && response.get() != null) {
+                Long rank = response.get();
+                RankRegion region = REGIONS.get(i);
                 totalRank = getTotalRank(region.getRegionNo(), rank);
                 return new RankRegionElement(region.getRegionNo(), region.getRegionKey(), member, null, rank,
                                              totalRank);
             }
         }
+
         int lastRegionNo = getLastRegionNo();
         return new RankRegionElement(lastRegionNo, getRankRedisKey(lastRegionNo), member, null, null, totalRank);
     }
@@ -242,9 +259,11 @@ public class RankDemo {
             return null;
         }
 
-        List<RankRegionElement> finalList = new LinkedList<>();
+        List<Response<Set<Tuple>>> responseList = new LinkedList<>();
+        Pipeline pipeline = jedis.pipelined();
         for (RankRegion region : REGIONS) {
 
+            // 计算当前分区的起始、结束位置
             long regionBegin = region.getRegionNo();
             long regionEnd = region.getRegionNo() + region.getMaxSize() - 1;
 
@@ -256,53 +275,67 @@ public class RankDemo {
                 continue;
             }
 
-            long first = Math.max(regionBegin, begin);
-            long last = Math.min(regionEnd, end);
-            RankRegionElement firstElement = getRegionRank(first);
-            RankRegionElement lastElement = getRegionRank(last);
-            List<RankRegionElement> list = getRankElementListInRegion(region, firstElement.getRank(),
-                                                                      lastElement.getRank(), isAsc);
+            // 计算查询区间
+            RankRegionElement firstElement = getRegionRank(Math.max(regionBegin, begin));
+            RankRegionElement lastElement = getRegionRank(Math.min(regionEnd, end));
+            if (firstElement == null || lastElement == null) {
+                log.error("【排行榜】查询区间错误！");
+                break;
+            }
+            long first = firstElement.getRank();
+            long last = lastElement.getRank();
+
+            if (isAsc) {
+                // 从低到高排名
+                responseList.add(pipeline.zrangeWithScores(region.getRegionKey(), first, last));
+            } else {
+                // 从高到低排名
+                responseList.add(pipeline.zrevrangeWithScores(region.getRegionKey(), first, last));
+            }
+        }
+        pipeline.syncAndReturnAll();
+
+        return parseZsetTuples(responseList);
+    }
+
+    /**
+     * 解析 pipeline 返回的 zset 响应结果，转化为 List<RankRegionElement>
+     */
+    private List<RankRegionElement> parseZsetTuples(List<Response<Set<Tuple>>> responseList) {
+
+        List<RankRegionElement> finalList = new LinkedList<>();
+        if (CollectionUtil.isEmpty(responseList)) {
+            return finalList;
+        }
+
+        for (int i = 0; i < responseList.size(); i++) {
+
+            Response<Set<Tuple>> response = responseList.get(i);
+            if (response == null || response.get() == null) {
+                continue;
+            }
+
+            Set<Tuple> tuples = response.get();
+            if (CollectionUtil.isEmpty(tuples)) {
+                continue;
+            }
+
+            long regionRank = 0;
+            RankRegion region = REGIONS.get(i);
+            List<RankRegionElement> list = new ArrayList<>();
+            for (Tuple tuple : tuples) {
+                long totalRank = getTotalRank(region.getRegionNo(), regionRank);
+                RankRegionElement rankElementVo = new RankRegionElement(region.getRegionNo(), region.getRegionKey(),
+                                                                        tuple.getElement(), tuple.getScore(),
+                                                                        regionRank, totalRank);
+                list.add(rankElementVo);
+                regionRank++;
+            }
             if (CollectionUtil.isNotEmpty(list)) {
                 finalList.addAll(list);
             }
         }
         return finalList;
-    }
-
-    /**
-     * 获取指定分区中指定排名范围的信息
-     *
-     * @param region 指定榜单分区
-     * @param begin 起始排名
-     * @param end 结束排名
-     * @param isAsc true：从低到高 / false：从高到低
-     * @return 匹配排名的信息
-     */
-    private List<RankRegionElement> getRankElementListInRegion(RankRegion region, long begin, long end, boolean isAsc) {
-        Set<Tuple> tuples;
-        if (isAsc) {
-            // 从低到高排名
-            tuples = jedis.zrangeWithScores(region.getRegionKey(), begin, end);
-        } else {
-            // 从高到低排名
-            tuples = jedis.zrevrangeWithScores(region.getRegionKey(), begin, end);
-        }
-
-        if (CollectionUtil.isEmpty(tuples)) {
-            return null;
-        }
-
-        long regionRank = 0;
-        List<RankRegionElement> list = new ArrayList<>();
-        for (Tuple tuple : tuples) {
-            long totalRank = getTotalRank(region.getRegionNo(), regionRank);
-            RankRegionElement rankElementVo = new RankRegionElement(region.getRegionNo(), region.getRegionKey(),
-                                                                    tuple.getElement(), tuple.getScore(), regionRank,
-                                                                    totalRank);
-            list.add(rankElementVo);
-            regionRank++;
-        }
-        return list;
     }
 
     /**

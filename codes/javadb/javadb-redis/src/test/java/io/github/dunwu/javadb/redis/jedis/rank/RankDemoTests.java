@@ -2,6 +2,7 @@ package io.github.dunwu.javadb.redis.jedis.rank;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import redis.clients.jedis.Jedis;
@@ -77,7 +78,7 @@ public class RankDemoTests {
     @DisplayName("测试各分区最大值、最小值")
     public void getRankElementList() {
         List<RankElement> list = rank.getRankElementList(0, 99, false);
-        System.out.println(list);
+        System.out.println(JSONUtil.toJsonStr(list));
         Assertions.assertEquals(100, list.size());
     }
 
