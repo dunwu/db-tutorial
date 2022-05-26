@@ -1,4 +1,4 @@
-package io.github.dunwu.javadb;
+package io.github.dunwu.javadb.redis;
 
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RBucket;

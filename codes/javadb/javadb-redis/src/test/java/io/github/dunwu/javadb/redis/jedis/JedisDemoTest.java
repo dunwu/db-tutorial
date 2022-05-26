@@ -1,11 +1,10 @@
-package io.github.dunwu.javadb;
+package io.github.dunwu.javadb.redis.jedis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 
@@ -15,9 +14,11 @@ import java.util.Set;
 
 /**
  * Jedis 测试例
+ *
  * @author Zhang Peng
  * @see https://github.com/xetorthio/jedis
  */
+@Slf4j
 public class JedisDemoTest {
 
     private static final String REDIS_HOST = "localhost";
@@ -25,8 +26,6 @@ public class JedisDemoTest {
     private static final int REDIS_PORT = 6379;
 
     private static Jedis jedis = null;
-
-    private static Logger logger = LoggerFactory.getLogger(JedisDemoTest.class);
 
     @BeforeAll
     public static void beforeClass() {
@@ -36,7 +35,7 @@ public class JedisDemoTest {
         // 触发 ping 命令
         try {
             jedis.ping();
-            logger.debug("jedis 连接成功。");
+            log.debug("jedis 连接成功。");
         } catch (JedisConnectionException e) {
             e.printStackTrace();
         }
@@ -46,7 +45,7 @@ public class JedisDemoTest {
     public static void afterClass() {
         if (null != jedis) {
             jedis.close();
-            logger.debug("jedis 关闭连接。");
+            log.debug("jedis 关闭连接。");
         }
     }
 

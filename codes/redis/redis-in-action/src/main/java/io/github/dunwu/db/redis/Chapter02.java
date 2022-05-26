@@ -451,6 +451,7 @@ public class Chapter02 {
 
     }
 
+
     public static class Inventory {
 
         private String id;
@@ -467,6 +468,33 @@ public class Chapter02 {
 
         public static Inventory get(String id) {
             return new Inventory(id);
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public Inventory setId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public Inventory setData(String data) {
+            this.data = data;
+            return this;
+        }
+
+        public long getTime() {
+            return time;
+        }
+
+        public Inventory setTime(long time) {
+            this.time = time;
+            return this;
         }
 
     }

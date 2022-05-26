@@ -1,4 +1,4 @@
-package io.github.dunwu.javadb;
+package io.github.dunwu.javadb.redis.jedis;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
