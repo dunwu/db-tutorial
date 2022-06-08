@@ -95,7 +95,7 @@ public class RankDemoTests {
         RankElement rank1 = rank.getRankByMember(member1);
         RankElement rank2 = rank.getRankByMember(member2);
         Assertions.assertEquals(RankDemo.FIRST, rank1.getTotalRank());
-        Assertions.assertEquals(RankDemo.TOTAL_RANK_LENGTH, rank2.getTotalRank());
+        Assertions.assertNull(rank2);
     }
 
 

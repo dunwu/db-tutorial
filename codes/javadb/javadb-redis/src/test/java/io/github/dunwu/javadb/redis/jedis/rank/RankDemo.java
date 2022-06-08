@@ -67,6 +67,9 @@ public class RankDemo {
     public RankElement getRankByMember(String member) {
         if (isRegionRankEnabled) {
             RankRegionElement element = getRankByMemberWithRegions(member);
+            if (element == null) {
+                return null;
+            }
             return BeanUtil.toBean(element, RankElement.class);
         } else {
             // 排行榜采用不分区方案
@@ -137,16 +140,21 @@ public class RankDemo {
      * @return /
      */
     public RankElement getRankByMemberWithNoRegions(String member) {
-        Long rank = jedis.zrevrank(RANK, member);
-        if (rank != null) {
-            Set<Tuple> tuples = jedis.zrevrangeWithScores(RANK, rank, rank);
-            for (Tuple tuple : tuples) {
-                if (tuple.getElement().equals(member)) {
-                    return new RankElement(member, tuple.getScore(), rank);
-                }
-            }
+        Pipeline pipeline = jedis.pipelined();
+        Response<Long> rankResponse = pipeline.zrevrank(RANK, member);
+        Response<Double> scoreResponse = pipeline.zscore(RANK, member);
+        pipeline.syncAndReturnAll();
+
+        if (rankResponse == null || scoreResponse == null) {
+            return null;
         }
-        return new RankElement(member, null, TOTAL_RANK_LENGTH);
+
+        Long rank = rankResponse.get();
+        Double score = scoreResponse.get();
+        if (rank == null || score == null) {
+            return null;
+        }
+        return new RankElement(member, score, rank);
     }
 
     /**
@@ -214,13 +222,15 @@ public class RankDemo {
      * @return /
      */
     public RankRegionElement getRankByMemberWithRegions(String member) {
-        long totalRank = TOTAL_RANK_LENGTH;
 
         // pipeline 合并查询
-        List<Response<Long>> responseList = new LinkedList<>();
+        List<Map<String, Response<?>>> responseList = new LinkedList<>();
         Pipeline pipeline = jedis.pipelined();
         for (RankRegion region : REGIONS) {
-            responseList.add(pipeline.zrevrank(region.getRegionKey(), member));
+            Map<String, Response<?>> map = new HashMap<>(2);
+            map.put("rank", pipeline.zrevrank(region.getRegionKey(), member));
+            map.put("score", pipeline.zscore(region.getRegionKey(), member));
+            responseList.add(map);
         }
         pipeline.syncAndReturnAll();
 
@@ -231,18 +241,25 @@ public class RankDemo {
 
         // 处理 pipeline 查询结果
         for (int i = 0; i < responseList.size(); i++) {
-            Response<Long> response = responseList.get(i);
-            if (response != null && response.get() != null) {
-                Long rank = response.get();
-                RankRegion region = REGIONS.get(i);
-                totalRank = getTotalRank(region.getRegionNo(), rank);
-                return new RankRegionElement(region.getRegionNo(), region.getRegionKey(), member, null, rank,
-                                             totalRank);
+            Map<String, Response<?>> map = responseList.get(i);
+            Response<?> rankResponse = map.get("rank");
+            Response<?> scoreResponse = map.get("score");
+            if (rankResponse == null && scoreResponse == null) {
+                continue;
             }
+
+            Long rank = (Long) rankResponse.get();
+            Double score = (Double) scoreResponse.get();
+            if (rank == null || score == null) {
+                continue;
+            }
+
+            RankRegion region = REGIONS.get(i);
+            long totalRank = getTotalRank(region.getRegionNo(), rank);
+            return new RankRegionElement(region.getRegionNo(), region.getRegionKey(), member, score, rank, totalRank);
         }
 
-        int lastRegionNo = getLastRegionNo();
-        return new RankRegionElement(lastRegionNo, getRankRedisKey(lastRegionNo), member, null, null, totalRank);
+        return null;
     }
 
     /**
