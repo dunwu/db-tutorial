@@ -20,6 +20,7 @@
     "json2yaml": "^1.1.0",
     "vuepress": "1.9.2",
     "vuepress-plugin-baidu-tongji": "^1.0.1",
+    "vuepress-plugin-comment": "^0.7.3",
     "vuepress-plugin-demo-block": "^0.7.2",
     "vuepress-plugin-fulltext-search": "^2.2.1",
     "vuepress-plugin-one-click-copy": "^1.0.2",
