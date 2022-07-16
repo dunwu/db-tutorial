@@ -7,6 +7,6 @@ const LoveMyPlugin = (options = {}) => ({
     const EXCLUDECLASS = options.excludeClassName || ''
     return { COLOR, EXCLUDECLASS }
   },
-  enhanceAppFiles: [path.resolve(__dirname, 'love-me.js')],
+  enhanceAppFiles: [path.resolve(__dirname, 'love-me.js')]
 })
 module.exports = LoveMyPlugin

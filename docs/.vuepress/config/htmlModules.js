@@ -38,7 +38,7 @@ module.exports = {
         display: none;
       }
     </style>
-  `,
+  `
 }
 
 // module.exports = {

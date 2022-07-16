@@ -25,30 +25,30 @@ module.exports = {
   // 主题配置
   themeConfig: {
     nav: [
-      { text: '数据库综合', link: '/01.计算机科学/02.数据库/01.数据库综合/' },
-      { text: '数据库中间件', link: '/01.计算机科学/02.数据库/02.数据库中间件/' },
+      { text: '数据库综合', link: '/12.数据库/01.数据库综合/' },
+      { text: '数据库中间件', link: '/12.数据库/02.数据库中间件/' },
       {
         text: '关系型数据库',
-        link: '/01.计算机科学/02.数据库/03.关系型数据库/',
+        link: '/12.数据库/03.关系型数据库/',
         items: [
-          { text: '综合', link: '/01.计算机科学/02.数据库/03.关系型数据库/01.综合/' },
-          { text: 'Mysql', link: '/01.计算机科学/02.数据库/03.关系型数据库/02.Mysql/' },
-          { text: '其他', link: '/01.计算机科学/02.数据库/03.关系型数据库/99.其他/' }
+          { text: '综合', link: '/12.数据库/03.关系型数据库/01.综合/' },
+          { text: 'Mysql', link: '/12.数据库/03.关系型数据库/02.Mysql/' },
+          { text: '其他', link: '/12.数据库/03.关系型数据库/99.其他/' }
         ]
       },
       {
         text: '文档数据库',
-        items: [{ text: 'MongoDB', link: '/01.计算机科学/02.数据库/04.文档数据库/01.MongoDB/' }]
+        items: [{ text: 'MongoDB', link: '/12.数据库/04.文档数据库/01.MongoDB/' }]
       },
       {
         text: 'KV数据库',
-        items: [{ text: 'Redis', link: '/01.计算机科学/02.数据库/05.KV数据库/01.Redis/' }]
+        items: [{ text: 'Redis', link: '/12.数据库/05.KV数据库/01.Redis/' }]
       },
       {
         text: '搜索引擎数据库',
         items: [
-          { text: 'Elasticsearch', link: '/01.计算机科学/02.数据库/07.搜索引擎数据库/01.Elasticsearch/' },
-          { text: 'Elastic技术栈', link: '/01.计算机科学/02.数据库/07.搜索引擎数据库/02.Elastic/' }
+          { text: 'Elasticsearch', link: '/12.数据库/07.搜索引擎数据库/01.Elasticsearch/' },
+          { text: 'Elastic技术栈', link: '/12.数据库/07.搜索引擎数据库/02.Elastic/' }
         ]
       }
     ],
