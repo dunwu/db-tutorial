@@ -99,6 +99,7 @@
 - [关系型数据库面试总结](docs/12.数据库/03.关系型数据库/01.综合/01.关系型数据库面试.md) 💯
 - [SQL Cheat Sheet](docs/12.数据库/03.关系型数据库/01.综合/02.SqlCheatSheet.md) 是一个 SQL 入门教程。
 - [扩展 SQL](docs/12.数据库/03.关系型数据库/01.综合/03.扩展SQL.md) 是一个 SQL 入门教程。
+- [SQL 教程](https://www.scaler.com/topics/sql-server/)
 
 ### Mysql
 
