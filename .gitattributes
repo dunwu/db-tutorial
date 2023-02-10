@@ -22,6 +22,7 @@
 *.less text
 *.sql text
 *.properties text
+*.md text
 
 # unix style
 *.sh text eol=lf

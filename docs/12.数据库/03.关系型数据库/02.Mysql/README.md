@@ -55,7 +55,7 @@ hidden: true
 
 - [关系型数据库面试总结](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/sql-interview.md) 💯
 - [SQL Cheat Sheet](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/sql-cheat-sheet.md)
-- [分布式事务基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-transaction.md)
+- [分布式事务基本原理](https://dunwu.github.io/blog/pages/e1881c/)
 
 ## 📚 资料
 

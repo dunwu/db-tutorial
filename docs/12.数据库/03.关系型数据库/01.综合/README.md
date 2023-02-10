@@ -22,11 +22,11 @@ hidden: true
 
 ![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200115160512.png)
 
-### [分布式存储基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-storage.md)
+### [分库分表基本原理](https://dunwu.github.io/blog/pages/e1046e/)
 
 ![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716110854.png)
 
-### [分布式事务基本原理](https://github.com/dunwu/blog/blob/master/source/_posts/theory/distributed-transaction.md)
+### [分布式事务基本原理](https://dunwu.github.io/blog/pages/e1881c/)
 
 ## 📚 资料
 

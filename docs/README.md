@@ -19,7 +19,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
   </a>
 
   <a href="https://github.com/dunwu/db-tutorial/commits/master">
-      <img alt="commit" class="no-zoom" src="https://img.shields.io/github/workflow/status/dunwu/db-tutorial/CI?style=for-the-badge">
+      <img alt="build" class="no-zoom" src="https://img.shields.io/github/actions/workflow/status/dunwu/db-tutorial/deploy.yml?style=for-the-badge">
   </a>
 
   <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">
@@ -37,14 +37,14 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 ### 分布式综合
 
-- [分布式面试总结](https://dunwu.github.io/waterdrop/pages/f9209d/)
+- [分布式面试总结](https://dunwu.github.io/blog/pages/f9209d/)
 
 ### 分布式理论
 
-- [分布式理论](https://dunwu.github.io/waterdrop/pages/286bb3/) - 关键词：`拜占庭将军`、`CAP`、`BASE`、`错误的分布式假设`
-- [共识性算法 Paxos](https://dunwu.github.io/waterdrop/pages/0276bb/) - 关键词：`共识性算法`
-- [共识性算法 Raft](https://dunwu.github.io/waterdrop/pages/4907dc/) - 关键词：`共识性算法`
-- [分布式算法 Gossip](https://dunwu.github.io/waterdrop/pages/71539a/) - 关键词：`数据传播`
+- [分布式理论](https://dunwu.github.io/blog/pages/286bb3/) - 关键词：`拜占庭将军`、`CAP`、`BASE`、`错误的分布式假设`
+- [共识性算法 Paxos](https://dunwu.github.io/blog/pages/0276bb/) - 关键词：`共识性算法`
+- [共识性算法 Raft](https://dunwu.github.io/blog/pages/4907dc/) - 关键词：`共识性算法`
+- [分布式算法 Gossip](https://dunwu.github.io/blog/pages/71539a/) - 关键词：`数据传播`
 
 ### 分布式关键技术
 
@@ -55,20 +55,20 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 #### 流量调度
 
-- [流量控制](https://dunwu.github.io/waterdrop/pages/60bb6d/) - 关键词：`限流`、`熔断`、`降级`、`计数器法`、`时间窗口法`、`令牌桶法`、`漏桶法`
-- [负载均衡](https://dunwu.github.io/waterdrop/pages/98a1c1/) - 关键词：`轮询`、`随机`、`最少连接`、`源地址哈希`、`一致性哈希`、`虚拟 hash 槽`
-- [服务路由](https://dunwu.github.io/waterdrop/pages/3915e8/) - 关键词：`路由`、`条件路由`、`脚本路由`、`标签路由`
+- [流量控制](https://dunwu.github.io/blog/pages/60bb6d/) - 关键词：`限流`、`熔断`、`降级`、`计数器法`、`时间窗口法`、`令牌桶法`、`漏桶法`
+- [负载均衡](https://dunwu.github.io/blog/pages/98a1c1/) - 关键词：`轮询`、`随机`、`最少连接`、`源地址哈希`、`一致性哈希`、`虚拟 hash 槽`
+- [服务路由](https://dunwu.github.io/blog/pages/3915e8/) - 关键词：`路由`、`条件路由`、`脚本路由`、`标签路由`
 - 服务网关
-- [分布式会话](https://dunwu.github.io/waterdrop/pages/95e45f/) - 关键词：`粘性 Session`、`Session 复制共享`、`基于缓存的 session 共享`
+- [分布式会话](https://dunwu.github.io/blog/pages/95e45f/) - 关键词：`粘性 Session`、`Session 复制共享`、`基于缓存的 session 共享`
 
 #### 数据调度
 
-- [数据缓存](https://dunwu.github.io/waterdrop/pages/fd0aaa/) - 关键词：`进程内缓存`、`分布式缓存`、`缓存雪崩`、`缓存穿透`、`缓存击穿`、`缓存更新`、`缓存预热`、`缓存降级`
-- [读写分离](https://dunwu.github.io/waterdrop/pages/3faf18/)
-- [分库分表](https://dunwu.github.io/waterdrop/pages/e1046e/) - 关键词：`分片`、`路由`、`迁移`、`扩容`、`双写`、`聚合`
-- [分布式 ID](https://dunwu.github.io/waterdrop/pages/3ae455/) - 关键词：`UUID`、`自增序列`、`雪花算法`、`Leaf`
-- [分布式事务](https://dunwu.github.io/waterdrop/pages/e1881c/) - 关键词：`2PC`、`3PC`、`TCC`、`本地消息表`、`MQ 消息`、`SAGA`
-- [分布式锁](https://dunwu.github.io/waterdrop/pages/40ac64/) - 关键词：`数据库`、`Redis`、`ZooKeeper`、`互斥`、`可重入`、`死锁`、`容错`、`自旋尝试`
+- [数据缓存](https://dunwu.github.io/blog/pages/fd0aaa/) - 关键词：`进程内缓存`、`分布式缓存`、`缓存雪崩`、`缓存穿透`、`缓存击穿`、`缓存更新`、`缓存预热`、`缓存降级`
+- [读写分离](https://dunwu.github.io/blog/pages/3faf18/)
+- [分库分表](https://dunwu.github.io/blog/pages/e1046e/) - 关键词：`分片`、`路由`、`迁移`、`扩容`、`双写`、`聚合`
+- [分布式 ID](https://dunwu.github.io/blog/pages/3ae455/) - 关键词：`UUID`、`自增序列`、`雪花算法`、`Leaf`
+- [分布式事务](https://dunwu.github.io/blog/pages/e1881c/) - 关键词：`2PC`、`3PC`、`TCC`、`本地消息表`、`MQ 消息`、`SAGA`
+- [分布式锁](https://dunwu.github.io/blog/pages/40ac64/) - 关键词：`数据库`、`Redis`、`ZooKeeper`、`互斥`、`可重入`、`死锁`、`容错`、`自旋尝试`
 
 #### 资源调度
 
@@ -76,8 +76,8 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 #### 服务治理
 
-- [服务注册和发现](https://dunwu.github.io/waterdrop/pages/1a90aa/)
-- [服务容错](https://dunwu.github.io/waterdrop/pages/e32c7e/)
+- [服务注册和发现](https://dunwu.github.io/blog/pages/1a90aa/)
+- [服务容错](https://dunwu.github.io/blog/pages/e32c7e/)
 - 服务编排
 - 服务版本管理
 
