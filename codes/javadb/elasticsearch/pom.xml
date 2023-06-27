@@ -4,17 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.github.dunwu</groupId>
-  <artifactId>javadb</artifactId>
+  <artifactId>javadb-elasticsearch</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
 
   <modules>
-    <module>h2</module>
-    <module>hbase</module>
-    <module>mysql</module>
-    <module>redis</module>
-    <module>sqlite</module>
-    <module>mongodb</module>
-    <module>elasticsearch</module>
+    <module>elasticsearch7</module>
   </modules>
 </project>
