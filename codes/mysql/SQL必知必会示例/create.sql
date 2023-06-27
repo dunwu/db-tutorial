@@ -72,25 +72,25 @@ CREATE TABLE vendors (
 -- Define primary keys
 -- -------------------
 ALTER TABLE customers
-    ADD PRIMARY KEY (cust_id);
+ADD PRIMARY KEY (cust_id);
 ALTER TABLE orderitems
-    ADD PRIMARY KEY (order_num, order_item);
+ADD PRIMARY KEY (order_num, order_item);
 ALTER TABLE orders
-    ADD PRIMARY KEY (order_num);
+ADD PRIMARY KEY (order_num);
 ALTER TABLE products
-    ADD PRIMARY KEY (prod_id);
+ADD PRIMARY KEY (prod_id);
 ALTER TABLE vendors
-    ADD PRIMARY KEY (vend_id);
+ADD PRIMARY KEY (vend_id);
 
 
 -- -------------------
 -- Define foreign keys
 -- -------------------
 ALTER TABLE orderitems
-    ADD CONSTRAINT fk_orderitems_orders FOREIGN KEY (order_num) REFERENCES orders(order_num);
+ADD CONSTRAINT fk_orderitems_orders FOREIGN KEY (order_num) REFERENCES orders(order_num);
 ALTER TABLE orderitems
-    ADD CONSTRAINT fk_orderitems_products FOREIGN KEY (prod_id) REFERENCES products(prod_id);
+ADD CONSTRAINT fk_orderitems_products FOREIGN KEY (prod_id) REFERENCES products(prod_id);
 ALTER TABLE orders
-    ADD CONSTRAINT fk_orders_customers FOREIGN KEY (cust_id) REFERENCES customers(cust_id);
+ADD CONSTRAINT fk_orders_customers FOREIGN KEY (cust_id) REFERENCES customers(cust_id);
 ALTER TABLE products
-    ADD CONSTRAINT fk_products_vendors FOREIGN KEY (vend_id) REFERENCES vendors(vend_id);
+ADD CONSTRAINT fk_products_vendors FOREIGN KEY (vend_id) REFERENCES vendors(vend_id);
