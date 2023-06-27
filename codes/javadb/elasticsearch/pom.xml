@@ -9,6 +9,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>elasticsearch6</module>
     <module>elasticsearch7</module>
   </modules>
 </project>
