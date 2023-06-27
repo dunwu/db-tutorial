@@ -27,7 +27,7 @@ hidden: true
 
 > 关键词：`ACID`、`AUTOCOMMIT`、`事务隔离级别`、`死锁`、`分布式事务`
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716074533.png)
+![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20220721072721.png)
 
 ### [Mysql 锁](04.Mysql锁.md)
 
@@ -48,14 +48,6 @@ hidden: true
 ### [Mysql 配置](21.Mysql配置.md) 🔨
 
 ### [Mysql 常见问题](99.Mysql常见问题)
-
----
-
-相关扩展知识：
-
-- [关系型数据库面试总结](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/sql-interview.md) 💯
-- [SQL Cheat Sheet](https://github.com/dunwu/db-tutorial/blob/master/docs/sql/sql-cheat-sheet.md)
-- [分布式事务基本原理](https://dunwu.github.io/blog/pages/e1881c/)
 
 ## 📚 资料
 

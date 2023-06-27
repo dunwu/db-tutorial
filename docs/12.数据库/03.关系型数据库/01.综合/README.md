@@ -16,17 +16,15 @@ hidden: true
 
 ## 📖 内容
 
-### [关系型数据库面试题 💯](01.关系型数据库面试.md)
+### [关系型数据库面试总结](01.关系型数据库面试.md) 💯
 
-### [SQL Cheat Sheet](02.SqlCheatSheet.md)
+### [SQL 语法基础特性](02.SQL语法基础特性.md)
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200115160512.png)
+### [SQL 语法高级特性](03.SQL语法高级特性.md)
 
-### [分库分表基本原理](https://dunwu.github.io/blog/pages/e1046e/)
+### [扩展 SQL](03.扩展SQL.md)
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716110854.png)
-
-### [分布式事务基本原理](https://dunwu.github.io/blog/pages/e1881c/)
+### [SQL Cheat Sheet](99.SqlCheatSheet.md)
 
 ## 📚 资料
 
@@ -36,7 +34,7 @@ hidden: true
   - [Mysql 官方文档之命令行客户端](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)
 - **书籍**
   - [《高性能 MySQL》](https://item.jd.com/11220393.html) - Mysql 经典
-  - [《SQL 必知必会》](https://item.jd.com/11232698.html) - SQL 入门
+  - [《SQL 必知必会》](https://book.douban.com/subject/35167240/) - SQL 入门
 - **教程**
   - [runoob.com MySQL 教程](http://www.runoob.com/mymysql-tutorial.html) - 入门级 SQL 教程
   - [mysql-tutorial](https://github.com/jaywcjlove/mysql-tutorial)

@@ -15,11 +15,13 @@ hidden: true
 
 ## 📖 内容
 
-### 公共知识
+### 关系型数据库综合
 
 - [关系型数据库面试总结](01.综合/01.关系型数据库面试.md) 💯
-- [SQL Cheat Sheet](01.综合/02.SqlCheatSheet.md) 是一个 SQL 入门教程。
-- [扩展 SQL](01.综合/03.扩展SQL.md) 是一个 SQL 入门教程。
+- [SQL 语法基础特性](01.综合/02.SQL语法基础特性.md)
+- [SQL 语法高级特性](01.综合/03.SQL语法高级特性.md)
+- [扩展 SQL](01.综合/03.扩展SQL.md)
+- [SQL Cheat Sheet](01.综合/99.SqlCheatSheet.md)
 
 ### Mysql
 
@@ -46,7 +48,7 @@ hidden: true
 ### 综合
 
 - [《数据库的索引设计与优化》](https://book.douban.com/subject/26419771/)
-- [《SQL 必知必会》](https://book.douban.com/subject/35167240/) - SQL 的基本概念和语法【入门】
+- [《SQL 必知必会》](https://book.douban.com/subject/35167240/) - SQL 入门经典
 
 ### Mysql
 
@@ -56,7 +58,7 @@ hidden: true
   - [Mysql 官方文档之命令行客户端](https://dev.mysql.com/doc/refman/8.0/en/mysql.html)
 - **书籍**
   - [《高性能 MySQL》](https://book.douban.com/subject/23008813/) - 经典，适合 DBA 或作为开发者的参考手册
-  - [《MySQL 必知必会》](https://book.douban.com/subject/3354490/) - 适合入门者
+  - [《MySQL 必知必会》](https://book.douban.com/subject/3354490/) - MySQL 入门经典
 - **教程**
   - [MySQL 实战 45 讲](https://time.geekbang.org/column/intro/139)
   - [runoob.com MySQL 教程](http://www.runoob.com/mysql/mysql-tutorial.html)
