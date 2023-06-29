@@ -1,6 +1,7 @@
 package io.github.dunwu.javadb.elasticsearch.mapper;
 
 import io.github.dunwu.javadb.elasticsearch.entity.User;
+import org.elasticsearch.client.RestHighLevelClient;
 
 /**
  * User ES Mapper
@@ -10,18 +11,17 @@ import io.github.dunwu.javadb.elasticsearch.entity.User;
  */
 public class UserEsMapper extends BaseEsMapper<User> {
 
+    public UserEsMapper(RestHighLevelClient restHighLevelClient) {
+        super(restHighLevelClient);
+    }
+
     @Override
-    public String getIndexAlias() {
+    public String getIndex() {
         return "user";
     }
 
     @Override
-    public String getIndexName() {
-        return "user";
-    }
-
-    @Override
-    public String getIndexType() {
+    public String getType() {
         return "_doc";
     }
 

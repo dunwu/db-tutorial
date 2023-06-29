@@ -7,5 +7,10 @@ package io.github.dunwu.javadb.elasticsearch.entity;
  * @since 2023-06-28
  */
 public interface EsEntity {
-    Long getId();
+
+    /**
+     * 获取 ES 主键
+     */
+    String getDocId();
+
 }

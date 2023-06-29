@@ -12,10 +12,16 @@ import lombok.Data;
 @Data
 @Builder
 public class User implements EsEntity {
+
     private Long id;
     private String username;
     private String password;
     private Integer age;
     private String email;
+
+    @Override
+    public String getDocId() {
+        return null;
+    }
 
 }
