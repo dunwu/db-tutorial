@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * JSON 工具类
  *
- * @author Zhang Peng
+ * @author <a href="mailto:forbreak@163.com">Zhang Peng</a>
  * @date 2023-06-29
  */
 @Slf4j

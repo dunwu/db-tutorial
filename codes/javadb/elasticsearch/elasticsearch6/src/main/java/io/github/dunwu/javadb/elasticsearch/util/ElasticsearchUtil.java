@@ -1,7 +1,5 @@
 package io.github.dunwu.javadb.elasticsearch.util;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
@@ -35,8 +33,6 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.rest.RestStatus;
@@ -47,7 +43,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -170,18 +165,8 @@ public class ElasticsearchUtil {
 
     public static <T extends EsEntity> String insert(RestHighLevelClient client, String index, String type, T entity)
         throws IOException {
-        Map<String, Object> map = new HashMap<>();
-        BeanUtil.beanToMap(entity, map, CopyOptions.create().ignoreError());
-        XContentBuilder builder = XContentFactory.jsonBuilder();
-        builder.startObject();
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            builder.field(key, value);
-        }
-        builder.endObject();
-
-        IndexRequest request = new IndexRequest(index, type).source(builder);
+        Map<String, Object> map = toMap(entity);
+        IndexRequest request = new IndexRequest(index, type).source(map);
         if (entity.getDocId() != null) {
             request.id(entity.getDocId());
         }
