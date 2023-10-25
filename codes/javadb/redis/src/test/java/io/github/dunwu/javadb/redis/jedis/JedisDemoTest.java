@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Jedis 测试例
  *
- * @author Zhang Peng
+ * @author <a href="mailto:forbreak@163.com">Zhang Peng</a>
  * @see https://github.com/xetorthio/jedis
  */
 @Slf4j

@@ -1,11 +1,11 @@
 /**
  * Mysql 触发器（TRIGGER）创建、使用示例
- * @author Zhang Peng
+ * @author <a href="mailto:forbreak@163.com">Zhang Peng</a>
  * @date 2018/5/2
  */
 -- --------------------------------------------------------------------------------------
 -- Mysql 基本 DDL 语句示例
--- @author Zhang Peng
+-- @author <a href="mailto:forbreak@163.com">Zhang Peng</a>
 -- @date 2018/4/28
 -- ----------------------------------------------------------------------------------------
 
