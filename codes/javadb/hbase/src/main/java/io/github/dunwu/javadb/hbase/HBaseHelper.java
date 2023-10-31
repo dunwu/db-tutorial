@@ -61,11 +61,23 @@ public class HBaseHelper implements Closeable {
         this.connection = ConnectionFactory.createConnection(configuration);
     }
 
+    protected HBaseHelper(Connection connection) {
+        this.configuration = connection.getConfiguration();
+        this.connection = connection;
+    }
+
     public static synchronized HBaseHelper newInstance(Configuration configuration) throws IOException {
         if (configuration == null) {
             throw new IllegalArgumentException("configuration can not be null!");
         }
         return new HBaseHelper(configuration);
+    }
+
+    public synchronized static HBaseHelper newInstance(Connection connection) throws IOException {
+        if (connection == null) {
+            throw new IllegalArgumentException("connection can not be null!");
+        }
+        return new HBaseHelper(connection);
     }
 
     /**
@@ -555,8 +567,7 @@ public class HBaseHelper implements Closeable {
      * @return 一级 Map 的 key 是 Row Key；二级 Map 的 key 是列，value 是列值
      */
     public Map<String, Map<String, String>> scanFamilyMap(TableName tableName, String family,
-        Collection<String> columns)
-        throws Exception {
+        Collection<String> columns) throws Exception {
         HBaseFamilyRequest request = new HBaseFamilyRequest();
         request.setFamily(family)
                .setColumns(columns)
@@ -597,8 +608,7 @@ public class HBaseHelper implements Closeable {
      * @return 一级 Map 的 key 是 Row Key；二级 Map 的 key 是列，value 是列值
      */
     public Map<String, Map<String, String>> scanFamilyMap(TableName tableName, String family,
-        Collection<String> columns,
-        Filter filter) throws Exception {
+        Collection<String> columns, Filter filter) throws Exception {
         HBaseFamilyRequest request = new HBaseFamilyRequest();
         request.setFamily(family)
                .setColumns(columns)
@@ -646,8 +656,7 @@ public class HBaseHelper implements Closeable {
      * @return 一级 Map 的 key 是 Row Key；二级 Map 的 key 是列，value 是列值
      */
     public Map<String, Map<String, String>> scanFamilyMap(TableName tableName, String family,
-        Collection<String> columns,
-        long minStamp, long maxStamp, Filter filter) throws Exception {
+        Collection<String> columns, long minStamp, long maxStamp, Filter filter) throws Exception {
         HBaseFamilyRequest request = new HBaseFamilyRequest();
         request.setFamily(family)
                .setColumns(columns)
@@ -829,8 +838,8 @@ public class HBaseHelper implements Closeable {
             request.getPageNo(), request.getPageSize(), request.toScan());
     }
 
-    public PageData<HBaseRowData> pageRowData(TableName tableName,
-        Map<String, Collection<String>> familyColumns, Integer pageNo, Integer pageSize, Scan scan) throws Exception {
+    public PageData<HBaseRowData> pageRowData(TableName tableName, Map<String, Collection<String>> familyColumns,
+        Integer pageNo, Integer pageSize, Scan scan) throws Exception {
 
         Table table = getTable(tableName);
         Map<String, Map<String, Map<String, String>>> rowMap = new HashMap<>();
