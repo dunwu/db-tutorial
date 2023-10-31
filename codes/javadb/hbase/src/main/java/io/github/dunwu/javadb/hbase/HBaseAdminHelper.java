@@ -91,10 +91,14 @@ public class HBaseAdminHelper implements Closeable {
      * @param namespace 命名空间
      */
     public void createNamespace(String namespace) throws IOException {
-        NamespaceDescriptor nd = NamespaceDescriptor.create(namespace).build();
-        Admin admin = getAdmin();
-        admin.createNamespace(nd);
-        admin.close();
+        Admin admin = null;
+        try {
+            admin = getAdmin();
+            NamespaceDescriptor nd = NamespaceDescriptor.create(namespace).build();
+            admin.createNamespace(nd);
+        } finally {
+            recycle(admin);
+        }
     }
 
     /**
@@ -113,16 +117,33 @@ public class HBaseAdminHelper implements Closeable {
      * @param force     是否强制删除
      */
     public void dropNamespace(String namespace, boolean force) throws IOException {
-        Admin admin = getAdmin();
-        if (force) {
-            TableName[] tableNames = getAdmin().listTableNamesByNamespace(namespace);
-            for (TableName name : tableNames) {
-                admin.disableTable(name);
-                admin.deleteTable(name);
+        Admin admin = null;
+        try {
+            admin = getAdmin();
+            if (force) {
+                TableName[] tableNames = admin.listTableNamesByNamespace(namespace);
+                for (TableName name : tableNames) {
+                    admin.disableTable(name);
+                    admin.deleteTable(name);
+                }
             }
+            admin.deleteNamespace(namespace);
+        } finally {
+            recycle(admin);
         }
-        admin.deleteNamespace(namespace);
-        admin.close();
+    }
+
+    /**
+     * 获取所有命名空间
+     */
+    public String[] listNamespaces() throws IOException {
+        Admin admin = null;
+        try {
+            admin = getAdmin();
+            return admin.listNamespaces();
+        } finally {
+            recycle(admin);
+        }
     }
 
     /**
@@ -213,6 +234,32 @@ public class HBaseAdminHelper implements Closeable {
     }
 
     /**
+     * 获取所有表
+     */
+    public TableName[] listTableNames() throws IOException {
+        Admin admin = null;
+        try {
+            admin = getAdmin();
+            return admin.listTableNames();
+        } finally {
+            recycle(admin);
+        }
+    }
+
+    /**
+     * 获取指定命名空间下的所有表
+     */
+    public TableName[] listTableNamesByNamespace(String namespace) throws IOException {
+        Admin admin = null;
+        try {
+            admin = getAdmin();
+            return admin.listTableNamesByNamespace(namespace);
+        } finally {
+            recycle(admin);
+        }
+    }
+
+    /**
      * 获取 {@link Table} 实例
      *
      * @param tableName 表名
@@ -229,6 +276,13 @@ public class HBaseAdminHelper implements Closeable {
      */
     public Admin getAdmin() throws IOException {
         return getConnection().getAdmin();
+    }
+
+    private void recycle(Admin admin) {
+        if (null == admin) {
+            return;
+        }
+        IoUtil.close(admin);
     }
 
 }
