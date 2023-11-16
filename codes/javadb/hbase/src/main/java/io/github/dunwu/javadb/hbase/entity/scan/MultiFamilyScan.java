@@ -1,9 +1,8 @@
-package io.github.dunwu.javadb.hbase.entity;
+package io.github.dunwu.javadb.hbase.entity.scan;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import cn.hutool.core.util.StrUtil;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.util.Bytes;
 
@@ -13,37 +12,46 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * HBase 封装请求参数
+ * HBase 多列族 scan 封装请求参数
  *
  * @author <a href="mailto:forbreak@163.com">Zhang Peng</a>
  * @date 2023-05-19
  */
-@Data
-@Accessors(chain = true)
-public class HBaseMultiFamilyRequest extends BaseFamilyRequest {
+public class MultiFamilyScan extends BaseScan {
 
     /**
      * 列族, 列族所包含的列（不可为空）
      */
-    private final Map<String, Collection<String>> familyColumns = new HashMap<>();
+    private Map<String, Collection<String>> familyColumnMap = new HashMap<>();
+    private String scrollRow;
 
-    public HBaseMultiFamilyRequest addFamilyColumn(String family, Collection<String> columns) {
-        this.familyColumns.put(family, columns);
+    public Map<String, Collection<String>> getFamilyColumnMap() {
+        return familyColumnMap;
+    }
+
+    public MultiFamilyScan setFamilyColumnMap(
+        Map<String, Collection<String>> familyColumnMap) {
+        this.familyColumnMap = familyColumnMap;
         return this;
     }
 
-    public HBaseMultiFamilyRequest addFamilyColumns(Map<String, Collection<String>> familyColumns) {
-        if (MapUtil.isNotEmpty(familyColumns)) {
-            this.familyColumns.putAll(familyColumns);
-        }
+    public String getScrollRow() {
+        return scrollRow;
+    }
+
+    public MultiFamilyScan setScrollRow(String scrollRow) {
+        this.scrollRow = scrollRow;
         return this;
     }
 
     @Override
     public Scan toScan() throws IOException {
         Scan scan = super.toScan();
-        if (MapUtil.isNotEmpty(familyColumns)) {
-            for (Map.Entry<String, Collection<String>> entry : familyColumns.entrySet()) {
+        if (StrUtil.isNotBlank(scrollRow)) {
+            scan.withStartRow(Bytes.toBytes(scrollRow), false);
+        }
+        if (MapUtil.isNotEmpty(familyColumnMap)) {
+            for (Map.Entry<String, Collection<String>> entry : familyColumnMap.entrySet()) {
                 String family = entry.getKey();
                 Collection<String> columns = entry.getValue();
                 if (CollectionUtil.isNotEmpty(columns)) {

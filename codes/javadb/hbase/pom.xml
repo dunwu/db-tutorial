@@ -23,10 +23,11 @@
     <dependency>
       <groupId>org.apache.hbase</groupId>
       <artifactId>hbase-client</artifactId>
+      <version>${hbase.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
-      <artifactId>hadoop-hdfs</artifactId>
+      <artifactId>hadoop-auth</artifactId>
       <version>2.10.2</version>
     </dependency>
     <dependency>
@@ -39,37 +40,23 @@
       <artifactId>lombok</artifactId>
       <version>1.18.22</version>
     </dependency>
-
-    <!-- test begin -->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+      <version>5.1.10.RELEASE</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-    <!-- test end -->
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>2.6.3</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.hbase</groupId>
-        <artifactId>hbase-client</artifactId>
-        <version>${hbase.version}</version>
-      </dependency>
-<!--      <dependency>-->
-<!--        <groupId>io.github.dunwu</groupId>-->
-<!--        <artifactId>dunwu-tool-core</artifactId>-->
-<!--        <version>${dunwu.version}</version>-->
-<!--      </dependency>-->
-
-
-      <!-- test begin -->
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <!-- test end -->
-    </dependencies>
-  </dependencyManagement>
 </project>
