@@ -23,7 +23,7 @@ public class HbaseFactory {
 
     public static Configuration newHbaseConfiguration() {
         Configuration configuration = HBaseConfiguration.create();
-        configuration.set("hbase.zookeeper.quorum", "10.101.129.74,10.101.129.76,10.101.129.77");
+        configuration.set("hbase.zookeeper.quorum", "127.0.0.1");
         configuration.set("hbase.zookeeper.property.clientPort", "2181");
         configuration.set("hbase.rootdir", "/hbase");
         configuration.set("hbase.meta.replicas.use", "true");

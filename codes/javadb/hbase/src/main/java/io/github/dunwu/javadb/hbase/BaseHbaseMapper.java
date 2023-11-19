@@ -36,7 +36,7 @@ public abstract class BaseHbaseMapper<T extends BaseHbaseEntity> implements Hbas
 
     @Override
     public String getNamespace() {
-        return "default";
+        return "test";
     }
 
     @Override
@@ -57,12 +57,12 @@ public abstract class BaseHbaseMapper<T extends BaseHbaseEntity> implements Hbas
     }
 
     @Override
-    public T pojoById(String id) {
-        if (StrUtil.isBlank(id)) {
+    public T pojoByRowKey(String rowKey) {
+        if (StrUtil.isBlank(rowKey)) {
             return null;
         }
         try {
-            return hbaseTemplate.getEntity(getFullTableName(), id, getFamily(), getEntityClass());
+            return hbaseTemplate.getEntity(getFullTableName(), rowKey, getFamily(), getEntityClass());
         } catch (IOException e) {
             log.error("【Hbase】pojoById 异常", e);
             return null;
@@ -70,12 +70,12 @@ public abstract class BaseHbaseMapper<T extends BaseHbaseEntity> implements Hbas
     }
 
     @Override
-    public List<T> pojoListByIds(Collection<String> ids) {
-        if (CollectionUtil.isEmpty(ids)) {
+    public List<T> pojoListByRowKeys(Collection<String> rowKeys) {
+        if (CollectionUtil.isEmpty(rowKeys)) {
             return null;
         }
         try {
-            return hbaseTemplate.getEntityList(getFullTableName(), ids.toArray(new String[0]),
+            return hbaseTemplate.getEntityList(getFullTableName(), rowKeys.toArray(new String[0]),
                 getFamily(), getEntityClass());
         } catch (IOException e) {
             log.error("【Hbase】getEntityList 异常", e);
@@ -84,10 +84,10 @@ public abstract class BaseHbaseMapper<T extends BaseHbaseEntity> implements Hbas
     }
 
     @Override
-    public List<T> scroll(String scrollId, int size) {
+    public List<T> scroll(String scrollRowKey, int size) {
         try {
             ScrollData<T> scrollData =
-                hbaseTemplate.getEntityScroll(getFullTableName(), getFamily(), scrollId, size, getEntityClass());
+                hbaseTemplate.getEntityScroll(getFullTableName(), getFamily(), scrollRowKey, size, getEntityClass());
             if (scrollData == null || CollectionUtil.isEmpty(scrollData.getContent())) {
                 return new ArrayList<>();
             }
@@ -101,7 +101,8 @@ public abstract class BaseHbaseMapper<T extends BaseHbaseEntity> implements Hbas
     @Override
     public T save(T entity) {
         try {
-            hbaseTemplate.put(getFullTableName(), entity.getId(), getFamily(), entity);
+            String rowKey = entity.getRowKey();
+            hbaseTemplate.put(getFullTableName(), rowKey, getFamily(), entity);
             return entity;
         } catch (IOException e) {
             log.error("【Hbase】put 异常", e);
@@ -121,12 +122,12 @@ public abstract class BaseHbaseMapper<T extends BaseHbaseEntity> implements Hbas
     }
 
     @Override
-    public boolean deleteById(String id) {
-        if (StrUtil.isBlank(id)) {
+    public boolean delete(String rowKey) {
+        if (StrUtil.isBlank(rowKey)) {
             return true;
         }
         try {
-            hbaseTemplate.delete(getFullTableName(), id);
+            hbaseTemplate.delete(getFullTableName(), rowKey);
             return true;
         } catch (IOException e) {
             log.error("【Hbase】delete 异常", e);
@@ -135,12 +136,12 @@ public abstract class BaseHbaseMapper<T extends BaseHbaseEntity> implements Hbas
     }
 
     @Override
-    public boolean batchDeleteById(Collection<String> ids) {
-        if (CollectionUtil.isEmpty(ids)) {
+    public boolean batchDelete(Collection<String> rowKeys) {
+        if (CollectionUtil.isEmpty(rowKeys)) {
             return true;
         }
         try {
-            hbaseTemplate.batchDelete(getFullTableName(), ids.toArray(new String[0]));
+            hbaseTemplate.batchDelete(getFullTableName(), rowKeys.toArray(new String[0]));
             return true;
         } catch (IOException | InterruptedException e) {
             log.error("【Hbase】batchDelete 异常", e);

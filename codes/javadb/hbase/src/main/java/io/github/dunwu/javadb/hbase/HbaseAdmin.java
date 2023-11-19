@@ -12,6 +12,8 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.TableDescriptor;
 import org.apache.hadoop.hbase.client.TableDescriptorBuilder;
+import org.apache.hadoop.hbase.security.User;
+import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -32,10 +34,10 @@ public class HbaseAdmin implements Closeable {
     protected HbaseAdmin(Configuration configuration) throws IOException {
         this.configuration = configuration;
         // 无需鉴权连接
-        this.connection = ConnectionFactory.createConnection(configuration);
+        // this.connection = ConnectionFactory.createConnection(configuration);
         // 鉴权连接
-        // this.connection = ConnectionFactory.createConnection(configuration, null,
-        //     new User.SecureHadoopUser(UserGroupInformation.createRemoteUser("test")));
+        this.connection = ConnectionFactory.createConnection(configuration, null,
+            new User.SecureHadoopUser(UserGroupInformation.createRemoteUser("test")));
     }
 
     protected HbaseAdmin(Connection connection) {

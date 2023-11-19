@@ -33,7 +33,9 @@ import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Row;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.security.User;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -65,10 +67,10 @@ public class HbaseTemplate implements Closeable {
     protected HbaseTemplate(Configuration configuration) throws IOException {
         this.configuration = configuration;
         // 无需鉴权连接
-        this.connection = ConnectionFactory.createConnection(configuration);
+        // this.connection = ConnectionFactory.createConnection(configuration);
         // 鉴权连接
-        // this.connection = ConnectionFactory.createConnection(configuration, null,
-        //     new User.SecureHadoopUser(UserGroupInformation.createRemoteUser("test")));
+        this.connection = ConnectionFactory.createConnection(configuration, null,
+            new User.SecureHadoopUser(UserGroupInformation.createRemoteUser("test")));
     }
 
     protected HbaseTemplate(Connection connection) {
@@ -198,6 +200,10 @@ public class HbaseTemplate implements Closeable {
         put(tableName, put);
     }
 
+    public <T extends BaseHbaseEntity> void put(String tableName, String family, T entity) throws IOException {
+        put(tableName, entity.getRowKey(), family, entity);
+    }
+
     public void batchPut(String tableName, Collection<Put> list) throws IOException, InterruptedException {
         batch(tableName, list);
     }
@@ -273,11 +279,15 @@ public class HbaseTemplate implements Closeable {
         return put;
     }
 
-    private static <T extends BaseHbaseEntity> List<Put> newPutList(String family, Collection<T> list) {
+    private static <T extends BaseHbaseEntity> List<Put> newPutList(String family, Collection<T> list)
+        throws IOException {
         long timestamp = System.currentTimeMillis();
-        return list.stream()
-                   .map(entity -> newPut(entity.getId(), timestamp, family, entity))
-                   .collect(Collectors.toList());
+        List<Put> puts = new ArrayList<>();
+        for (T entity : list) {
+            Put put = newPut(entity.getRowKey(), timestamp, family, entity);
+            puts.add(put);
+        }
+        return puts;
     }
 
     // =====================================================================================
@@ -410,8 +420,10 @@ public class HbaseTemplate implements Closeable {
         for (Result result : results) {
             Map<String, ColumnDo> columnMap =
                 getColumnsFromResult(result, tableName, family, CollectionUtil.newArrayList(columns));
-            T entity = toEntity(columnMap, clazz);
-            list.add(entity);
+            if (MapUtil.isNotEmpty(columnMap)) {
+                T entity = toEntity(columnMap, clazz);
+                list.add(entity);
+            }
         }
         return list;
     }
@@ -911,7 +923,9 @@ public class HbaseTemplate implements Closeable {
         Map<String, ColumnDo> columnMap = new HashMap<>(columns.size());
         for (String column : columns) {
             ColumnDo columnDo = getColumnFromResult(result, tableName, family, column);
-            columnMap.put(column, columnDo);
+            if (columnDo != null) {
+                columnMap.put(column, columnDo);
+            }
         }
         return columnMap;
     }

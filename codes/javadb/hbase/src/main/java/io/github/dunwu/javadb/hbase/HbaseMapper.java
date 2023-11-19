@@ -50,7 +50,7 @@ public interface HbaseMapper<T extends BaseHbaseEntity> {
      * @param id 即 Hbase rowkey
      * @return /
      */
-    T pojoById(String id);
+    T pojoByRowKey(String id);
 
     /**
      * 根据 ID 列表批量查数据
@@ -58,7 +58,7 @@ public interface HbaseMapper<T extends BaseHbaseEntity> {
      * @param ids 即 Hbase rowkey
      * @return /
      */
-    List<T> pojoListByIds(Collection<String> ids);
+    List<T> pojoListByRowKeys(Collection<String> ids);
 
     /**
      * 根据 ID 滚动分页查询
@@ -91,7 +91,7 @@ public interface HbaseMapper<T extends BaseHbaseEntity> {
      * @param id 即 Hbase rowkey
      * @return /
      */
-    boolean deleteById(String id);
+    boolean delete(String id);
 
     /**
      * 根据 ID 列表批量删除记录
@@ -99,6 +99,6 @@ public interface HbaseMapper<T extends BaseHbaseEntity> {
      * @param ids 即 Hbase rowkey
      * @return /
      */
-    boolean batchDeleteById(Collection<String> ids);
+    boolean batchDelete(Collection<String> ids);
 
 }
