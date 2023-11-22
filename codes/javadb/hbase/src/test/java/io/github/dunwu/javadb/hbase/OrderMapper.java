@@ -1,13 +1,15 @@
 package io.github.dunwu.javadb.hbase;
 
+import io.github.dunwu.javadb.hbase.mapper.BaseHbaseMapper;
+
 /**
  * @author <a href="mailto:forbreak@163.com">Zhang Peng</a>
  * @date 2023-11-15
  */
-public class ProductMapper extends BaseHbaseMapper<Product> {
+public class OrderMapper extends BaseHbaseMapper<Order> {
 
-    public ProductMapper(HbaseTemplate hbaseTemplate, HbaseAdmin hbaseAdmin) {
-        super(hbaseTemplate, hbaseAdmin);
+    public OrderMapper(HbaseTemplate hbaseTemplate) {
+        super(hbaseTemplate);
     }
 
     @Override
@@ -21,8 +23,8 @@ public class ProductMapper extends BaseHbaseMapper<Product> {
     }
 
     @Override
-    public Class<Product> getEntityClass() {
-        return Product.class;
+    public Class<Order> getEntityClass() {
+        return Order.class;
     }
 
 }

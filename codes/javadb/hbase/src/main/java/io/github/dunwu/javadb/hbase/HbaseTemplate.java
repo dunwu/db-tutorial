@@ -1,8 +1,8 @@
 package io.github.dunwu.javadb.hbase;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ArrayUtil;
@@ -10,13 +10,14 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import io.github.dunwu.javadb.hbase.entity.BaseHbaseEntity;
-import io.github.dunwu.javadb.hbase.entity.ColumnDo;
-import io.github.dunwu.javadb.hbase.entity.FamilyDo;
-import io.github.dunwu.javadb.hbase.entity.PageData;
-import io.github.dunwu.javadb.hbase.entity.RowDo;
-import io.github.dunwu.javadb.hbase.entity.ScrollData;
+import io.github.dunwu.javadb.hbase.entity.common.ColumnDo;
+import io.github.dunwu.javadb.hbase.entity.common.FamilyDo;
+import io.github.dunwu.javadb.hbase.entity.common.PageData;
+import io.github.dunwu.javadb.hbase.entity.common.RowDo;
+import io.github.dunwu.javadb.hbase.entity.common.ScrollData;
 import io.github.dunwu.javadb.hbase.entity.scan.MultiFamilyScan;
 import io.github.dunwu.javadb.hbase.entity.scan.SingleFamilyScan;
+import io.github.dunwu.javadb.hbase.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
@@ -43,8 +44,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -221,7 +223,7 @@ public class HbaseTemplate implements Closeable {
         if (StrUtil.isBlank(row) || StrUtil.isBlank(family) || StrUtil.isBlank(column) || StrUtil.isBlank(value)) {
             return null;
         }
-        Map<String, Object> columnMap = new HashMap<>(1);
+        Map<String, Object> columnMap = new LinkedHashMap<>(1);
         columnMap.put(column, value);
         return newPut(row, timestamp, family, columnMap);
     }
@@ -230,22 +232,16 @@ public class HbaseTemplate implements Closeable {
         if (StrUtil.isBlank(row) || StrUtil.isBlank(family) || MapUtil.isEmpty(columnMap)) {
             return null;
         }
-        Map<String, Map<String, Object>> familyMap = new HashMap<>(1);
+        Map<String, Map<String, Object>> familyMap = new LinkedHashMap<>(1);
         familyMap.put(family, columnMap);
         return newPut(row, timestamp, familyMap);
     }
 
-    @SuppressWarnings("unchecked")
     public static Put newPut(String row, Long timestamp, String family, Object obj) {
         if (obj == null) {
             return null;
         }
-        Map<String, Object> columnMap;
-        if (obj instanceof Map) {
-            columnMap = (Map<String, Object>) obj;
-        } else {
-            columnMap = BeanUtil.beanToMap(obj);
-        }
+        Map<String, Object> columnMap = JsonUtil.toMap(obj);
         return newPut(row, timestamp, family, columnMap);
     }
 
@@ -267,20 +263,26 @@ public class HbaseTemplate implements Closeable {
                 for (Map.Entry<String, Object> entry : columnMap.entrySet()) {
                     String column = entry.getKey();
                     Object value = entry.getValue();
-
                     if (ObjectUtil.isEmpty(value)) {
                         continue;
                     }
-                    put.addColumn(Bytes.toBytes(family), Bytes.toBytes(column), timestamp,
-                        Bytes.toBytes(String.valueOf(value)));
+                    if (value instanceof String) {
+                        put.addColumn(Bytes.toBytes(family), Bytes.toBytes(column), timestamp,
+                            Bytes.toBytes(value.toString()));
+                    } else if (value instanceof Date) {
+                        put.addColumn(Bytes.toBytes(family), Bytes.toBytes(column), timestamp,
+                            Bytes.toBytes(DateUtil.format((Date) value, DatePattern.NORM_DATETIME_PATTERN)));
+                    } else {
+                        put.addColumn(Bytes.toBytes(family), Bytes.toBytes(column),
+                            timestamp, Bytes.toBytes(JsonUtil.toString(value)));
+                    }
                 }
             }
         }
         return put;
     }
 
-    private static <T extends BaseHbaseEntity> List<Put> newPutList(String family, Collection<T> list)
-        throws IOException {
+    private static <T extends BaseHbaseEntity> List<Put> newPutList(String family, Collection<T> list) {
         long timestamp = System.currentTimeMillis();
         List<Put> puts = new ArrayList<>();
         for (T entity : list) {
@@ -387,7 +389,10 @@ public class HbaseTemplate implements Closeable {
         Map<String, Field> fieldMap = ReflectUtil.getFieldMap(clazz);
         String[] columns = fieldMap.keySet().toArray(new String[0]);
         Map<String, ColumnDo> columnMap = getColumnMap(tableName, row, family, columns);
-        return toEntity(columnMap, clazz);
+        if (MapUtil.isEmpty(columnMap)) {
+            return null;
+        }
+        return toEntity(ColumnDo.toKvMap(columnMap), clazz);
     }
 
     /**
@@ -402,6 +407,33 @@ public class HbaseTemplate implements Closeable {
      */
     public <T> List<T> getEntityList(String tableName, String[] rows, String family, Class<T> clazz)
         throws IOException {
+        Map<String, T> map = getEntityMap(tableName, rows, family, clazz);
+        if (MapUtil.isEmpty(map)) {
+            return new ArrayList<>(0);
+        }
+        return new ArrayList<>(map.values());
+    }
+
+    /**
+     * 指定多行、列族，以实体 {@link T} 列表形式返回数据
+     *
+     * @param tableName 表名
+     * @param rows      指定多行
+     * @param family    列族
+     * @param clazz     返回实体类型
+     * @param <T>       实体类型
+     * @return /
+     */
+    public <T> List<T> getEntityList(String tableName, Collection<String> rows, String family, Class<T> clazz)
+        throws IOException {
+        if (CollectionUtil.isEmpty(rows)) {
+            return new ArrayList<>(0);
+        }
+        return getEntityList(tableName, rows.toArray(new String[0]), family, clazz);
+    }
+
+    public <T> Map<String, T> getEntityMap(String tableName, String[] rows, String family, Class<T> clazz)
+        throws IOException {
 
         if (StrUtil.isBlank(tableName) || ArrayUtil.isEmpty(rows) || StrUtil.isBlank(family) || clazz == null) {
             return null;
@@ -413,26 +445,27 @@ public class HbaseTemplate implements Closeable {
 
         Result[] results = batchGet(tableName, gets);
         if (ArrayUtil.isEmpty(results)) {
-            return new ArrayList<>();
+            return new LinkedHashMap<>(0);
         }
 
-        List<T> list = new ArrayList<>();
+        Map<String, T> map = new LinkedHashMap<>(results.length);
         for (Result result : results) {
             Map<String, ColumnDo> columnMap =
                 getColumnsFromResult(result, tableName, family, CollectionUtil.newArrayList(columns));
             if (MapUtil.isNotEmpty(columnMap)) {
-                T entity = toEntity(columnMap, clazz);
-                list.add(entity);
+                T entity = toEntity(ColumnDo.toKvMap(columnMap), clazz);
+                map.put(Bytes.toString(result.getRow()), entity);
             }
         }
-        return list;
+        return map;
     }
 
-    private <T> T toEntity(Map<String, ColumnDo> columnMap, Class<T> clazz) {
-        if (MapUtil.isEmpty(columnMap)) {
-            return null;
+    public <T> Map<String, T> getEntityMap(String tableName, Collection<String> rows, String family, Class<T> clazz)
+        throws IOException {
+        if (CollectionUtil.isEmpty(rows)) {
+            return new LinkedHashMap<>(0);
         }
-        return BeanUtil.mapToBean(ColumnDo.toKvMap(columnMap), clazz, true, CopyOptions.create().ignoreError());
+        return getEntityMap(tableName, rows.toArray(new String[0]), family, clazz);
     }
 
     /**
@@ -492,6 +525,9 @@ public class HbaseTemplate implements Closeable {
      */
     public FamilyDo getFamily(String tableName, String row, String family) throws IOException {
         Map<String, ColumnDo> columnMap = getColumnMap(tableName, row, family);
+        if (MapUtil.isEmpty(columnMap)) {
+            return null;
+        }
         return new FamilyDo(tableName, row, family, columnMap);
     }
 
@@ -507,13 +543,13 @@ public class HbaseTemplate implements Closeable {
         Map<String, Collection<String>> familyColumnMap) throws IOException {
 
         if (StrUtil.isBlank(tableName) || StrUtil.isBlank(row)) {
-            return new HashMap<>(0);
+            return new LinkedHashMap<>(0);
         }
 
         if (MapUtil.isEmpty(familyColumnMap)) {
             RowDo rowDo = getRow(tableName, row);
             if (rowDo == null) {
-                return new HashMap<>(0);
+                return new LinkedHashMap<>(0);
             }
             return rowDo.getFamilyMap();
         }
@@ -567,9 +603,9 @@ public class HbaseTemplate implements Closeable {
         }
         Result[] results = batchGet(tableName, rows);
         if (ArrayUtil.isEmpty(results)) {
-            return new HashMap<>(0);
+            return new LinkedHashMap<>(0);
         }
-        Map<String, RowDo> map = new HashMap<>(results.length);
+        Map<String, RowDo> map = new LinkedHashMap<>(results.length);
         for (Result result : results) {
             String row = Bytes.toString(result.getRow());
             RowDo rowDo = getRowFromResult(result, tableName);
@@ -674,7 +710,7 @@ public class HbaseTemplate implements Closeable {
         List<T> list = data.getContent().stream().map(rowDo -> {
             Map<String, Map<String, String>> familyKvMap = rowDo.getFamilyKvMap();
             Map<String, String> columnKvMap = familyKvMap.get(scan.getFamily());
-            return BeanUtil.mapToBean(columnKvMap, clazz, true, CopyOptions.create().ignoreError());
+            return toEntity(columnKvMap, clazz);
         }).collect(Collectors.toList());
         return new PageData<>(scan.getPage(), scan.getSize(), data.getTotal(), list);
     }
@@ -693,7 +729,7 @@ public class HbaseTemplate implements Closeable {
         List<T> list = data.getContent().stream().map(rowDo -> {
             Map<String, Map<String, String>> familyKvMap = rowDo.getFamilyKvMap();
             Map<String, String> columnKvMap = familyKvMap.get(scan.getFamily());
-            return BeanUtil.mapToBean(columnKvMap, clazz, true, CopyOptions.create().ignoreError());
+            return toEntity(columnKvMap, clazz);
         }).collect(Collectors.toList());
         return new ScrollData<>(data.getStartRow(), data.getStopRow(), data.getScrollRow(), 0, list);
     }
@@ -712,7 +748,7 @@ public class HbaseTemplate implements Closeable {
     private PageData<RowDo> getPageData(String tableName, Integer page, Integer size, Scan scan,
         Map<String, Collection<String>> familyColumnMap) throws IOException {
         Table table = getTable(tableName);
-        Map<String, RowDo> rowMap = new HashMap<>(size);
+        Map<String, RowDo> rowMap = new LinkedHashMap<>(size);
         try {
             int pageIndex = 1;
             byte[] lastRow = null;
@@ -728,7 +764,9 @@ public class HbaseTemplate implements Closeable {
                     Result result = it.next();
                     if (page == pageIndex) {
                         RowDo rowDo = getRowFromResult(result, tableName, familyColumnMap);
-                        rowMap.put(rowDo.getRow(), rowDo);
+                        if (rowDo != null) {
+                            rowMap.put(rowDo.getRow(), rowDo);
+                        }
                     }
                     lastRow = result.getRow();
                     count++;
@@ -751,12 +789,14 @@ public class HbaseTemplate implements Closeable {
         Map<String, Collection<String>> familyColumnMap) throws IOException {
         Table table = getTable(tableName);
         ResultScanner scanner = null;
-        Map<String, RowDo> rowMap = new HashMap<>(size);
+        Map<String, RowDo> rowMap = new LinkedHashMap<>(size);
         try {
             scanner = table.getScanner(scan);
             for (Result result : scanner) {
                 RowDo rowDo = getRowFromResult(result, tableName, familyColumnMap);
-                rowMap.put(rowDo.getRow(), rowDo);
+                if (rowDo != null) {
+                    rowMap.put(rowDo.getRow(), rowDo);
+                }
             }
 
             String scrollRow = null;
@@ -829,24 +869,25 @@ public class HbaseTemplate implements Closeable {
         }
 
         String row = Bytes.toString(result.getRow());
-        Map<String, Map<String, ColumnDo>> familyColumnMap = new HashMap<>(result.size());
+        Map<String, Map<String, ColumnDo>> familyColumnMap = new LinkedHashMap<>(result.size());
         for (Cell cell : result.listCells()) {
             String family = Bytes.toString(CellUtil.cloneFamily(cell));
             if (!familyColumnMap.containsKey(family)) {
-                familyColumnMap.put(family, new HashMap<>(0));
+                familyColumnMap.put(family, new LinkedHashMap<>(0));
             }
             String column = Bytes.toString(CellUtil.cloneQualifier(cell));
-            String value = Bytes.toString(CellUtil.cloneValue(cell));
-            long timestamp = cell.getTimestamp();
-            ColumnDo columnDo = new ColumnDo(tableName, row, family, timestamp, column, value);
+            ColumnDo columnDo = getColumnFromResult(result, tableName, family, column);
             familyColumnMap.get(family).put(column, columnDo);
         }
 
-        Map<String, FamilyDo> familyMap = new HashMap<>(familyColumnMap.size());
+        Map<String, FamilyDo> familyMap = new LinkedHashMap<>(familyColumnMap.size());
         familyColumnMap.forEach((family, columnMap) -> {
             FamilyDo familyDo = new FamilyDo(tableName, row, family, columnMap);
             familyMap.put(family, familyDo);
         });
+        if (MapUtil.isEmpty(familyMap)) {
+            return null;
+        }
         return new RowDo(tableName, row, familyMap);
     }
 
@@ -857,6 +898,9 @@ public class HbaseTemplate implements Closeable {
         }
         String row = Bytes.toString(result.getRow());
         Map<String, FamilyDo> familyMap = getFamiliesFromResult(result, tableName, familyColumnMap);
+        if (MapUtil.isEmpty(familyMap)) {
+            return null;
+        }
         return new RowDo(tableName, row, familyMap);
     }
 
@@ -877,23 +921,24 @@ public class HbaseTemplate implements Closeable {
         Map<String, Collection<String>> familyColumnMap) {
 
         if (result == null || StrUtil.isBlank(tableName) || MapUtil.isEmpty(familyColumnMap)) {
-            return new HashMap<>(0);
+            return new LinkedHashMap<>(0);
         }
 
         String row = Bytes.toString(result.getRow());
-        Map<String, FamilyDo> familyMap = new HashMap<>(familyColumnMap.size());
+        Map<String, FamilyDo> familyMap = new LinkedHashMap<>(familyColumnMap.size());
         familyColumnMap.forEach((family, columns) -> {
-            Map<String, ColumnDo> columnMap;
+            FamilyDo familyDo;
             if (CollectionUtil.isNotEmpty(columns)) {
-                columnMap = new HashMap<>(columns.size());
+                Map<String, ColumnDo> columnMap = new LinkedHashMap<>(columns.size());
                 for (String column : columns) {
                     ColumnDo columnDo = getColumnFromResult(result, tableName, family, column);
                     columnMap.put(column, columnDo);
                 }
+                familyDo = new FamilyDo(tableName, row, family, columnMap);
             } else {
-                columnMap = new HashMap<>(0);
+                familyDo = getFamilyFromResult(result, tableName, family);
             }
-            familyMap.put(family, new FamilyDo(tableName, row, family, columnMap));
+            familyMap.put(family, familyDo);
         });
         return familyMap;
     }
@@ -918,9 +963,12 @@ public class HbaseTemplate implements Closeable {
         Collection<String> columns) {
         if (CollectionUtil.isEmpty(columns)) {
             RowDo rowDo = getRowFromResult(result, tableName);
+            if (rowDo == null) {
+                return new LinkedHashMap<>(0);
+            }
             return rowDo.getFamilyMap().get(family).getColumnMap();
         }
-        Map<String, ColumnDo> columnMap = new HashMap<>(columns.size());
+        Map<String, ColumnDo> columnMap = new LinkedHashMap<>(columns.size());
         for (String column : columns) {
             ColumnDo columnDo = getColumnFromResult(result, tableName, family, column);
             if (columnDo != null) {
@@ -928,6 +976,36 @@ public class HbaseTemplate implements Closeable {
             }
         }
         return columnMap;
+    }
+
+    private static <T> T toEntity(Map<String, String> kvMap, Class<T> clazz) {
+
+        if (MapUtil.isEmpty(kvMap)) {
+            return null;
+        }
+
+        MapUtil.removeNullValue(kvMap);
+        T obj;
+        try {
+            Map<String, Class<?>> typeMap = new LinkedHashMap<>();
+            Field[] fields = ReflectUtil.getFields(clazz);
+            for (Field f : fields) {
+                typeMap.put(f.getName(), f.getType());
+            }
+            obj = clazz.newInstance();
+            for (Map.Entry<String, String> entry : kvMap.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                Class<?> filedType = typeMap.get(key);
+                if (filedType != null) {
+                    Object fieldObj = JsonUtil.toBean(value, filedType);
+                    ReflectUtil.setFieldValue(obj, key, fieldObj);
+                }
+            }
+            return obj;
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

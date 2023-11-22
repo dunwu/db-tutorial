@@ -16,13 +16,13 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.ANNOTATION_TYPE })
+@Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE })
 public @interface RowKeyRule {
 
     /**
-     * 字段名（该值可无）
+     * 主键
      */
-    String value() default "";
+    String pk();
 
     /**
      * 主键类型 {@link RowType}

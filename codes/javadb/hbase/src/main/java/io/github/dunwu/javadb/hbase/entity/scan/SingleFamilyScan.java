@@ -42,12 +42,18 @@ public class SingleFamilyScan extends BaseScan {
     }
 
     public Map<String, Collection<String>> getFamilyColumnMap() {
-        if (StrUtil.isNotBlank(family) && CollectionUtil.isNotEmpty(columns)) {
-            Map<String, Collection<String>> familyColumnMap = new HashMap<>(1);
-            familyColumnMap.put(family, columns);
-            return familyColumnMap;
+
+        if (StrUtil.isBlank(family)) {
+            return new HashMap<>(0);
         }
-        return new HashMap<>(0);
+
+        Map<String, Collection<String>> familyColumnMap = new HashMap<>(1);
+        if (CollectionUtil.isNotEmpty(columns)) {
+            familyColumnMap.put(family, columns);
+        } else {
+            familyColumnMap.put(family, new ArrayList<>());
+        }
+        return familyColumnMap;
     }
 
 }

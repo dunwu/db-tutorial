@@ -1,4 +1,4 @@
-package io.github.dunwu.javadb.hbase.entity;
+package io.github.dunwu.javadb.hbase.entity.common;
 
 import lombok.Data;
 

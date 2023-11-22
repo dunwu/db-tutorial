@@ -1,4 +1,4 @@
-package io.github.dunwu.javadb.hbase.entity;
+package io.github.dunwu.javadb.hbase.entity.common;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
