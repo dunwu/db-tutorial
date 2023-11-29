@@ -1,20 +1,725 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.github.dunwu</groupId>
-  <artifactId>javadb</artifactId>
-  <version>1.0.0</version>
-  <packaging>pom</packaging>
+    <groupId>io.github.dunwu</groupId>
+    <artifactId>javadb</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
 
-  <modules>
-    <module>h2</module>
-    <module>hbase</module>
-    <module>mysql</module>
-    <module>redis</module>
-    <module>sqlite</module>
-    <module>mongodb</module>
-    <module>elasticsearch</module>
-  </modules>
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.version>3.5.4</maven.version>
+
+        <!-- ========================================================
+             Core Versions
+        ========================================================= -->
+        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+        <hadoop.version>3.3.6</hadoop.version>
+
+        <!-- ==========================================
+             Java Web
+        =========================================== -->
+        <javax.mail.version>1.6.2</javax.mail.version>
+        <javax.servlet.jsp-api.version>2.3.3</javax.servlet.jsp-api.version>
+        <javax.servlet.jsp.jstl.version>1.2</javax.servlet.jsp.jstl.version>
+
+        <!-- ==========================================
+             Java Data
+        =========================================== -->
+        <curator.version>4.2.0</curator.version>
+        <druid.version>1.1.24</druid.version>
+        <fastdfs.version>1.26.6</fastdfs.version>
+        <mybatis.version>3.5.6</mybatis.version>
+        <mybatis-generator.version>1.3.5</mybatis-generator.version>
+        <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <mybatis-spring.version>2.0.2</mybatis-spring.version>
+        <mybatis.mapper.version>4.0.4</mybatis.mapper.version>
+        <mybatis.pagehelper.version>5.1.8</mybatis.pagehelper.version>
+        <hibernate-validator.version>6.2.5.Final</hibernate-validator.version>
+        <p6spy.version>3.8.7</p6spy.version>
+        <hbase.version>2.4.15</hbase.version>
+
+        <!-- ==========================================
+             序列化 / JavaBean
+        =========================================== -->
+        <dozer.version>6.4.1</dozer.version>
+        <fastjson.version>1.2.70</fastjson.version>
+        <fst.version>2.56</fst.version>
+        <lombok.version>1.18.16</lombok.version>
+        <protobuf-java.version>3.16.1</protobuf-java.version>
+        <reflections.version>0.10.2</reflections.version>
+
+        <!-- ========================================================
+             Common tools Versions
+        ========================================================= -->
+        <commons-codec.version>1.12</commons-codec.version>
+        <commons-collections4.version>4.3</commons-collections4.version>
+        <commons-compress.version>1.20</commons-compress.version>
+        <commons-configuration2.version>2.7</commons-configuration2.version>
+        <commons-csv.version>1.6</commons-csv.version>
+        <commons-fileupload.version>1.4</commons-fileupload.version>
+        <commons-io.version>2.7</commons-io.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-math3.version>3.6.1</commons-math3.version>
+        <commons-pool2.version>2.8.0</commons-pool2.version>
+        <commons-text.version>1.10.0</commons-text.version>
+        <guava.version>31.1-jre</guava.version>
+        <hutool.version>5.8.9</hutool.version>
+
+        <!-- ========================================================
+             Special tools Versions
+        ========================================================= -->
+        <poi.version>4.1.2</poi.version>
+        <disruptor.version>3.4.2</disruptor.version>
+        <drools.version>7.11.0.Final</drools.version>
+        <jjwt.version>0.11.1</jjwt.version>
+        <jsoup.version>1.14.2</jsoup.version>
+        <junit-jupiter.version>5.6.0</junit-jupiter.version>
+        <mvel.version>2.4.7.Final</mvel.version>
+        <shiro.version>1.7.1</shiro.version>
+        <swagger.ui>2.9.2</swagger.ui>
+        <swagger-annotations.version>1.5.22</swagger-annotations.version>
+        <swagger-spring-boot-starter.version>1.9.0.RELEASE</swagger-spring-boot-starter.version>
+        <thumbnailator.version>0.4.19</thumbnailator.version>
+        <zxing.version>3.4.0</zxing.version>
+        <easyexcel.version>3.1.1</easyexcel.version>
+        <javaparser.version>3.24.0</javaparser.version>
+
+
+        <!-- ========================================================
+             Apache Plugins Versions
+        ========================================================= -->
+        <maven-antrun-plugin.version>3.0.0</maven-antrun-plugin.version>
+        <maven-assembly-plugin.version>3.2.0</maven-assembly-plugin.version>
+        <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
+        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
+        <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
+        <maven-help-plugin.version>3.2.0</maven-help-plugin.version>
+        <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
+        <maven-invoker-plugin.version>3.2.0</maven-invoker-plugin.version>
+        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+        <maven-pmd-plugin.version>3.12.0</maven-pmd-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-shade-plugin.version>3.2.3</maven-shade-plugin.version>
+        <maven-site-plugin.version>3.9.0</maven-site-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
+
+        <!-- ========================================================
+             Codehaus Plugins Versions
+        ========================================================= -->
+        <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+        <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+        <flatten-maven-plugin.version>1.2.2</flatten-maven-plugin.version>
+        <versions-maven-plugin.version>2.7</versions-maven-plugin.version>
+        <xml-maven-plugin.version>1.0.2</xml-maven-plugin.version>
+
+        <!-- ========================================================
+             Deploy Plugins
+        ========================================================= -->
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+
+        <!-- ========================================================
+             Other Plugins
+        ========================================================= -->
+        <duplicate-finder-maven-plugin.version>1.4.0</duplicate-finder-maven-plugin.version>
+    </properties>
+
+    <modules>
+        <module>h2</module>
+        <module>hbase</module>
+        <module>mysql</module>
+        <module>redis</module>
+        <module>sqlite</module>
+        <module>mongodb</module>
+        <module>elasticsearch</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 大部分第三方包使用 spring-boot-dependencies 直接管理版本 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+
+            <!-- ========================================================
+                 Java Web
+            ========================================================= -->
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
+                <version>${javax.servlet.jsp-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp.jstl</groupId>
+                <artifactId>jstl</artifactId>
+                <version>${javax.servlet.jsp.jstl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.mail</groupId>
+                <artifactId>javax.mail</artifactId>
+                <version>${javax.mail.version}</version>
+            </dependency>
+
+
+            <!-- ========================================================
+                 Java Data（数据源客户端、ORM、连接池、数据校验）
+            ========================================================= -->
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-test</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.tobato</groupId>
+                <artifactId>fastdfs-client</artifactId>
+                <version>${fastdfs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-core</artifactId>
+                <version>${mybatis-generator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis-spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-core</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>tk.mybatis</groupId>
+                <artifactId>mapper</artifactId>
+                <version>${mybatis.mapper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>${mybatis.pagehelper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>p6spy</groupId>
+                <artifactId>p6spy</artifactId>
+                <version>${p6spy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate.validator</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-client</artifactId>
+                <version>${hbase.version}</version>
+            </dependency>
+
+
+            <!-- ========================================================
+                 序列化 / JavaBean
+            ========================================================= -->
+            <dependency>
+                <groupId>com.github.dozermapper</groupId>
+                <artifactId>dozer-core</artifactId>
+                <version>${dozer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.dozermapper</groupId>
+                <artifactId>dozer-spring4</artifactId>
+                <version>${dozer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.dozermapper</groupId>
+                <artifactId>dozer-spring-boot-starter</artifactId>
+                <version>${dozer.version}</version>
+            </dependency>
+            <!--反射工具-->
+            <dependency>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf-java.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.ruedigermoeller</groupId>
+                <artifactId>fst</artifactId>
+                <version>${fst.version}</version>
+            </dependency>
+
+            <!-- ========================================================
+                 常用工具集
+            ========================================================= -->
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-configuration2</artifactId>
+                <version>${commons-configuration2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collections4.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-csv</artifactId>
+                <version>${commons-csv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons-fileupload.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-math3</artifactId>
+                <version>${commons-math3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-pool2</artifactId>
+                <version>${commons-pool2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons-text.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <!-- ========================================================
+                 特殊工具集
+            ========================================================= -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>1.4.01</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.xmlbeans</groupId>
+                <artifactId>xmlbeans</artifactId>
+                <version>3.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>${disruptor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-core</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-compiler</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-decisiontables</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-templates</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
+                <artifactId>kie-api</artifactId>
+                <version>${drools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jjwt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mvel</groupId>
+                <artifactId>mvel2</artifactId>
+                <version>${mvel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.ui}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.ui}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger-annotations.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.spring4all</groupId>
+                <artifactId>swagger-spring-boot-starter</artifactId>
+                <version>${swagger-spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.coobird</groupId>
+                <artifactId>thumbnailator</artifactId>
+                <version>${thumbnailator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>core</artifactId>
+                <version>${zxing.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+            <!--java文件解析工具-->
+            <dependency>
+                <groupId>com.github.javaparser</groupId>
+                <artifactId>javaparser-symbol-solver-core</artifactId>
+                <version>${javaparser.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit-jupiter.version}</version>
+            </dependency>
+
+            <!-- ========================================================
+                 Hadoop Client
+            ========================================================= -->
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-hdfs</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-auth</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-common</artifactId>
+                <version>${hadoop.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-client</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>jsr305</artifactId>
+                        <groupId>com.google.code.findbugs</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>nimbus-jose-jwt</artifactId>
+                        <groupId>com.nimbusds</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>curator-client</artifactId>
+                        <groupId>org.apache.curator</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- ========================================================
+                     Apache Plugins
+                ========================================================= -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>${maven-antrun-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>${maven-clean-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>${maven-dependency-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven-enforcer-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven-failsafe-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-help-plugin</artifactId>
+                    <version>${maven-help-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>${maven-install-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-invoker-plugin</artifactId>
+                    <version>${maven-invoker-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>${maven-pmd-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven-resources-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven-war-plugin.version}</version>
+                </plugin>
+
+                <!-- ========================================================
+                     Codehaus Plugins
+                ========================================================= -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>${exec-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>${flatten-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${versions-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>xml-maven-plugin</artifactId>
+                    <version>${xml-maven-plugin.version}</version>
+                </plugin>
+
+                <!-- ========================================================
+                     Other Plugins
+                ========================================================= -->
+                <plugin>
+                    <groupId>org.basepom.maven</groupId>
+                    <artifactId>duplicate-finder-maven-plugin</artifactId>
+                    <version>${duplicate-finder-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
 </project>

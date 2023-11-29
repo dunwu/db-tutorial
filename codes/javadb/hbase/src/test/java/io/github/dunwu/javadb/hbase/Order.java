@@ -21,7 +21,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@RowKeyRule(pk = "id", length = 20)
+@RowKeyRule(uk = "getId", length = 20)
 public class Order implements BaseHbaseEntity {
 
     private String id;

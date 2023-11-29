@@ -1,7 +1,10 @@
 package io.github.dunwu.javadb.hbase.mapper;
 
+import cn.hutool.core.collection.CollectionUtil;
+
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,7 +20,9 @@ public interface CommonMapper<T> {
      *
      * @param entity 实体对象
      */
-    int insert(T entity);
+    default int insert(T entity) {
+        return insertBatch(Collections.singleton(entity));
+    }
 
     /**
      * 批量插入记录
@@ -31,7 +36,9 @@ public interface CommonMapper<T> {
      *
      * @param id 主键ID
      */
-    int deleteById(Serializable id);
+    default int deleteById(Serializable id) {
+        return deleteBatchById(Collections.singleton(id));
+    }
 
     /**
      * 根据实体(ID)删除
@@ -45,14 +52,16 @@ public interface CommonMapper<T> {
      *
      * @param idList 主键ID列表或实体列表(不能为 null 以及 empty)
      */
-    int deleteBatchIds(Collection<? extends Serializable> idList);
+    int deleteBatchById(Collection<? extends Serializable> idList);
 
     /**
-     * 根据 ID 修改
+     * 根据 ID 更新
      *
      * @param entity 实体对象
      */
-    int updateById(T entity);
+    default int updateById(T entity) {
+        return updateBatchById(Collections.singleton(entity));
+    }
 
     /**
      * 批量更新记录
@@ -66,7 +75,13 @@ public interface CommonMapper<T> {
      *
      * @param id 主键ID
      */
-    T getOneById(Serializable id);
+    default T getOneById(Serializable id) {
+        List<T> list = getListByIds(Collections.singleton(id));
+        if (CollectionUtil.isEmpty(list)) {
+            return null;
+        }
+        return list.get(0);
+    }
 
     /**
      * 查询（根据ID 批量查询）

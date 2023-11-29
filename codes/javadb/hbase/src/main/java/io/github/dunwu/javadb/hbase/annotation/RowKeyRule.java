@@ -20,9 +20,9 @@ import java.lang.annotation.Target;
 public @interface RowKeyRule {
 
     /**
-     * 主键
+     * 唯一索引的 get 方法
      */
-    String pk();
+    String uk();
 
     /**
      * 主键类型 {@link RowType}

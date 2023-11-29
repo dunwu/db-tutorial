@@ -1,7 +1,7 @@
 package io.github.dunwu.javadb.hbase.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.dunwu.javadb.hbase.annotation.RowKeyRuleParser;
+import io.github.dunwu.javadb.hbase.annotation.RowKeyUtil;
 
 /**
  * HBase 基础实体
@@ -16,7 +16,7 @@ public interface BaseHbaseEntity {
      */
     @JsonIgnore
     default String getRowKey() {
-        return RowKeyRuleParser.getRowKey(this);
+        return RowKeyUtil.getRowKey(this);
     }
 
 }

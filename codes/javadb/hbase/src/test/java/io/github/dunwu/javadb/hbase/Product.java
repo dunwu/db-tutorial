@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RowKeyRule(pk = "id", length = 10)
+@RowKeyRule(uk = "getId", length = 10)
 public class Product implements BaseHbaseEntity {
 
     private String id;

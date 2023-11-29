@@ -53,13 +53,6 @@ public interface HbaseMapper<T extends BaseHbaseEntity> extends CommonMapper<T> 
         return save(entity);
     }
 
-    /**
-     * 保存一条记录
-     *
-     * @param entity 实体对象
-     */
-    int save(T entity);
-
     @Override
     default int insertBatch(Collection<T> list) {
         return batchSave(list);
@@ -69,6 +62,13 @@ public interface HbaseMapper<T extends BaseHbaseEntity> extends CommonMapper<T> 
     default int updateBatchById(Collection<T> list) {
         return batchSave(list);
     }
+
+    /**
+     * 保存一条记录
+     *
+     * @param entity 实体对象
+     */
+    int save(T entity);
 
     /**
      * 批量保存记录

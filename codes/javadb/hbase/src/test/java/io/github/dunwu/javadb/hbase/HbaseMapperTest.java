@@ -67,7 +67,7 @@ public class HbaseMapperTest {
         Assertions.assertThat(list.size()).isEqualTo(1);
         System.out.println(JSONUtil.toJsonStr(list));
 
-        mapper.deleteBatchIds(Collections.singletonList(originOrder.getRowKey()));
+        mapper.deleteBatchById(Collections.singletonList(originOrder.getRowKey()));
 
         List<Order> list2 = mapper.getListByIds(Collections.singletonList(originOrder.getRowKey()));
         Assertions.assertThat(list2).isEmpty();

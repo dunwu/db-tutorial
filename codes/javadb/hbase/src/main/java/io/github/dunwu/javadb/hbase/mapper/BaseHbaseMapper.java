@@ -72,7 +72,7 @@ public abstract class BaseHbaseMapper<T extends BaseHbaseEntity> implements Hbas
     }
 
     @Override
-    public int deleteBatchIds(Collection<? extends Serializable> ids) {
+    public int deleteBatchById(Collection<? extends Serializable> ids) {
 
         if (CollectionUtil.isEmpty(ids)) {
             return 0;
