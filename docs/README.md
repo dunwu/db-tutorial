@@ -87,7 +87,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 ### Mysql
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200716103611.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200716103611.png)
 
 - [Mysql 应用指南](12.数据库/03.关系型数据库/02.Mysql/01.Mysql应用指南.md) ⚡
 - [Mysql 工作流](12.数据库/03.关系型数据库/02.Mysql/02.MySQL工作流.md) - 关键词：`连接`、`缓存`、`语法分析`、`优化`、`执行引擎`、`redo log`、`bin log`、`两阶段提交`
@@ -130,7 +130,7 @@ footer: CC-BY-SA-4.0 Licensed | Copyright © 2018-Now Dunwu
 
 ### Redis
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200713105627.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200713105627.png)
 
 - [Redis 面试总结](12.数据库/05.KV数据库/01.Redis/01.Redis面试总结.md) 💯
 - [Redis 应用指南](12.数据库/05.KV数据库/01.Redis/02.Redis应用指南.md) ⚡ - 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`

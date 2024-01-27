@@ -29,25 +29,25 @@ hidden: true
 
 > 关键词：`内存淘汰`、`事件`、`事务`、`管道`、`发布与订阅`
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200713105627.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200713105627.png)
 
 ### [Redis 数据类型和应用](03.Redis数据类型和应用.md)
 
 > 关键词：`STRING`、`HASH`、`LIST`、`SET`、`ZSET`、`BitMap`、`HyperLogLog`、`Geo`
 
-![Redis 数据类型](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200226113813.png)
+![Redis 数据类型](https://raw.githubusercontent.com/dunwu/images/master/snap/20200226113813.png)
 
 ### [Redis 持久化](04.Redis持久化.md)
 
 > 关键词：`RDB`、`AOF`、`SAVE`、`BGSAVE`、`appendfsync`
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200224214047.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200224214047.png)
 
 ### [Redis 复制](05.Redis复制.md)
 
 > 关键词：`SLAVEOF`、`SYNC`、`PSYNC`、`REPLCONF ACK`
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200712182603.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200712182603.png)
 
 ### [Redis 哨兵](06.Redis哨兵.md)
 
@@ -57,13 +57,13 @@ hidden: true
 >
 > 关键词：`Sentinel`、`PING`、`INFO`、`Raft`
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200713072747.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200713072747.png)
 
 ### [Redis 集群](07.Redis集群.md)
 
 > 关键词：`CLUSTER MEET`、`Hash slot`、`MOVED`、`ASK`、`SLAVEOF no one`、`redis-trib`
 
-![img](https://raw.githubusercontent.com/dunwu/images/dev/snap/20200713100613.png)
+![img](https://raw.githubusercontent.com/dunwu/images/master/snap/20200713100613.png)
 
 ### [Redis 实战](08.Redis实战.md)
 
