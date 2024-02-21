@@ -1,7 +1,8 @@
 package io.github.dunwu.javadb.elasticsearch.mapper;
 
+import io.github.dunwu.javadb.elasticsearch.ElasticsearchTemplate;
 import io.github.dunwu.javadb.elasticsearch.entity.User;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.stereotype.Component;
 
 /**
  * User ES Mapper
@@ -9,10 +10,11 @@ import org.elasticsearch.client.RestHighLevelClient;
  * @author <a href="mailto:forbreak@163.com">Zhang Peng</a>
  * @date 2023-06-27
  */
+@Component
 public class UserEsMapper extends BaseEsMapper<User> {
 
-    public UserEsMapper(RestHighLevelClient restHighLevelClient) {
-        super(restHighLevelClient);
+    public UserEsMapper(ElasticsearchTemplate elasticsearchTemplate) {
+        super(elasticsearchTemplate);
     }
 
     @Override

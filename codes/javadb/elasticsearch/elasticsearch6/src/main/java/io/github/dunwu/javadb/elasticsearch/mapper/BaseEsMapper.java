@@ -1,14 +1,14 @@
 package io.github.dunwu.javadb.elasticsearch.mapper;
 
-import cn.hutool.core.lang.Assert;
-import io.github.dunwu.javadb.elasticsearch.entity.EsEntity;
+import io.github.dunwu.javadb.elasticsearch.ElasticsearchTemplate;
+import io.github.dunwu.javadb.elasticsearch.entity.BaseEsEntity;
 import io.github.dunwu.javadb.elasticsearch.entity.Page;
-import io.github.dunwu.javadb.elasticsearch.util.ElasticsearchUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.IndicesClient;
 import org.elasticsearch.client.RequestOptions;
@@ -26,26 +26,28 @@ import java.util.List;
  * @date 2023-06-27
  */
 @Slf4j
-public abstract class BaseEsMapper<T extends EsEntity> implements EsMapper<T> {
+public abstract class BaseEsMapper<T extends BaseEsEntity> implements EsMapper<T> {
 
     private BulkProcessor bulkProcessor;
 
-    protected final RestHighLevelClient restHighLevelClient;
+    protected final ElasticsearchTemplate elasticsearchTemplate;
 
-    public BaseEsMapper(RestHighLevelClient restHighLevelClient) {
-        this.restHighLevelClient = restHighLevelClient;
+    public BaseEsMapper(ElasticsearchTemplate elasticsearchTemplate) {
+        this.elasticsearchTemplate = elasticsearchTemplate;
     }
 
     @Override
-    public RestHighLevelClient getClient() throws IOException {
-        Assert.notNull(restHighLevelClient, () -> new IOException("【ES】not connected."));
-        return restHighLevelClient;
+    public RestHighLevelClient getClient() {
+        if (elasticsearchTemplate == null) {
+            return null;
+        }
+        return elasticsearchTemplate.getClient();
     }
 
     @Override
-    public synchronized BulkProcessor getBulkProcessor() throws IOException {
+    public synchronized BulkProcessor getBulkProcessor() {
         if (bulkProcessor == null) {
-            bulkProcessor = ElasticsearchUtil.newAsyncBulkProcessor(getClient());
+            bulkProcessor = elasticsearchTemplate.newAsyncBulkProcessor();
         }
         return bulkProcessor;
     }
@@ -59,37 +61,57 @@ public abstract class BaseEsMapper<T extends EsEntity> implements EsMapper<T> {
     }
 
     @Override
-    public SearchResponse getById(String id) throws IOException {
-        return ElasticsearchUtil.getById(getClient(), getIndex(), getType(), id);
+    public GetResponse getById(String id) throws IOException {
+        return getById(id, null);
+    }
+
+    @Override
+    public GetResponse getById(String id, Long version) throws IOException {
+        return elasticsearchTemplate.getById(getIndex(), getType(), id, version);
     }
 
     @Override
     public T pojoById(String id) throws IOException {
-        return ElasticsearchUtil.pojoById(getClient(), getIndex(), getType(), id, getEntityClass());
+        return pojoById(id, null);
+    }
+
+    @Override
+    public T pojoById(String id, Long version) throws IOException {
+        return elasticsearchTemplate.pojoById(getIndex(), getType(), id, version, getEntityClass());
     }
 
     @Override
     public List<T> pojoListByIds(Collection<String> ids) throws IOException {
-        return ElasticsearchUtil.pojoListByIds(getClient(), getIndex(), getType(), ids, getEntityClass());
+        return elasticsearchTemplate.pojoListByIds(getIndex(), getType(), ids, getEntityClass());
     }
 
     @Override
     public Page<T> pojoPage(SearchSourceBuilder builder) throws IOException {
-        return ElasticsearchUtil.pojoPage(getClient(), getIndex(), getType(), builder, getEntityClass());
+        return elasticsearchTemplate.pojoPage(getIndex(), getType(), builder, getEntityClass());
     }
 
     @Override
-    public String insert(T entity) throws IOException {
-        return ElasticsearchUtil.insert(getClient(), getIndex(), getType(), entity);
+    public long count(SearchSourceBuilder builder) throws IOException {
+        return elasticsearchTemplate.count(getIndex(), getType(), builder);
     }
 
     @Override
-    public boolean batchInsert(Collection<T> list) throws IOException {
-        return ElasticsearchUtil.batchInsert(getClient(), getIndex(), getType(), list);
+    public SearchResponse query(SearchSourceBuilder builder) throws IOException {
+        return elasticsearchTemplate.query(getIndex(), getType(), builder);
     }
 
     @Override
-    public void asyncBatchInsert(Collection<T> list) throws IOException {
+    public T save(T entity) throws IOException {
+        return elasticsearchTemplate.save(getIndex(), getType(), entity);
+    }
+
+    @Override
+    public boolean batchSave(Collection<T> list) throws IOException {
+        return elasticsearchTemplate.batchSave(getIndex(), getType(), list);
+    }
+
+    @Override
+    public void asyncBatchSave(Collection<T> list) throws IOException {
         ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
             @Override
             public void onResponse(BulkResponse response) {
@@ -105,57 +127,37 @@ public abstract class BaseEsMapper<T extends EsEntity> implements EsMapper<T> {
                 log.error("【ES】异步批量插入异常！", e);
             }
         };
-        asyncBatchInsert(list, listener);
+        asyncBatchSave(list, listener);
     }
 
     @Override
-    public void asyncBatchInsert(Collection<T> list, ActionListener<BulkResponse> listener) throws IOException {
-        ElasticsearchUtil.asyncBatchInsert(getClient(), getIndex(), getType(), list, listener);
+    public void asyncBatchSave(Collection<T> list, ActionListener<BulkResponse> listener) {
+        elasticsearchTemplate.asyncBatchSave(getIndex(), getType(), list, listener);
     }
 
     @Override
-    public boolean updateById(T entity) throws IOException {
-        return ElasticsearchUtil.updateById(getClient(), getIndex(), getType(), entity);
+    public T updateById(T entity) throws IOException {
+        return elasticsearchTemplate.updateById(getIndex(), getType(), entity);
     }
 
     @Override
     public boolean batchUpdateById(Collection<T> list) throws IOException {
-        return ElasticsearchUtil.batchUpdateById(getClient(), getIndex(), getType(), list);
+        return elasticsearchTemplate.batchUpdateById(getIndex(), getType(), list);
     }
 
     @Override
-    public void asyncBatchUpdateById(Collection<T> list) throws IOException {
-        ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
-            @Override
-            public void onResponse(BulkResponse response) {
-                if (response != null && !response.hasFailures()) {
-                    log.info("【ES】异步批量更新成功！");
-                } else {
-                    log.warn("【ES】异步批量更新失败！");
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                log.error("【ES】异步批量更新异常！", e);
-            }
-        };
-        asyncBatchUpdateById(list, listener);
-    }
-
-    @Override
-    public void asyncBatchUpdateById(Collection<T> list, ActionListener<BulkResponse> listener) throws IOException {
-        ElasticsearchUtil.asyncBatchUpdateById(getClient(), getIndex(), getType(), list, listener);
+    public void asyncBatchUpdateById(Collection<T> list, ActionListener<BulkResponse> listener) {
+        elasticsearchTemplate.asyncBatchUpdateById(getIndex(), getType(), list, listener);
     }
 
     @Override
     public boolean deleteById(String id) throws IOException {
-        return ElasticsearchUtil.deleteById(getClient(), getIndex(), getType(), id);
+        return elasticsearchTemplate.deleteById(getIndex(), getType(), id);
     }
 
     @Override
     public boolean batchDeleteById(Collection<String> ids) throws IOException {
-        return ElasticsearchUtil.batchDeleteById(getClient(), getIndex(), getType(), ids);
+        return elasticsearchTemplate.batchDeleteById(getIndex(), getType(), ids);
     }
 
     @Override
@@ -180,7 +182,7 @@ public abstract class BaseEsMapper<T extends EsEntity> implements EsMapper<T> {
 
     @Override
     public void asyncBatchDeleteById(Collection<String> ids, ActionListener<BulkResponse> listener) throws IOException {
-        ElasticsearchUtil.asyncBatchDeleteById(getClient(), getIndex(), getType(), ids, listener);
+        elasticsearchTemplate.asyncBatchDeleteById(getIndex(), getType(), ids, listener);
     }
 
 }

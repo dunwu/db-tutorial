@@ -20,13 +20,13 @@ public class Page<T> {
     private int size;
     private List<T> content = new ArrayList<>();
 
-    public Page(long total, int page, int size) {
+    public Page(int page, int size, long total) {
         this.total = total;
         this.page = page;
         this.size = size;
     }
 
-    public Page(long total, int page, int size, Collection<T> list) {
+    public Page(int page, int size, long total, Collection<T> list) {
         this.total = total;
         this.page = page;
         this.size = size;

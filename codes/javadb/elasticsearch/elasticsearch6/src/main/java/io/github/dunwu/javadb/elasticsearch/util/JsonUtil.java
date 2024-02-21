@@ -81,7 +81,7 @@ public class JsonUtil {
         return null;
     }
 
-    public static <T> String toJson(T obj) {
+    public static <T> String toString(T obj) {
         if (obj == null) {
             return null;
         }

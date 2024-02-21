@@ -1,7 +1,10 @@
 package io.github.dunwu.javadb.elasticsearch.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * 用户实体
@@ -11,7 +14,10 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class User implements EsEntity {
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+public class User extends BaseEsEntity {
 
     private Long id;
     private String username;
@@ -21,7 +27,7 @@ public class User implements EsEntity {
 
     @Override
     public String getDocId() {
-        return null;
+        return String.valueOf(id);
     }
 
 }
