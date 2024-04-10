@@ -9,6 +9,7 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,11 +39,13 @@ public class ElasticsearchFactory {
     }
 
     public static RestClient newRestClient(String env) {
-        String hosts = getDefaultEsAddress(env);
-        return newRestClient(toHttpHostList(hosts));
+        String hostsConfig = getDefaultEsAddress(env);
+        List<String> hosts = StrUtil.split(hostsConfig, ",");
+        return newRestClient(hosts);
     }
 
-    public static RestClient newRestClient(HttpHost[] httpHosts) {
+    public static RestClient newRestClient(Collection<String> hosts) {
+        HttpHost[] httpHosts = toHttpHostList(hosts);
         RestClientBuilder builder = getRestClientBuilder(httpHosts);
         if (builder == null) {
             return null;
@@ -62,11 +65,13 @@ public class ElasticsearchFactory {
     }
 
     public static RestHighLevelClient newRestHighLevelClient(String env) {
-        String hosts = getDefaultEsAddress(env);
-        return newRestHighLevelClient(toHttpHostList(hosts));
+        String hostsConfig = getDefaultEsAddress(env);
+        List<String> hosts = StrUtil.split(hostsConfig, ",");
+        return newRestHighLevelClient(hosts);
     }
 
-    public static RestHighLevelClient newRestHighLevelClient(HttpHost[] httpHosts) {
+    public static RestHighLevelClient newRestHighLevelClient(Collection<String> hosts) {
+        HttpHost[] httpHosts = toHttpHostList(hosts);
         RestClientBuilder builder = getRestClientBuilder(httpHosts);
         if (builder == null) {
             return null;
@@ -86,12 +91,13 @@ public class ElasticsearchFactory {
     }
 
     public static ElasticsearchTemplate newElasticsearchTemplate(String env) {
-        String hosts = getDefaultEsAddress(env);
-        return newElasticsearchTemplate(toHttpHostList(hosts));
+        String hostsConfig = getDefaultEsAddress(env);
+        List<String> hosts = StrUtil.split(hostsConfig, ",");
+        return newElasticsearchTemplate(hosts);
     }
 
-    public static ElasticsearchTemplate newElasticsearchTemplate(HttpHost[] httpHosts) {
-        RestHighLevelClient client = newRestHighLevelClient(httpHosts);
+    public static ElasticsearchTemplate newElasticsearchTemplate(Collection<String> hosts) {
+        RestHighLevelClient client = newRestHighLevelClient(hosts);
         if (client == null) {
             return null;
         }
@@ -125,19 +131,20 @@ public class ElasticsearchFactory {
         return restClientBuilder;
     }
 
-    private static HttpHost[] toHttpHostList(String hosts) {
-        if (StrUtil.isBlank(hosts)) {
-            return null;
+    private static HttpHost[] toHttpHostList(Collection<String> hosts) {
+        if (CollectionUtil.isEmpty(hosts)) {
+            return new HttpHost[0];
         }
-        List<String> strList = StrUtil.split(hosts, ",");
-        List<HttpHost> list = strList.stream().map(str -> {
-            List<String> params = StrUtil.split(str, ":");
-            return new HttpHost(params.get(0), Integer.parseInt(params.get(1)), "http");
-        }).collect(Collectors.toList());
+        List<HttpHost> list = hosts.stream().map(ElasticsearchFactory::toHttpHost).collect(Collectors.toList());
         if (CollectionUtil.isEmpty(list)) {
             return new HttpHost[0];
         }
         return list.toArray(new HttpHost[0]);
+    }
+
+    public static HttpHost toHttpHost(String host) {
+        List<String> params = StrUtil.split(host, ":");
+        return new HttpHost(params.get(0), Integer.parseInt(params.get(1)), "http");
     }
 
     public static String getDefaultEsAddress() {

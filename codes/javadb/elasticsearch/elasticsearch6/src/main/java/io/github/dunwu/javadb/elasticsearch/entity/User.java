@@ -2,32 +2,43 @@ package io.github.dunwu.javadb.elasticsearch.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * 用户实体
+ * 短剧、长视频消费数据 ES 实体
  *
  * @author <a href="mailto:forbreak@163.com">Zhang Peng</a>
- * @since 2023-06-28
+ * @date 2024-04-02
  */
-@Data
 @Builder
-@EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-public class User extends BaseEsEntity {
+@AllArgsConstructor
+public class User extends BaseEsEntity implements Serializable {
 
-    private Long id;
-    private String username;
-    private String password;
+    private String id;
+    private String name;
     private Integer age;
-    private String email;
 
     @Override
     public String getDocId() {
-        return String.valueOf(id);
+        return id;
+    }
+
+    public static Map<String, String> getPropertiesMap() {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put(BaseEsEntity.DOC_ID, "keyword");
+        map.put("id", "long");
+        map.put("name", "keyword");
+        map.put("age", "integer");
+        return map;
     }
 
 }

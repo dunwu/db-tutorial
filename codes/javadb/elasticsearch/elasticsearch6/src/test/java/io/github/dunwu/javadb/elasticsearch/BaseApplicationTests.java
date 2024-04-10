@@ -16,9 +16,6 @@ import org.springframework.web.context.WebApplicationContext;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class BaseApplicationTests {
 
-    // ---------------------------------------------------------------------------- 测试常量数据
-
-    // ----------------------------------------------------------------------------
     protected MockMvc mockMvc;
 
     @Autowired
@@ -26,7 +23,7 @@ public abstract class BaseApplicationTests {
 
     @BeforeEach
     public void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();  //构造MockMvc
+        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
     @BeforeAll

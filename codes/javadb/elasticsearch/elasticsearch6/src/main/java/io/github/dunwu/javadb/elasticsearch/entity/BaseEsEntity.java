@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * ES 实体接口
@@ -15,6 +17,8 @@ import java.io.Serializable;
 @ToString
 public abstract class BaseEsEntity implements Serializable {
 
+    public static final String DOC_ID = "docId";
+
     /**
      * 获取版本
      */
@@ -23,5 +27,11 @@ public abstract class BaseEsEntity implements Serializable {
     protected Float hitScore;
 
     public abstract String getDocId();
+
+    public static Map<String, String> getPropertiesMap() {
+        Map<String, String> map = new LinkedHashMap<>(1);
+        map.put(BaseEsEntity.DOC_ID, "keyword");
+        return map;
+    }
 
 }

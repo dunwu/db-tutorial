@@ -2,13 +2,15 @@ package io.github.dunwu.javadb.elasticsearch.mapper;
 
 import cn.hutool.core.collection.CollectionUtil;
 import io.github.dunwu.javadb.elasticsearch.entity.BaseEsEntity;
-import io.github.dunwu.javadb.elasticsearch.entity.Page;
+import io.github.dunwu.javadb.elasticsearch.entity.common.PageData;
+import io.github.dunwu.javadb.elasticsearch.entity.common.ScrollData;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
@@ -26,6 +28,11 @@ import java.util.Map;
 public interface EsMapper<T extends BaseEsEntity> {
 
     /**
+     * 获取别名
+     */
+    String getAlias();
+
+    /**
      * 获取索引名
      */
     String getIndex();
@@ -34,6 +41,16 @@ public interface EsMapper<T extends BaseEsEntity> {
      * 获取索引类型
      */
     String getType();
+
+    /**
+     * 获取分片数
+     */
+    int getShard();
+
+    /**
+     * 获取副本数
+     */
+    int getReplica();
 
     /**
      * 获取实体类型
@@ -45,6 +62,12 @@ public interface EsMapper<T extends BaseEsEntity> {
     BulkProcessor getBulkProcessor() throws IOException;
 
     boolean isIndexExists() throws IOException;
+
+    String createIndexIfNotExists() throws IOException;
+
+    void deleteIndex() throws IOException;
+
+    void updateAlias() throws IOException;
 
     GetResponse getById(String id) throws IOException;
 
@@ -69,32 +92,40 @@ public interface EsMapper<T extends BaseEsEntity> {
         return map;
     }
 
-    Page<T> pojoPage(SearchSourceBuilder builder) throws IOException;
-
     long count(SearchSourceBuilder builder) throws IOException;
 
     SearchResponse query(SearchSourceBuilder builder) throws IOException;
 
+    PageData<T> pojoPage(SearchSourceBuilder builder) throws IOException;
+
+    ScrollData<T> pojoPageByLastId(String lastId, int size, QueryBuilder queryBuilder) throws IOException;
+
+    ScrollData<T> pojoScrollBegin(SearchSourceBuilder builder) throws IOException;
+
+    ScrollData<T> pojoScroll(String scrollId, SearchSourceBuilder builder) throws IOException;
+
+    boolean pojoScrollEnd(String scrollId) throws IOException;
+
     T save(T entity) throws IOException;
 
-    boolean batchSave(Collection<T> list) throws IOException;
+    boolean saveBatch(Collection<T> list) throws IOException;
 
-    void asyncBatchSave(Collection<T> list) throws IOException;
+    void asyncSaveBatch(Collection<T> list) throws IOException;
 
-    void asyncBatchSave(Collection<T> list, ActionListener<BulkResponse> listener) throws IOException;
+    void asyncSaveBatch(Collection<T> list, ActionListener<BulkResponse> listener) throws IOException;
 
     T updateById(T entity) throws IOException;
 
-    boolean batchUpdateById(Collection<T> list) throws IOException;
+    boolean updateBatchIds(Collection<T> list) throws IOException;
 
-    void asyncBatchUpdateById(Collection<T> list, ActionListener<BulkResponse> listener);
+    void asyncUpdateBatchIds(Collection<T> list, ActionListener<BulkResponse> listener);
 
     boolean deleteById(String id) throws IOException;
 
-    boolean batchDeleteById(Collection<String> ids) throws IOException;
+    boolean deleteBatchIds(Collection<String> ids) throws IOException;
 
-    void asyncBatchDeleteById(Collection<String> ids) throws IOException;
+    void asyncDeleteBatchIds(Collection<String> ids) throws IOException;
 
-    void asyncBatchDeleteById(Collection<String> ids, ActionListener<BulkResponse> listener) throws IOException;
+    void asyncDeleteBatchIds(Collection<String> ids, ActionListener<BulkResponse> listener) throws IOException;
 
 }
