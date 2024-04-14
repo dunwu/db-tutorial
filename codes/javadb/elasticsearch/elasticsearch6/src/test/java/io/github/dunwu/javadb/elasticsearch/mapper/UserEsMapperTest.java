@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +48,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("删除当天索引")
-        public void deleteIndex() throws IOException {
+        public void deleteIndex() {
             String index = mapper.getIndex();
             boolean indexExists = mapper.isIndexExists();
             if (!indexExists) {
@@ -63,7 +62,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("根据日期删除索引")
-        public void deleteIndexInDay() throws IOException {
+        public void deleteIndexInDay() {
             String index = mapper.getIndex(day);
             boolean indexExists = mapper.isIndexExistsInDay(day);
             if (!indexExists) {
@@ -83,7 +82,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("创建当天索引")
-        public void createIndex() throws IOException {
+        public void createIndex() {
 
             String index = mapper.getIndex();
             boolean indexExists = mapper.isIndexExists();
@@ -99,7 +98,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("根据日期创建索引")
-        public void createIndexInDay() throws IOException {
+        public void createIndexInDay() {
 
             String index = mapper.getIndex(day);
             boolean indexExists = mapper.isIndexExistsInDay(day);
@@ -108,7 +107,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
                 return;
             }
 
-            mapper.createIndexInDay(day);
+            mapper.createIndexIfNotExistsInDay(day);
             indexExists = mapper.isIndexExistsInDay(day);
             Assertions.assertThat(indexExists).isTrue();
         }
@@ -121,7 +120,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("保存当天数据")
-        public void save() throws IOException {
+        public void save() {
             String id = "1";
             User entity = getOneMockData(id);
             mapper.save(entity);
@@ -132,7 +131,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("保存指定日期数据")
-        public void saveInDay() throws IOException {
+        public void saveInDay() {
             String id = "1";
             User entity = getOneMockData(id);
             mapper.saveInDay(day, entity);
@@ -143,7 +142,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("批量保存当天数据")
-        public void batchSave() throws IOException, InterruptedException {
+        public void batchSave() throws InterruptedException {
             int total = 10000;
             List<List<User>> listGroup = CollectionUtil.split(getMockList(total), 1000);
             for (List<User> list : listGroup) {
@@ -157,7 +156,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("批量保存指定日期数据")
-        public void batchSaveInDay() throws IOException, InterruptedException {
+        public void batchSaveInDay() throws InterruptedException {
             int total = 10000;
             List<List<User>> listGroup = CollectionUtil.split(getMockList(total), 1000);
             for (List<User> list : listGroup) {
@@ -177,7 +176,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("根据ID查找当日数据")
-        public void pojoById() throws IOException {
+        public void pojoById() {
             String id = "1";
             User newEntity = mapper.pojoById(id);
             log.info("entity: {}", JsonUtil.toString(newEntity));
@@ -186,7 +185,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("根据ID查找指定日期数据")
-        public void pojoByIdInDay() throws IOException {
+        public void pojoByIdInDay() {
             String id = "1";
             User newEntity = mapper.pojoByIdInDay(day, id);
             log.info("entity: {}", JsonUtil.toString(newEntity));
@@ -195,7 +194,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("获取匹配条件的记录数")
-        public void count() throws IOException {
+        public void count() {
             BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
             queryBuilder.must(QueryBuilders.rangeQuery("docId").lt("100"));
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -207,7 +206,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("获取匹配条件的指定日期记录数")
-        public void countInDay() throws IOException {
+        public void countInDay() {
             BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
             queryBuilder.must(QueryBuilders.rangeQuery("docId").lt("100"));
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -219,7 +218,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("获取匹配条件的记录")
-        public void query() throws IOException {
+        public void query() {
             BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
             queryBuilder.must(QueryBuilders.rangeQuery("docId").lt("100"));
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -239,7 +238,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("获取匹配条件的指定日期记录")
-        public void queryInDay() throws IOException {
+        public void queryInDay() {
             BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
             queryBuilder.must(QueryBuilders.rangeQuery("docId").lt("100"));
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -259,7 +258,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("from + size 分页查询当日数据")
-        public void pojoPage() throws IOException {
+        public void pojoPage() {
             BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
             queryBuilder.must(QueryBuilders.rangeQuery("docId").lt("100"));
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -276,7 +275,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("from + size 分页查询指定日期数据")
-        public void pojoPageInDay() throws IOException {
+        public void pojoPageInDay() {
             BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
             queryBuilder.must(QueryBuilders.rangeQuery("docId").lt("100"));
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -293,7 +292,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("search after 分页查询当日数据")
-        protected void pojoPageByLastId() throws IOException {
+        protected void pojoPageByLastId() {
 
             BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
             queryBuilder.must(QueryBuilders.rangeQuery("docId").lt("100"));
@@ -332,7 +331,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("search after 分页查询指定日期数据")
-        protected void pojoPageByLastIdInDay() throws IOException {
+        protected void pojoPageByLastIdInDay() {
 
             BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
             queryBuilder.must(QueryBuilders.rangeQuery("docId").lt("100"));
@@ -371,7 +370,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("滚动翻页当日数据")
-        public void pojoScroll() throws IOException {
+        public void pojoScroll() {
 
             final int size = 100;
 
@@ -412,7 +411,7 @@ public class UserEsMapperTest extends BaseApplicationTests {
 
         @Test
         @DisplayName("滚动翻页指定日期数据")
-        public void pojoScrollInDay() throws IOException {
+        public void pojoScrollInDay() {
 
             final int size = 100;
 

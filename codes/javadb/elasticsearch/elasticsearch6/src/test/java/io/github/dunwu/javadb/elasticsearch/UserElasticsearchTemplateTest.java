@@ -83,6 +83,7 @@ public class UserElasticsearchTemplateTest extends BaseElasticsearchTemplateTest
     public void indexTest() throws IOException {
         super.deleteIndex();
         super.createIndex();
+        super.getIndexList();
     }
 
     @Test
@@ -90,6 +91,13 @@ public class UserElasticsearchTemplateTest extends BaseElasticsearchTemplateTest
     protected void writeTest() throws IOException {
         super.save();
         super.saveBatch();
+    }
+
+    @Test
+    @DisplayName("异步写数据测试")
+    public void asyncWriteTest() throws IOException, InterruptedException {
+        super.asyncSave();
+        super.asyncSaveBatch();
     }
 
     @Test

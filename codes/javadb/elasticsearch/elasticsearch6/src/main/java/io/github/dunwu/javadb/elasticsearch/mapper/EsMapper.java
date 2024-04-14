@@ -13,11 +13,11 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ES Mapper
@@ -57,29 +57,38 @@ public interface EsMapper<T extends BaseEsEntity> {
      */
     Class<T> getEntityClass();
 
-    RestHighLevelClient getClient() throws IOException;
+    /**
+     * 如果开启，添加 ES 数据时，如果索引不存在，会自动创建索引
+     */
+    default boolean enableAutoCreateIndex() {
+        return false;
+    }
 
-    BulkProcessor getBulkProcessor() throws IOException;
+    RestHighLevelClient getClient();
 
-    boolean isIndexExists() throws IOException;
+    BulkProcessor getBulkProcessor();
 
-    String createIndexIfNotExists() throws IOException;
+    boolean isIndexExists();
 
-    void deleteIndex() throws IOException;
+    String createIndexIfNotExists();
 
-    void updateAlias() throws IOException;
+    void deleteIndex();
 
-    GetResponse getById(String id) throws IOException;
+    void updateAlias();
 
-    GetResponse getById(String id, Long version) throws IOException;
+    Set<String> getIndexSet();
 
-    T pojoById(String id) throws IOException;
+    GetResponse getById(String id);
 
-    T pojoById(String id, Long version) throws IOException;
+    GetResponse getById(String id, Long version);
 
-    List<T> pojoListByIds(Collection<String> ids) throws IOException;
+    T pojoById(String id);
 
-    default Map<String, T> pojoMapByIds(Collection<String> ids) throws IOException {
+    T pojoById(String id, Long version);
+
+    List<T> pojoListByIds(Collection<String> ids);
+
+    default Map<String, T> pojoMapByIds(Collection<String> ids) {
         List<T> list = pojoListByIds(ids);
         if (CollectionUtil.isEmpty(list)) {
             return new HashMap<>(0);
@@ -92,40 +101,42 @@ public interface EsMapper<T extends BaseEsEntity> {
         return map;
     }
 
-    long count(SearchSourceBuilder builder) throws IOException;
+    long count(SearchSourceBuilder builder);
 
-    SearchResponse query(SearchSourceBuilder builder) throws IOException;
+    SearchResponse query(SearchSourceBuilder builder);
 
-    PageData<T> pojoPage(SearchSourceBuilder builder) throws IOException;
+    PageData<T> pojoPage(SearchSourceBuilder builder);
 
-    ScrollData<T> pojoPageByLastId(String lastId, int size, QueryBuilder queryBuilder) throws IOException;
+    ScrollData<T> pojoPageByLastId(String scrollId, int size, QueryBuilder queryBuilder);
 
-    ScrollData<T> pojoScrollBegin(SearchSourceBuilder builder) throws IOException;
+    ScrollData<T> pojoScrollBegin(SearchSourceBuilder builder);
 
-    ScrollData<T> pojoScroll(String scrollId, SearchSourceBuilder builder) throws IOException;
+    ScrollData<T> pojoScroll(String scrollId, SearchSourceBuilder builder);
 
-    boolean pojoScrollEnd(String scrollId) throws IOException;
+    boolean pojoScrollEnd(String scrollId);
 
-    T save(T entity) throws IOException;
+    T save(T entity);
 
-    boolean saveBatch(Collection<T> list) throws IOException;
+    boolean saveBatch(Collection<T> list);
 
-    void asyncSaveBatch(Collection<T> list) throws IOException;
+    void asyncSaveBatch(Collection<T> list);
 
-    void asyncSaveBatch(Collection<T> list, ActionListener<BulkResponse> listener) throws IOException;
+    void asyncSaveBatch(Collection<T> list, ActionListener<BulkResponse> listener);
 
-    T updateById(T entity) throws IOException;
+    T updateById(T entity);
 
-    boolean updateBatchIds(Collection<T> list) throws IOException;
+    boolean updateBatchIds(Collection<T> list);
+
+    void asyncUpdateBatchIds(Collection<T> list);
 
     void asyncUpdateBatchIds(Collection<T> list, ActionListener<BulkResponse> listener);
 
-    boolean deleteById(String id) throws IOException;
+    boolean deleteById(String id);
 
-    boolean deleteBatchIds(Collection<String> ids) throws IOException;
+    boolean deleteBatchIds(Collection<String> ids);
 
-    void asyncDeleteBatchIds(Collection<String> ids) throws IOException;
+    void asyncDeleteBatchIds(Collection<String> ids);
 
-    void asyncDeleteBatchIds(Collection<String> ids, ActionListener<BulkResponse> listener) throws IOException;
+    void asyncDeleteBatchIds(Collection<String> ids, ActionListener<BulkResponse> listener);
 
 }

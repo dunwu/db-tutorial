@@ -15,6 +15,7 @@ import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.DocWriteResponse;
 import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.get.GetIndexRequest;
@@ -40,8 +41,10 @@ import org.elasticsearch.action.support.WriteRequest;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
+import org.elasticsearch.client.GetAliasesResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
@@ -65,6 +68,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -192,6 +196,20 @@ public class ElasticsearchTemplate implements Closeable {
     public boolean isIndexExists(String index) throws IOException {
         GetIndexRequest request = new GetIndexRequest();
         return client.indices().exists(request.indices(index), RequestOptions.DEFAULT);
+    }
+
+    public Set<String> getIndexSet(String alias) throws IOException {
+        GetAliasesRequest request = new GetAliasesRequest(alias);
+        GetAliasesResponse response = client.indices().getAlias(request, RequestOptions.DEFAULT);
+        if (StrUtil.isNotBlank(response.getError())) {
+            String msg = StrUtil.format("【ES】获取索引失败！alias: {}, error: {}", alias, response.getError());
+            throw new ElasticsearchException(msg);
+        }
+        if (response.getException() != null) {
+            throw response.getException();
+        }
+        Map<String, Set<AliasMetaData>> aliasMap = response.getAliases();
+        return aliasMap.keySet();
     }
 
     public void setMapping(String index, String type, Map<String, String> propertiesMap) throws IOException {
@@ -459,7 +477,7 @@ public class ElasticsearchTemplate implements Closeable {
         throws IOException {
 
         if (CollectionUtil.isEmpty(ids)) {
-            return null;
+            return new ArrayList<>(0);
         }
 
         MultiGetRequest request = new MultiGetRequest();
@@ -471,7 +489,7 @@ public class ElasticsearchTemplate implements Closeable {
         if (null == multiGetResponse
             || multiGetResponse.getResponses() == null
             || multiGetResponse.getResponses().length <= 0) {
-            return new ArrayList<>();
+            return new ArrayList<>(0);
         }
 
         List<T> list = new ArrayList<>();
@@ -491,7 +509,7 @@ public class ElasticsearchTemplate implements Closeable {
     public long count(String index, String type, SearchSourceBuilder builder) throws IOException {
         SearchResponse response = query(index, type, builder);
         if (response == null || response.status() != RestStatus.OK) {
-            return -1L;
+            return 0L;
         }
         SearchHits searchHits = response.getHits();
         return searchHits.getTotalHits();
@@ -550,15 +568,15 @@ public class ElasticsearchTemplate implements Closeable {
     /**
      * search after 分页
      */
-    public <T extends BaseEsEntity> ScrollData<T> pojoPageByLastId(String index, String type, String lastId, int size,
+    public <T extends BaseEsEntity> ScrollData<T> pojoPageByScrollId(String index, String type, String scrollId, int size,
         QueryBuilder queryBuilder, Class<T> clazz) throws IOException {
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.size(size);
         searchSourceBuilder.sort(BaseEsEntity.DOC_ID, SortOrder.ASC);
-        if (StrUtil.isNotBlank(lastId)) {
+        if (StrUtil.isNotBlank(scrollId)) {
             BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-            boolQueryBuilder.must(queryBuilder).must(QueryBuilders.rangeQuery(BaseEsEntity.DOC_ID).gt(lastId));
+            boolQueryBuilder.must(queryBuilder).must(QueryBuilders.rangeQuery(BaseEsEntity.DOC_ID).gt(scrollId));
             searchSourceBuilder.query(boolQueryBuilder);
         } else {
             searchSourceBuilder.query(queryBuilder);
@@ -639,9 +657,7 @@ public class ElasticsearchTemplate implements Closeable {
     }
 
     public <T> T toPojo(GetResponse response, Class<T> clazz) {
-        if (null == response) {
-            return null;
-        } else if (StrUtil.isBlank(response.getSourceAsString())) {
+        if (null == response || StrUtil.isBlank(response.getSourceAsString())) {
             return null;
         } else {
             return JsonUtil.toBean(response.getSourceAsString(), clazz);
@@ -649,15 +665,12 @@ public class ElasticsearchTemplate implements Closeable {
     }
 
     public <T> List<T> toPojoList(SearchResponse response, Class<T> clazz) {
-
         if (response == null || response.status() != RestStatus.OK) {
-            return new ArrayList<>();
+            return new ArrayList<>(0);
         }
-
         if (ArrayUtil.isEmpty(response.getHits().getHits())) {
-            return new ArrayList<>();
+            return new ArrayList<>(0);
         }
-
         return Stream.of(response.getHits().getHits())
                      .map(hit -> JsonUtil.toBean(hit.getSourceAsString(), clazz))
                      .collect(Collectors.toList());

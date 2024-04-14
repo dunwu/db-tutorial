@@ -8,6 +8,8 @@ import io.github.dunwu.javadb.elasticsearch.entity.common.ScrollData;
 import io.github.dunwu.javadb.elasticsearch.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -19,6 +21,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ElasticsearchTemplate 测试
@@ -75,8 +79,34 @@ public abstract class BaseElasticsearchTemplateTest<T extends BaseEsEntity> {
         Assertions.assertThat(exists).isTrue();
     }
 
+    public void getIndexList() throws IOException {
+        Set<String> set = TEMPLATE.getIndexSet(getAlias());
+        log.info("alias: {}, indexList: {}", getAlias(), set);
+        Assertions.assertThat(set).isNotEmpty();
+    }
+
     protected void save() throws IOException {
         String id = "1";
+        T oldEntity = getOneMockData(id);
+        TEMPLATE.save(getIndex(), getType(), oldEntity);
+        T newEntity = TEMPLATE.pojoById(getIndex(), getType(), id, getEntityClass());
+        log.info("记录：{}", JsonUtil.toString(newEntity));
+        Assertions.assertThat(newEntity).isNotNull();
+    }
+
+    protected void saveBatch() throws IOException {
+        int total = 5000;
+        List<List<T>> listGroup = CollectionUtil.split(getMockList(total), 1000);
+        for (List<T> list : listGroup) {
+            TEMPLATE.saveBatch(getIndex(), getType(), list);
+        }
+        long count = TEMPLATE.count(getIndex(), getType(), new SearchSourceBuilder());
+        log.info("批量更新记录数: {}", count);
+        Assertions.assertThat(count).isEqualTo(total);
+    }
+
+    protected void asyncSave() throws IOException {
+        String id = "10000";
         T entity = getOneMockData(id);
         TEMPLATE.save(getIndex(), getType(), entity);
         T newEntity = TEMPLATE.pojoById(getIndex(), getType(), id, getEntityClass());
@@ -84,12 +114,13 @@ public abstract class BaseElasticsearchTemplateTest<T extends BaseEsEntity> {
         Assertions.assertThat(newEntity).isNotNull();
     }
 
-    protected void saveBatch() throws IOException {
+    protected void asyncSaveBatch() throws IOException, InterruptedException {
         int total = 10000;
         List<List<T>> listGroup = CollectionUtil.split(getMockList(total), 1000);
         for (List<T> list : listGroup) {
-            TEMPLATE.saveBatch(getIndex(), getType(), list);
+            TEMPLATE.asyncSaveBatch(getIndex(), getType(), list, DEFAULT_BULK_LISTENER);
         }
+        TimeUnit.SECONDS.sleep(20);
         long count = TEMPLATE.count(getIndex(), getType(), new SearchSourceBuilder());
         log.info("批量更新记录数: {}", count);
         Assertions.assertThat(count).isEqualTo(total);
@@ -167,7 +198,7 @@ public abstract class BaseElasticsearchTemplateTest<T extends BaseEsEntity> {
 
         long total = TEMPLATE.count(getIndex(), getType(), queryBuilder);
         ScrollData<T> scrollData =
-            TEMPLATE.pojoPageByLastId(getIndex(), getType(), null, SIZE, queryBuilder, getEntityClass());
+            TEMPLATE.pojoPageByScrollId(getIndex(), getType(), null, SIZE, queryBuilder, getEntityClass());
         if (scrollData == null || scrollData.getScrollId() == null) {
             return;
         }
@@ -181,8 +212,8 @@ public abstract class BaseElasticsearchTemplateTest<T extends BaseEsEntity> {
 
         String scrollId = scrollData.getScrollId();
         while (CollectionUtil.isNotEmpty(scrollData.getContent())) {
-            scrollData =
-                TEMPLATE.pojoPageByLastId(getIndex(), getType(), scrollId, SIZE, queryBuilder, getEntityClass());
+            scrollData = TEMPLATE.pojoPageByScrollId(getIndex(), getType(), scrollId, SIZE,
+                queryBuilder, getEntityClass());
             if (scrollData == null || CollectionUtil.isEmpty(scrollData.getContent())) {
                 break;
             }
@@ -237,5 +268,21 @@ public abstract class BaseElasticsearchTemplateTest<T extends BaseEsEntity> {
         log.info("total: {}", total);
         Assertions.assertThat(count).isEqualTo(total);
     }
+
+    final ActionListener<BulkResponse> DEFAULT_BULK_LISTENER = new ActionListener<BulkResponse>() {
+        @Override
+        public void onResponse(BulkResponse response) {
+            if (response != null && !response.hasFailures()) {
+                log.info("【ES】异步批量写数据成功！index: {}, type: {}", getIndex(), getType());
+            } else {
+                log.warn("【ES】异步批量写数据失败！index: {}, type: {}", getIndex(), getType());
+            }
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            log.error("【ES】异步批量写数据异常！index: {}, type: {}", getIndex(), getType());
+        }
+    };
 
 }

@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import io.github.dunwu.javadb.elasticsearch.ElasticsearchTemplate;
 import io.github.dunwu.javadb.elasticsearch.constant.ResultCode;
 import io.github.dunwu.javadb.elasticsearch.entity.BaseEsEntity;
@@ -20,12 +21,14 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * ES Mapper 基础类
@@ -52,13 +55,6 @@ public abstract class BaseEsMapper<T extends BaseEsEntity> implements EsMapper<T
         return 1;
     }
 
-    /**
-     * 如果开启，添加 ES 数据时，如果索引不存在，会自动创建索引
-     */
-    public boolean enableAutoCreateIndex() {
-        return true;
-    }
-
     @Override
     public RestHighLevelClient getClient() {
         if (elasticsearchTemplate == null) {
@@ -77,14 +73,13 @@ public abstract class BaseEsMapper<T extends BaseEsEntity> implements EsMapper<T
 
     @SuppressWarnings("unchecked")
     public Map<String, String> getPropertiesMap() {
-
         Class<T> clazz = getEntityClass();
         Method method;
         try {
             method = clazz.getMethod("getPropertiesMap");
         } catch (NoSuchMethodException e) {
-            String msg = StrUtil.format("【ES】检查并创建 {} 索引失败！day 不能为空！", getAlias());
-            throw new DefaultException(e, ResultCode.ERROR, msg);
+            log.error("【ES】{} 中不存在 getPropertiesMap 方法！", clazz.getCanonicalName());
+            return new HashMap<>(0);
         }
 
         Object result = ReflectUtil.invokeStatic(method);
@@ -99,33 +94,80 @@ public abstract class BaseEsMapper<T extends BaseEsEntity> implements EsMapper<T
     // ====================================================================
 
     @Override
-    public boolean isIndexExists() throws IOException {
-        return elasticsearchTemplate.isIndexExists(getIndex());
-    }
-
-    @Override
-    public String createIndexIfNotExists() throws IOException {
+    public boolean isIndexExists() {
         String index = getIndex();
-        boolean exists = elasticsearchTemplate.isIndexExists(index);
-        if (exists) {
+        try {
+            return elasticsearchTemplate.isIndexExists(index);
+        } catch (Exception e) {
+            log.error("【ES】判断索引是否存在异常！index: {}", index, e);
+            return false;
+        }
+    }
+
+    @Override
+    public String createIndexIfNotExists() {
+        String index = getIndex();
+        String type = getType();
+        String alias = getAlias();
+        int shard = getShard();
+        int replica = getReplica();
+        return createIndex(index, type, alias, shard, replica);
+    }
+
+    protected String createIndex(String index, String type, String alias, int shard, int replica) {
+        try {
+            if (elasticsearchTemplate.isIndexExists(index)) {
+                return index;
+            }
+            elasticsearchTemplate.createIndex(index, type, alias, shard, replica);
+            log.info("【ES】创建索引成功！index: {}, type: {}, alias: {}, shard: {}, replica: {}",
+                index, type, alias, shard, replica);
+            Map<String, String> propertiesMap = getPropertiesMap();
+            if (MapUtil.isNotEmpty(propertiesMap)) {
+                elasticsearchTemplate.setMapping(index, type, propertiesMap);
+                log.error("【ES】设置索引 mapping 成功！index: {}, type: {}, propertiesMap: {}",
+                    index, type, JSONUtil.toJsonStr(propertiesMap));
+            }
             return index;
+        } catch (Exception e) {
+            log.error("【ES】创建索引异常！index: {}, type: {}, alias: {}, shard: {}, replica: {}",
+                index, type, alias, shard, replica, e);
+            return null;
         }
-        elasticsearchTemplate.createIndex(index, getType(), getAlias(), getShard(), getReplica());
-        Map<String, String> propertiesMap = getPropertiesMap();
-        if (MapUtil.isNotEmpty(propertiesMap)) {
-            elasticsearchTemplate.setMapping(index, getType(), propertiesMap);
-        }
-        return index;
     }
 
     @Override
-    public void deleteIndex() throws IOException {
-        elasticsearchTemplate.deleteIndex(getIndex());
+    public void deleteIndex() {
+        String index = getIndex();
+        try {
+            log.info("【ES】删除索引成功！index: {}", index);
+            elasticsearchTemplate.deleteIndex(index);
+        } catch (Exception e) {
+            log.error("【ES】删除索引异常！index: {}", index, e);
+        }
     }
 
     @Override
-    public void updateAlias() throws IOException {
-        elasticsearchTemplate.updateAlias(getIndex(), getAlias());
+    public void updateAlias() {
+        String index = getIndex();
+        String alias = getAlias();
+        try {
+            log.info("【ES】更新别名成功！alias: {} -> index: {}", alias, index);
+            elasticsearchTemplate.updateAlias(index, alias);
+        } catch (Exception e) {
+            log.error("【ES】更新别名异常！alias: {} -> index: {}", alias, index, e);
+        }
+    }
+
+    @Override
+    public Set<String> getIndexSet() {
+        String alias = getAlias();
+        try {
+            return elasticsearchTemplate.getIndexSet(alias);
+        } catch (Exception e) {
+            log.error("【ES】获取别名的所有索引异常！alias: {}", alias, e);
+            return new HashSet<>(0);
+        }
     }
 
     // ====================================================================
@@ -133,172 +175,295 @@ public abstract class BaseEsMapper<T extends BaseEsEntity> implements EsMapper<T
     // ====================================================================
 
     @Override
-    public GetResponse getById(String id) throws IOException {
+    public GetResponse getById(String id) {
         return getById(id, null);
     }
 
     @Override
-    public GetResponse getById(String id, Long version) throws IOException {
-        return elasticsearchTemplate.getById(getIndex(), getType(), id, version);
+    public GetResponse getById(String id, Long version) {
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.getById(index, type, id, version);
+        } catch (Exception e) {
+            log.error("【ES】根据ID查询异常！index: {}, type: {}, id: {}, version: {}", index, type, id, version, e);
+            return null;
+        }
     }
 
     @Override
-    public T pojoById(String id) throws IOException {
+    public T pojoById(String id) {
         return pojoById(id, null);
     }
 
     @Override
-    public T pojoById(String id, Long version) throws IOException {
-        return elasticsearchTemplate.pojoById(getIndex(), getType(), id, version, getEntityClass());
+    public T pojoById(String id, Long version) {
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoById(index, type, id, version, getEntityClass());
+        } catch (Exception e) {
+            log.error("【ES】根据ID查询POJO异常！index: {}, type: {}, id: {}, version: {}", index, type, id, version, e);
+            return null;
+        }
     }
 
     @Override
-    public List<T> pojoListByIds(Collection<String> ids) throws IOException {
-        return elasticsearchTemplate.pojoListByIds(getIndex(), getType(), ids, getEntityClass());
+    public List<T> pojoListByIds(Collection<String> ids) {
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoListByIds(index, type, ids, getEntityClass());
+        } catch (Exception e) {
+            log.error("【ES】根据ID查询POJO列表异常！index: {}, type: {}, ids: {}", index, type, ids, e);
+            return new ArrayList<>(0);
+        }
     }
 
     @Override
-    public long count(SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.count(getIndex(), getType(), builder);
+    public long count(SearchSourceBuilder builder) {
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.count(index, type, builder);
+        } catch (Exception e) {
+            log.error("【ES】获取匹配记录数异常！index: {}, type: {}", index, type, e);
+            return 0L;
+        }
     }
 
     @Override
-    public SearchResponse query(SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.query(getIndex(), getType(), builder);
-    }
-    @Override
-    public PageData<T> pojoPage(SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.pojoPage(getIndex(), getType(), builder, getEntityClass());
-    }
-
-    @Override
-    public ScrollData<T> pojoPageByLastId(String lastId, int size, QueryBuilder queryBuilder) throws IOException {
-        return elasticsearchTemplate.pojoPageByLastId(getIndex(), getType(), lastId, size,
-            queryBuilder, getEntityClass());
+    public SearchResponse query(SearchSourceBuilder builder) {
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.query(index, type, builder);
+        } catch (Exception e) {
+            log.error("【ES】条件查询异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
     }
 
     @Override
-    public ScrollData<T> pojoScrollBegin(SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.pojoScrollBegin(getIndex(), getType(), builder, getEntityClass());
+    public PageData<T> pojoPage(SearchSourceBuilder builder) {
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoPage(index, type, builder, getEntityClass());
+        } catch (Exception e) {
+            log.error("【ES】from + size 分页条件查询异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
     }
 
     @Override
-    public ScrollData<T> pojoScroll(String scrollId, SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.pojoScroll(scrollId, builder, getEntityClass());
+    public ScrollData<T> pojoPageByLastId(String scrollId, int size, QueryBuilder queryBuilder) {
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoPageByScrollId(index, type, scrollId, size, queryBuilder,
+                getEntityClass());
+        } catch (Exception e) {
+            log.error("【ES】search after 分页条件查询异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
     }
 
     @Override
-    public boolean pojoScrollEnd(String scrollId) throws IOException {
-        return elasticsearchTemplate.pojoScrollEnd(scrollId);
-    }
-
-
-    @Override
-    public T save(T entity) throws IOException {
-        String index = checkIndex();
-        checkData(entity);
-        return elasticsearchTemplate.save(index, getType(), entity);
-    }
-
-    @Override
-    public boolean saveBatch(Collection<T> list) throws IOException {
-        String index = checkIndex();
-        checkData(list);
-        return elasticsearchTemplate.saveBatch(index, getType(), list);
+    public ScrollData<T> pojoScrollBegin(SearchSourceBuilder builder) {
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoScrollBegin(index, type, builder, getEntityClass());
+        } catch (Exception e) {
+            log.error("【ES】开启滚动分页条件查询异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
     }
 
     @Override
-    public void asyncSaveBatch(Collection<T> list) throws IOException {
-        String index = checkIndex();
-        checkData(list);
-        ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
-            @Override
-            public void onResponse(BulkResponse response) {
-                if (response != null && !response.hasFailures()) {
-                    String msg = StrUtil.format("【ES】异步批量保存 {} 成功！", index);
-                    log.info(msg);
-                } else {
-                    String msg = StrUtil.format("【ES】异步批量保存 {} 失败！", index);
-                    log.warn(msg);
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                String msg = StrUtil.format("【ES】异步批量保存 {} 异常！", index);
-                log.error(msg, e);
-            }
-        };
-        asyncSaveBatch(list, listener);
+    public ScrollData<T> pojoScroll(String scrollId, SearchSourceBuilder builder) {
+        try {
+            return elasticsearchTemplate.pojoScroll(scrollId, builder, getEntityClass());
+        } catch (Exception e) {
+            log.error("【ES】滚动分页条件查询异常！scrollId: {}", scrollId, e);
+            return null;
+        }
     }
 
     @Override
-    public void asyncSaveBatch(Collection<T> list, ActionListener<BulkResponse> listener) throws IOException {
-        String index = checkIndex();
-        checkData(list);
-        elasticsearchTemplate.asyncSaveBatch(index, getType(), list, listener);
+    public boolean pojoScrollEnd(String scrollId) {
+        try {
+            return elasticsearchTemplate.pojoScrollEnd(scrollId);
+        } catch (Exception e) {
+            log.error("【ES】关闭滚动分页条件查询异常！scrollId: {}", scrollId, e);
+            return false;
+        }
     }
 
     @Override
-    public T updateById(T entity) throws IOException {
-        checkData(entity);
-        return elasticsearchTemplate.updateById(getIndex(), getType(), entity);
+    public T save(T entity) {
+        if (entity == null) {
+            return null;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            checkIndex();
+            checkData(entity);
+            return elasticsearchTemplate.save(index, type, entity);
+        } catch (Exception e) {
+            log.error("【ES】添加数据异常！index: {}, type: {}, entity: {}", index, type, JSONUtil.toJsonStr(entity), e);
+            return null;
+        }
     }
 
     @Override
-    public boolean updateBatchIds(Collection<T> list) throws IOException {
-        checkData(list);
-        return elasticsearchTemplate.updateBatchIds(getIndex(), getType(), list);
+    public boolean saveBatch(Collection<T> list) {
+        if (CollectionUtil.isEmpty(list)) {
+            return false;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            checkIndex();
+            checkData(list);
+            return elasticsearchTemplate.saveBatch(index, type, list);
+        } catch (Exception e) {
+            log.error("【ES】批量添加数据异常！index: {}, type: {}, size: {}", index, type, list.size(), e);
+            return false;
+        }
+    }
+
+    @Override
+    public void asyncSaveBatch(Collection<T> list) {
+        asyncSaveBatch(list, DEFAULT_BULK_LISTENER);
+    }
+
+    @Override
+    public void asyncSaveBatch(Collection<T> list, ActionListener<BulkResponse> listener) {
+        if (CollectionUtil.isEmpty(list)) {
+            return;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            checkIndex();
+            checkData(list);
+            elasticsearchTemplate.asyncSaveBatch(index, getType(), list, listener);
+        } catch (Exception e) {
+            log.error("【ES】异步批量添加数据异常！index: {}, type: {}, size: {}", index, type, list.size(), e);
+        }
+    }
+
+    @Override
+    public T updateById(T entity) {
+        if (entity == null) {
+            return null;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            checkData(entity);
+            return elasticsearchTemplate.updateById(index, type, entity);
+        } catch (Exception e) {
+            log.error("【ES】更新数据异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
+    }
+
+    @Override
+    public boolean updateBatchIds(Collection<T> list) {
+        if (CollectionUtil.isEmpty(list)) {
+            return false;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            checkData(list);
+            return elasticsearchTemplate.updateBatchIds(index, type, list);
+        } catch (Exception e) {
+            log.error("【ES】批量更新数据异常！index: {}, type: {}, size: {}", index, type, list.size(), e);
+            return false;
+        }
+    }
+
+    @Override
+    public void asyncUpdateBatchIds(Collection<T> list) {
+        asyncUpdateBatchIds(list, DEFAULT_BULK_LISTENER);
     }
 
     @Override
     public void asyncUpdateBatchIds(Collection<T> list, ActionListener<BulkResponse> listener) {
-        checkData(list);
-        elasticsearchTemplate.asyncUpdateBatchIds(getIndex(), getType(), list, listener);
+        if (CollectionUtil.isEmpty(list)) {
+            return;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            checkData(list);
+            elasticsearchTemplate.asyncUpdateBatchIds(index, type, list, listener);
+        } catch (Exception e) {
+            log.error("【ES】异步批量更新数据异常！index: {}, type: {}, size: {}", index, type, list.size(), e);
+        }
     }
 
     @Override
-    public boolean deleteById(String id) throws IOException {
-        return elasticsearchTemplate.deleteById(getIndex(), getType(), id);
+    public boolean deleteById(String id) {
+        if (StrUtil.isBlank(id)) {
+            return false;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.deleteById(index, type, id);
+        } catch (Exception e) {
+            log.error("【ES】根据ID删除数据异常！index: {}, type: {}, id: {}", index, type, id, e);
+            return false;
+        }
     }
 
     @Override
-    public boolean deleteBatchIds(Collection<String> ids) throws IOException {
-        return elasticsearchTemplate.deleteBatchIds(getIndex(), getType(), ids);
+    public boolean deleteBatchIds(Collection<String> ids) {
+        if (CollectionUtil.isEmpty(ids)) {
+            return false;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            return elasticsearchTemplate.deleteBatchIds(index, type, ids);
+        } catch (Exception e) {
+            log.error("【ES】根据ID批量删除数据异常！index: {}, type: {}, ids: {}", index, type, ids, e);
+            return false;
+        }
     }
 
     @Override
-    public void asyncDeleteBatchIds(Collection<String> ids) throws IOException {
-        ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
-            @Override
-            public void onResponse(BulkResponse response) {
-                if (response != null && !response.hasFailures()) {
-                    log.info("【ES】异步批量删除成功！");
-                } else {
-                    log.warn("【ES】异步批量删除失败！ids: {}", ids);
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                log.error("【ES】异步批量删除异常！ids: {}", ids, e);
-            }
-        };
-        asyncDeleteBatchIds(ids, listener);
+    public void asyncDeleteBatchIds(Collection<String> ids) {
+        asyncDeleteBatchIds(ids, DEFAULT_BULK_LISTENER);
     }
 
     @Override
-    public void asyncDeleteBatchIds(Collection<String> ids, ActionListener<BulkResponse> listener) throws IOException {
-        elasticsearchTemplate.asyncDeleteBatchIds(getIndex(), getType(), ids, listener);
+    public void asyncDeleteBatchIds(Collection<String> ids, ActionListener<BulkResponse> listener) {
+        if (CollectionUtil.isEmpty(ids)) {
+            return;
+        }
+        String index = getIndex();
+        String type = getType();
+        try {
+            elasticsearchTemplate.asyncDeleteBatchIds(index, type, ids, listener);
+        } catch (Exception e) {
+            log.error("【ES】异步根据ID批量删除数据异常！index: {}, type: {}, ids: {}", index, type, ids, e);
+        }
     }
 
-    protected String checkIndex() throws IOException {
+    protected String checkIndex() {
         if (!enableAutoCreateIndex()) {
             return getIndex();
         }
         String index = createIndexIfNotExists();
         if (StrUtil.isBlank(index)) {
-            String msg = StrUtil.format("【ES】索引找不到且创建失败！", index);
+            String msg = StrUtil.format("【ES】索引 {} 找不到且创建失败！", index);
             throw new DefaultException(ResultCode.ERROR, msg);
         }
         return index;
@@ -317,5 +482,21 @@ public abstract class BaseEsMapper<T extends BaseEsEntity> implements EsMapper<T
             throw new DefaultException(ResultCode.PARAM_ERROR, msg);
         }
     }
+
+    protected final ActionListener<BulkResponse> DEFAULT_BULK_LISTENER = new ActionListener<BulkResponse>() {
+        @Override
+        public void onResponse(BulkResponse response) {
+            if (response != null && !response.hasFailures()) {
+                log.info("【ES】异步批量写数据成功！index: {}, type: {}", getIndex(), getType());
+            } else {
+                log.warn("【ES】异步批量写数据失败！index: {}, type: {}", getIndex(), getType());
+            }
+        }
+
+        @Override
+        public void onFailure(Exception e) {
+            log.error("【ES】异步批量写数据异常！index: {}, type: {}", getIndex(), getType());
+        }
+    };
 
 }

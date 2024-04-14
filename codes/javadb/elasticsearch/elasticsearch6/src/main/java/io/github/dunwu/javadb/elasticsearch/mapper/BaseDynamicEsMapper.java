@@ -1,10 +1,11 @@
 package io.github.dunwu.javadb.elasticsearch.mapper;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import io.github.dunwu.javadb.elasticsearch.ElasticsearchTemplate;
 import io.github.dunwu.javadb.elasticsearch.constant.ResultCode;
 import io.github.dunwu.javadb.elasticsearch.entity.BaseEsEntity;
@@ -20,9 +21,9 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 动态 ES Mapper 基础类（以时间为维度动态创建、删除 index），用于数据量特别大，需要按照日期分片的索引。
@@ -37,6 +38,11 @@ public abstract class BaseDynamicEsMapper<T extends BaseEsEntity> extends BaseEs
 
     public BaseDynamicEsMapper(ElasticsearchTemplate elasticsearchTemplate) {
         super(elasticsearchTemplate);
+    }
+
+    @Override
+    public boolean enableAutoCreateIndex() {
+        return true;
     }
 
     // ====================================================================
@@ -64,68 +70,139 @@ public abstract class BaseDynamicEsMapper<T extends BaseEsEntity> extends BaseEs
         return alias + "_" + formatDate;
     }
 
-    public boolean isIndexExistsInDay(String day) throws IOException {
-        return elasticsearchTemplate.isIndexExists(getIndex(day));
-    }
-
-    public String createIndexInDay(String day) throws IOException, DefaultException {
+    public boolean isIndexExistsInDay(String day) {
+        if (StrUtil.isBlank(day)) {
+            return false;
+        }
         String index = getIndex(day);
-        boolean indexExists = isIndexExistsInDay(day);
-        if (indexExists) {
-            return index;
+        try {
+            return elasticsearchTemplate.isIndexExists(getIndex(day));
+        } catch (Exception e) {
+            log.error("【ES】判断索引是否存在异常！index: {}", index, e);
+            return false;
         }
-        elasticsearchTemplate.createIndex(index, getType(), getAlias(), getShard(), getReplica());
-        Map<String, String> map = getPropertiesMap();
-        if (MapUtil.isNotEmpty(map)) {
-            elasticsearchTemplate.setMapping(index, getType(), map);
-        }
-        return index;
     }
 
-    public void deleteIndexInDay(String day) throws IOException {
-        elasticsearchTemplate.deleteIndex(getIndex(day));
+    public String createIndexIfNotExistsInDay(String day) {
+        String index = getIndex(day);
+        String type = getType();
+        String alias = getAlias();
+        int shard = getShard();
+        int replica = getReplica();
+        return createIndex(index, type, alias, shard, replica);
     }
 
-    public void updateAliasInDay(String day) throws IOException {
-        elasticsearchTemplate.updateAlias(getIndex(day), getAlias());
+    public void deleteIndexInDay(String day) {
+        String index = getIndex(day);
+        try {
+            log.info("【ES】删除索引成功！index: {}", index);
+            elasticsearchTemplate.deleteIndex(index);
+        } catch (Exception e) {
+            log.error("【ES】删除索引异常！index: {}", index, e);
+        }
+    }
+
+    public void updateAliasInDay(String day) {
+        String index = getIndex(day);
+        String alias = getAlias();
+        try {
+            log.info("【ES】更新别名成功！alias: {} -> index: {}", alias, index);
+            elasticsearchTemplate.updateAlias(index, alias);
+        } catch (IOException e) {
+            log.error("【ES】更新别名异常！alias: {} -> index: {}", alias, index, e);
+        }
     }
 
     // ====================================================================
     // CRUD 操作
     // ====================================================================
 
-    public GetResponse getByIdInDay(String day, String id) throws IOException {
-        return elasticsearchTemplate.getById(getIndex(day), getType(), id, null);
+    public GetResponse getByIdInDay(String day, String id) {
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.getById(index, type, id, null);
+        } catch (IOException e) {
+            log.error("【ES】根据ID查询异常！index: {}, type: {}, id: {}", index, type, id, e);
+            return null;
+        }
     }
 
-    public T pojoByIdInDay(String day, String id) throws IOException {
-        return elasticsearchTemplate.pojoById(getIndex(day), getType(), id, null, getEntityClass());
+    public T pojoByIdInDay(String day, String id) {
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoById(index, type, id, null, getEntityClass());
+        } catch (IOException e) {
+            log.error("【ES】根据ID查询POJO异常！index: {}, type: {}, id: {}", index, type, id, e);
+            return null;
+        }
     }
 
-    public List<T> pojoListByIdsInDay(String day, Collection<String> ids) throws IOException {
-        return elasticsearchTemplate.pojoListByIds(getIndex(day), getType(), ids, getEntityClass());
+    public List<T> pojoListByIdsInDay(String day, Collection<String> ids) {
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoListByIds(index, type, ids, getEntityClass());
+        } catch (IOException e) {
+            log.error("【ES】根据ID查询POJO列表异常！index: {}, type: {}, ids: {}", index, type, ids, e);
+            return new ArrayList<>(0);
+        }
     }
 
-    public long countInDay(String day, SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.count(getIndex(day), getType(), builder);
+    public long countInDay(String day, SearchSourceBuilder builder) {
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.count(index, type, builder);
+        } catch (IOException e) {
+            log.error("【ES】获取匹配记录数异常！index: {}, type: {}", index, type, e);
+            return 0L;
+        }
     }
 
-    public SearchResponse queryInDay(String day, SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.query(getIndex(day), getType(), builder);
+    public SearchResponse queryInDay(String day, SearchSourceBuilder builder) {
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.query(index, type, builder);
+        } catch (IOException e) {
+            log.error("【ES】条件查询异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
     }
 
-    public PageData<T> pojoPageInDay(String day, SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.pojoPage(getIndex(day), getType(), builder, getEntityClass());
+    public PageData<T> pojoPageInDay(String day, SearchSourceBuilder builder) {
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoPage(index, type, builder, getEntityClass());
+        } catch (IOException e) {
+            log.error("【ES】from + size 分页条件查询异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
     }
 
-    public ScrollData<T> pojoPageByLastIdInDay(String day, String lastId, int size, QueryBuilder queryBuilder)
-        throws IOException {
-        return elasticsearchTemplate.pojoPageByLastId(getIndex(day), getType(), lastId, size,
-            queryBuilder, getEntityClass());
+    public ScrollData<T> pojoPageByLastIdInDay(String day, String scrollId, int size, QueryBuilder queryBuilder) {
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoPageByScrollId(index, type, scrollId, size, queryBuilder, getEntityClass());
+        } catch (IOException e) {
+            log.error("【ES】search after 分页条件查询异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
     }
 
-    public ScrollData<T> pojoScrollBeginInDay(String day, SearchSourceBuilder builder) throws IOException {
-        return elasticsearchTemplate.pojoScrollBegin(getIndex(day), getType(), builder, getEntityClass());
+    public ScrollData<T> pojoScrollBeginInDay(String day, SearchSourceBuilder builder) {
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.pojoScrollBegin(index, type, builder, getEntityClass());
+        } catch (IOException e) {
+            log.error("【ES】开启滚动分页条件查询异常！index: {}, type: {}", index, type, e);
+            return null;
+        }
     }
 
     /**
@@ -135,11 +212,20 @@ public abstract class BaseDynamicEsMapper<T extends BaseEsEntity> extends BaseEs
      * @param entity 待更新的数据
      * @return /
      */
-    public boolean saveInDay(String day, T entity) throws IOException, DefaultException {
-        String index = checkIndex(day);
-        checkData(entity);
-        elasticsearchTemplate.save(index, getType(), entity);
-        return true;
+    public T saveInDay(String day, T entity) {
+        if (StrUtil.isBlank(day) || entity == null) {
+            return null;
+        }
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            checkIndex(day);
+            checkData(entity);
+            return elasticsearchTemplate.save(index, getType(), entity);
+        } catch (IOException e) {
+            log.error("【ES】添加数据异常！index: {}, type: {}, entity: {}", index, type, JSONUtil.toJsonStr(entity), e);
+            return null;
+        }
     }
 
     /**
@@ -149,59 +235,94 @@ public abstract class BaseDynamicEsMapper<T extends BaseEsEntity> extends BaseEs
      * @param list 待更新的数据
      * @return /
      */
-    public boolean saveBatchInDay(String day, Collection<T> list) throws IOException, DefaultException {
-        String index = checkIndex(day);
-        checkData(list);
-        elasticsearchTemplate.saveBatch(index, getType(), list);
-        return true;
+    public boolean saveBatchInDay(String day, Collection<T> list) {
+        if (StrUtil.isBlank(day) || CollectionUtil.isEmpty(list)) {
+            return false;
+        }
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            checkIndex(day);
+            checkData(list);
+            return elasticsearchTemplate.saveBatch(index, type, list);
+        } catch (IOException e) {
+            log.error("【ES】批量添加数据异常！index: {}, type: {}, size: {}", index, type, list.size(), e);
+            return false;
+        }
     }
 
-    public void asyncSaveBatchInDay(String day, Collection<T> list) throws IOException {
-        String index = checkIndex(day);
-        checkData(list);
-        ActionListener<BulkResponse> listener = new ActionListener<BulkResponse>() {
-            @Override
-            public void onResponse(BulkResponse response) {
-                if (response != null && !response.hasFailures()) {
-                    String msg = StrUtil.format("【ES】按日期异步批量保存 {} 成功！", index);
-                    log.info(msg);
-                } else {
-                    String msg = StrUtil.format("【ES】按日期异步批量保存 {} 失败！", index);
-                    log.warn(msg);
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                String msg = StrUtil.format("【ES】按日期异步批量保存 {} 异常！", index);
-                log.error(msg, e);
-            }
-        };
-        asyncSaveBatchInDay(day, list, listener);
+    public void asyncSaveBatchInDay(String day, Collection<T> list) {
+        asyncSaveBatchInDay(day, list, DEFAULT_BULK_LISTENER);
     }
 
-    public void asyncSaveBatchInDay(String day, Collection<T> list, ActionListener<BulkResponse> listener)
-        throws IOException {
-        String index = checkIndex(day);
-        checkData(list);
-        elasticsearchTemplate.asyncSaveBatch(getIndex(day), getType(), list, listener);
+    public void asyncSaveBatchInDay(String day, Collection<T> list, ActionListener<BulkResponse> listener) {
+        if (StrUtil.isBlank(day) || CollectionUtil.isEmpty(list)) {
+            return;
+        }
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            checkIndex(day);
+            checkData(list);
+            elasticsearchTemplate.asyncSaveBatch(index, type, list, listener);
+        } catch (Exception e) {
+            log.error("【ES】异步批量添加数据异常！index: {}, type: {}, size: {}", index, type, list.size(), e);
+        }
     }
 
-    public boolean deleteByIdInDay(String day, String id) throws IOException {
-        return elasticsearchTemplate.deleteById(getIndex(day), getType(), id);
+    public void asyncUpdateBatchIdsInDay(String day, Collection<T> list) {
+        asyncUpdateBatchIdsInDay(day, list, DEFAULT_BULK_LISTENER);
     }
 
-    public boolean deleteBatchIdsInDay(String day, Collection<String> ids) throws IOException {
-        return elasticsearchTemplate.deleteBatchIds(getIndex(day), getType(), ids);
+    public void asyncUpdateBatchIdsInDay(String day, Collection<T> list, ActionListener<BulkResponse> listener) {
+        if (StrUtil.isBlank(day) || CollectionUtil.isEmpty(list)) {
+            return;
+        }
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            checkData(list);
+            elasticsearchTemplate.asyncUpdateBatchIds(index, type, list, listener);
+        } catch (Exception e) {
+            log.error("【ES】异步批量更新数据异常！index: {}, type: {}, size: {}", index, type, list.size(), e);
+        }
     }
 
-    protected String checkIndex(String day) throws IOException {
+    public boolean deleteByIdInDay(String day, String id) {
+        if (StrUtil.isBlank(day) || StrUtil.isBlank(id)) {
+            return false;
+        }
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.deleteById(index, type, id);
+        } catch (IOException e) {
+            log.error("【ES】根据ID删除数据异常！index: {}, type: {}, id: {}", index, type, id, e);
+            return false;
+        }
+    }
+
+    public boolean deleteBatchIdsInDay(String day, Collection<String> ids) {
+        if (StrUtil.isBlank(day) || CollectionUtil.isEmpty(ids)) {
+            return false;
+        }
+        String index = getIndex(day);
+        String type = getType();
+        try {
+            return elasticsearchTemplate.deleteBatchIds(index, type, ids);
+        } catch (IOException e) {
+            log.error("【ES】根据ID批量删除数据异常！index: {}, type: {}, ids: {}", index, type, ids, e);
+            return false;
+        }
+    }
+
+    protected String checkIndex(String day) {
         if (!enableAutoCreateIndex()) {
             return getIndex(day);
         }
-        String index = createIndexInDay(day);
+        String index = createIndexIfNotExistsInDay(day);
         if (StrUtil.isBlank(index)) {
-            String msg = StrUtil.format("【ES】按日期批量保存 {} 失败！索引找不到且创建失败！", index);
+            String msg = StrUtil.format("【ES】索引 {}_{} 找不到且创建失败！", getAlias(), day);
             throw new DefaultException(ResultCode.ERROR, msg);
         }
         return index;
