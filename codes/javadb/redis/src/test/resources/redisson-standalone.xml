@@ -14,8 +14,6 @@
                                 idle-connection-timeout="10000"
                                 connect-timeout="10000"
                                 timeout="3000"
-                                ping-timeout="30000"
-                                reconnection-timeout="30000"
                                 database="0"/>
     </redisson:client>
 </beans>

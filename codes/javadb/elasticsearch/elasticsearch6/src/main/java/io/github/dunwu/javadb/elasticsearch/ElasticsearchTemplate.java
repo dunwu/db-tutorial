@@ -280,7 +280,7 @@ public class ElasticsearchTemplate implements Closeable {
             || response.getResult() == DocWriteResponse.Result.UPDATED) {
             return entity;
         } else {
-            log.warn("【ES】save 响应结果无效！result: {}", response.getResult());
+            log.warn("【ES】save 失败，result: {}！", response.getResult());
             return null;
         }
     }
@@ -292,45 +292,25 @@ public class ElasticsearchTemplate implements Closeable {
             return true;
         }
 
-        BulkRequest bulkRequest = new BulkRequest();
-        bulkRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
-        for (T entity : list) {
-            Map<String, Object> map = toMap(entity);
-            if (MapUtil.isEmpty(map)) {
-                continue;
-            }
-            IndexRequest request = new IndexRequest(index, type).source(map);
-            if (entity.getDocId() != null) {
-                request.id(entity.getDocId());
-            }
-            bulkRequest.add(request);
-        }
-
+        BulkRequest bulkRequest = toBulkIndexRequest(index, type, list);
         BulkResponse response = client.bulk(bulkRequest, RequestOptions.DEFAULT);
-        return response != null && !response.hasFailures();
+        if (response == null) {
+            log.warn("【ES】saveBatch 失败，result 为空！list: {}", JsonUtil.toString(list));
+            return false;
+        }
+        if (response.hasFailures()) {
+            log.warn("【ES】saveBatch 失败，result: {}！", response.buildFailureMessage());
+            return false;
+        }
+        return true;
     }
 
     public <T extends BaseEsEntity> void asyncSaveBatch(String index, String type, Collection<T> list,
         ActionListener<BulkResponse> listener) {
-
         if (CollectionUtil.isEmpty(list)) {
             return;
         }
-
-        BulkRequest bulkRequest = new BulkRequest();
-        bulkRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
-        for (T entity : list) {
-            Map<String, Object> map = toMap(entity);
-            if (MapUtil.isEmpty(map)) {
-                continue;
-            }
-            IndexRequest request = new IndexRequest(index, type).source(map);
-            if (entity.getDocId() != null) {
-                request.id(entity.getDocId());
-            }
-            bulkRequest.add(request);
-        }
-
+        BulkRequest bulkRequest = toBulkIndexRequest(index, type, list);
         client.bulkAsync(bulkRequest, RequestOptions.DEFAULT, listener);
     }
 
@@ -362,7 +342,7 @@ public class ElasticsearchTemplate implements Closeable {
         if (response.getResult() == DocWriteResponse.Result.UPDATED) {
             return entity;
         } else {
-            log.warn("【ES】updateById 响应结果无效！result: {}", response.getResult());
+            log.warn("【ES】updateById 响应结果无效，result: {}！", response.getResult());
             return null;
         }
     }
@@ -374,23 +354,49 @@ public class ElasticsearchTemplate implements Closeable {
             return true;
         }
 
-        BulkRequest bulkRequest = toUpdateBulkRequest(index, type, list);
+        BulkRequest bulkRequest = toBulkUpdateRequest(index, type, list);
         BulkResponse response = client.bulk(bulkRequest, RequestOptions.DEFAULT);
-        return response != null && !response.hasFailures();
+        if (response == null) {
+            log.warn("【ES】updateBatchIds 失败，result 为空！list: {}", JsonUtil.toString(list));
+            return false;
+        }
+        if (response.hasFailures()) {
+            log.warn("【ES】updateBatchIds 失败，result: {}！", response.buildFailureMessage());
+            return false;
+        }
+        return true;
     }
 
     public <T extends BaseEsEntity> void asyncUpdateBatchIds(String index, String type, Collection<T> list,
         ActionListener<BulkResponse> listener) {
-
         if (CollectionUtil.isEmpty(list)) {
             return;
         }
-
-        BulkRequest bulkRequest = toUpdateBulkRequest(index, type, list);
+        BulkRequest bulkRequest = toBulkUpdateRequest(index, type, list);
         client.bulkAsync(bulkRequest, RequestOptions.DEFAULT, listener);
     }
 
-    private <T extends BaseEsEntity> BulkRequest toUpdateBulkRequest(String index, String type, Collection<T> list) {
+    private <T extends BaseEsEntity> BulkRequest toBulkIndexRequest(String index, String type, Collection<T> list) {
+        BulkRequest bulkRequest = new BulkRequest();
+        bulkRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
+        for (T entity : list) {
+            if (entity == null) {
+                continue;
+            }
+            Map<String, Object> map = toMap(entity);
+            if (MapUtil.isEmpty(map)) {
+                continue;
+            }
+            IndexRequest request = new IndexRequest(index, type).source(map);
+            if (entity.getDocId() != null) {
+                request.id(entity.getDocId());
+            }
+            bulkRequest.add(request);
+        }
+        return bulkRequest;
+    }
+
+    private <T extends BaseEsEntity> BulkRequest toBulkUpdateRequest(String index, String type, Collection<T> list) {
         BulkRequest bulkRequest = new BulkRequest();
         bulkRequest.setRefreshPolicy(WriteRequest.RefreshPolicy.IMMEDIATE);
         for (T entity : list) {
@@ -426,11 +432,14 @@ public class ElasticsearchTemplate implements Closeable {
 
         BulkResponse response = client.bulk(bulkRequest, RequestOptions.DEFAULT);
         if (response == null) {
-            log.warn("【ES】batchDeleteById 响应结果为空！");
+            log.warn("【ES】deleteBatchIds 失败，result 为空！ids: {}", JsonUtil.toString(ids));
             return false;
         }
-
-        return !response.hasFailures();
+        if (response.hasFailures()) {
+            log.warn("【ES】deleteBatchIds 失败，result: {}！", response.buildFailureMessage());
+            return false;
+        }
+        return true;
     }
 
     public void asyncDeleteBatchIds(String index, String type, Collection<String> ids,
@@ -568,7 +577,8 @@ public class ElasticsearchTemplate implements Closeable {
     /**
      * search after 分页
      */
-    public <T extends BaseEsEntity> ScrollData<T> pojoPageByScrollId(String index, String type, String scrollId, int size,
+    public <T extends BaseEsEntity> ScrollData<T> pojoPageByScrollId(String index, String type, String scrollId,
+        int size,
         QueryBuilder queryBuilder, Class<T> clazz) throws IOException {
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();

@@ -8,6 +8,7 @@ import io.github.dunwu.javadb.elasticsearch.entity.common.ScrollData;
 import io.github.dunwu.javadb.elasticsearch.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
@@ -59,12 +60,18 @@ public abstract class BaseElasticsearchTemplateTest<T extends BaseEsEntity> {
     protected abstract List<T> getMockList(int num);
 
     protected void deleteIndex() throws IOException {
-        boolean exists = TEMPLATE.isIndexExists(getIndex());
-        if (!exists) {
-            return;
+        try {
+            Set<String> set = TEMPLATE.getIndexSet(getAlias());
+            if (CollectionUtil.isNotEmpty(set)) {
+                for (String index : set) {
+                    log.info("删除 alias: {}, index: {}", getAlias(), index);
+                    TEMPLATE.deleteIndex(index);
+                }
+            }
+        } catch (IOException | ElasticsearchException e) {
+            log.error("删除索引失败！", e);
         }
-        TEMPLATE.deleteIndex(getIndex());
-        exists = TEMPLATE.isIndexExists(getIndex());
+        boolean exists = TEMPLATE.isIndexExists(getIndex());
         Assertions.assertThat(exists).isFalse();
     }
 
@@ -98,7 +105,7 @@ public abstract class BaseElasticsearchTemplateTest<T extends BaseEsEntity> {
         int total = 5000;
         List<List<T>> listGroup = CollectionUtil.split(getMockList(total), 1000);
         for (List<T> list : listGroup) {
-            TEMPLATE.saveBatch(getIndex(), getType(), list);
+            Assertions.assertThat(TEMPLATE.saveBatch(getIndex(), getType(), list)).isTrue();
         }
         long count = TEMPLATE.count(getIndex(), getType(), new SearchSourceBuilder());
         log.info("批量更新记录数: {}", count);
